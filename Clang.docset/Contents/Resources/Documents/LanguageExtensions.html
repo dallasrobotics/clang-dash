@@ -1,0 +1,1868 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Clang Language Extensions &mdash; Clang 3.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="next" title="Objective-C Literals" href="ObjectiveCLiterals.html" />
+    <link rel="prev" title="Clang Compiler User’s Manual" href="UsersManual.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Clang 3.7 documentation</span></a></h1>
+        <h2 class="heading"><span>Clang Language Extensions</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="UsersManual.html">Clang Compiler User&#8217;s Manual</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="ObjectiveCLiterals.html">Objective-C Literals</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="clang-language-extensions">
+<h1>Clang Language Extensions<a class="headerlink" href="#clang-language-extensions" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
+<li><a class="reference internal" href="#feature-checking-macros" id="id2">Feature Checking Macros</a></li>
+<li><a class="reference internal" href="#include-file-checking-macros" id="id3">Include File Checking Macros</a></li>
+<li><a class="reference internal" href="#builtin-macros" id="id4">Builtin Macros</a></li>
+<li><a class="reference internal" href="#vectors-and-extended-vectors" id="id5">Vectors and Extended Vectors</a></li>
+<li><a class="reference internal" href="#messages-on-deprecated-and-unavailable-attributes" id="id6">Messages on <code class="docutils literal"><span class="pre">deprecated</span></code> and <code class="docutils literal"><span class="pre">unavailable</span></code> Attributes</a></li>
+<li><a class="reference internal" href="#attributes-on-enumerators" id="id7">Attributes on Enumerators</a></li>
+<li><a class="reference internal" href="#user-specified-system-frameworks" id="id8">&#8216;User-Specified&#8217; System Frameworks</a></li>
+<li><a class="reference internal" href="#checks-for-standard-language-features" id="id9">Checks for Standard Language Features</a></li>
+<li><a class="reference internal" href="#checks-for-type-trait-primitives" id="id10">Checks for Type Trait Primitives</a></li>
+<li><a class="reference internal" href="#blocks" id="id11">Blocks</a></li>
+<li><a class="reference internal" href="#objective-c-features" id="id12">Objective-C Features</a></li>
+<li><a class="reference internal" href="#initializer-lists-for-complex-numbers-in-c" id="id13">Initializer lists for complex numbers in C</a></li>
+<li><a class="reference internal" href="#builtin-functions" id="id14">Builtin Functions</a></li>
+<li><a class="reference internal" href="#non-standard-c-11-attributes" id="id15">Non-standard C++11 Attributes</a></li>
+<li><a class="reference internal" href="#target-specific-extensions" id="id16">Target-Specific Extensions</a></li>
+<li><a class="reference internal" href="#extensions-for-static-analysis" id="id17">Extensions for Static Analysis</a></li>
+<li><a class="reference internal" href="#extensions-for-dynamic-analysis" id="id18">Extensions for Dynamic Analysis</a></li>
+<li><a class="reference internal" href="#extensions-for-selectively-disabling-optimization" id="id19">Extensions for selectively disabling optimization</a></li>
+<li><a class="reference internal" href="#extensions-for-loop-hint-optimizations" id="id20">Extensions for loop hint optimizations</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="introduction">
+<h2><a class="toc-backref" href="#id1">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This document describes the language extensions provided by Clang.  In addition
+to the language extensions listed here, Clang aims to support a broad range of
+GCC extensions.  Please see the <a class="reference external" href="http://gcc.gnu.org/onlinedocs/gcc/C-Extensions.html">GCC manual</a> for more information on
+these extensions.</p>
+</div>
+<div class="section" id="feature-checking-macros">
+<span id="langext-feature-check"></span><h2><a class="toc-backref" href="#id2">Feature Checking Macros</a><a class="headerlink" href="#feature-checking-macros" title="Permalink to this headline">¶</a></h2>
+<p>Language extensions can be very useful, but only if you know you can depend on
+them.  In order to allow fine-grain features checks, we support three builtin
+function-like macros.  This allows you to directly test for a feature in your
+code without having to resort to something like autoconf or fragile &#8220;compiler
+version checks&#8221;.</p>
+<div class="section" id="has-builtin">
+<h3><code class="docutils literal"><span class="pre">__has_builtin</span></code><a class="headerlink" href="#has-builtin" title="Permalink to this headline">¶</a></h3>
+<p>This function-like macro takes a single identifier argument that is the name of
+a builtin function.  It evaluates to 1 if the builtin is supported or 0 if not.
+It can be used like this:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#ifndef __has_builtin         </span><span class="c1">// Optional of course.</span>
+  <span class="cp">#define __has_builtin(x) 0  </span><span class="c1">// Compatibility with non-clang compilers.</span>
+<span class="cp">#endif</span>
+
+<span class="p">...</span>
+<span class="cp">#if __has_builtin(__builtin_trap)</span>
+  <span class="n">__builtin_trap</span><span class="p">();</span>
+<span class="cp">#else</span>
+  <span class="n">abort</span><span class="p">();</span>
+<span class="cp">#endif</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="has-feature-and-has-extension">
+<span id="langext-has-feature-has-extension"></span><h3><code class="docutils literal"><span class="pre">__has_feature</span></code> and <code class="docutils literal"><span class="pre">__has_extension</span></code><a class="headerlink" href="#has-feature-and-has-extension" title="Permalink to this headline">¶</a></h3>
+<p>These function-like macros take a single identifier argument that is the name
+of a feature.  <code class="docutils literal"><span class="pre">__has_feature</span></code> evaluates to 1 if the feature is both
+supported by Clang and standardized in the current language standard or 0 if
+not (but see <a class="reference internal" href="#langext-has-feature-back-compat"><span>below</span></a>), while
+<code class="docutils literal"><span class="pre">__has_extension</span></code> evaluates to 1 if the feature is supported by Clang in the
+current language (either as a language extension or a standard language
+feature) or 0 if not.  They can be used like this:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#ifndef __has_feature         </span><span class="c1">// Optional of course.</span>
+  <span class="cp">#define __has_feature(x) 0  </span><span class="c1">// Compatibility with non-clang compilers.</span>
+<span class="cp">#endif</span>
+<span class="cp">#ifndef __has_extension</span>
+  <span class="cp">#define __has_extension __has_feature </span><span class="c1">// Compatibility with pre-3.0 compilers.</span>
+<span class="cp">#endif</span>
+
+<span class="p">...</span>
+<span class="cp">#if __has_feature(cxx_rvalue_references)</span>
+<span class="c1">// This code will only be compiled with the -std=c++11 and -std=gnu++11</span>
+<span class="c1">// options, because rvalue references are only standardized in C++11.</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#if __has_extension(cxx_rvalue_references)</span>
+<span class="c1">// This code will be compiled with the -std=c++11, -std=gnu++11, -std=c++98</span>
+<span class="c1">// and -std=gnu++98 options, because rvalue references are supported as a</span>
+<span class="c1">// language extension in C++98.</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p id="langext-has-feature-back-compat">For backward compatibility, <code class="docutils literal"><span class="pre">__has_feature</span></code> can also be used to test
+for support for non-standardized features, i.e. features not prefixed <code class="docutils literal"><span class="pre">c_</span></code>,
+<code class="docutils literal"><span class="pre">cxx_</span></code> or <code class="docutils literal"><span class="pre">objc_</span></code>.</p>
+<p>Another use of <code class="docutils literal"><span class="pre">__has_feature</span></code> is to check for compiler features not related
+to the language standard, such as e.g. <a class="reference internal" href="AddressSanitizer.html"><em>AddressSanitizer</em></a>.</p>
+<p>If the <code class="docutils literal"><span class="pre">-pedantic-errors</span></code> option is given, <code class="docutils literal"><span class="pre">__has_extension</span></code> is equivalent
+to <code class="docutils literal"><span class="pre">__has_feature</span></code>.</p>
+<p>The feature tag is described along with the language feature below.</p>
+<p>The feature name or extension name can also be specified with a preceding and
+following <code class="docutils literal"><span class="pre">__</span></code> (double underscore) to avoid interference from a macro with
+the same name.  For instance, <code class="docutils literal"><span class="pre">__cxx_rvalue_references__</span></code> can be used instead
+of <code class="docutils literal"><span class="pre">cxx_rvalue_references</span></code>.</p>
+</div>
+<div class="section" id="has-cpp-attribute">
+<h3><code class="docutils literal"><span class="pre">__has_cpp_attribute</span></code><a class="headerlink" href="#has-cpp-attribute" title="Permalink to this headline">¶</a></h3>
+<p>This function-like macro takes a single argument that is the name of a
+C++11-style attribute. The argument can either be a single identifier, or a
+scoped identifier. If the attribute is supported, a nonzero value is returned.
+If the attribute is a standards-based attribute, this macro returns a nonzero
+value based on the year and month in which the attribute was voted into the
+working draft. If the attribute is not supported by the current compliation
+target, this macro evaluates to 0.  It can be used like this:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#ifndef __has_cpp_attribute         </span><span class="c1">// Optional of course.</span>
+  <span class="cp">#define __has_cpp_attribute(x) 0  </span><span class="c1">// Compatibility with non-clang compilers.</span>
+<span class="cp">#endif</span>
+
+<span class="p">...</span>
+<span class="cp">#if __has_cpp_attribute(clang::fallthrough)</span>
+<span class="cp">#define FALLTHROUGH [[clang::fallthrough]]</span>
+<span class="cp">#else</span>
+<span class="cp">#define FALLTHROUGH</span>
+<span class="cp">#endif</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>The attribute identifier (but not scope) can also be specified with a preceding
+and following <code class="docutils literal"><span class="pre">__</span></code> (double underscore) to avoid interference from a macro with
+the same name.  For instance, <code class="docutils literal"><span class="pre">gnu::__const__</span></code> can be used instead of
+<code class="docutils literal"><span class="pre">gnu::const</span></code>.</p>
+</div>
+<div class="section" id="has-attribute">
+<h3><code class="docutils literal"><span class="pre">__has_attribute</span></code><a class="headerlink" href="#has-attribute" title="Permalink to this headline">¶</a></h3>
+<p>This function-like macro takes a single identifier argument that is the name of
+a GNU-style attribute.  It evaluates to 1 if the attribute is supported by the
+current compilation target, or 0 if not.  It can be used like this:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#ifndef __has_attribute         </span><span class="c1">// Optional of course.</span>
+  <span class="cp">#define __has_attribute(x) 0  </span><span class="c1">// Compatibility with non-clang compilers.</span>
+<span class="cp">#endif</span>
+
+<span class="p">...</span>
+<span class="cp">#if __has_attribute(always_inline)</span>
+<span class="cp">#define ALWAYS_INLINE __attribute__((always_inline))</span>
+<span class="cp">#else</span>
+<span class="cp">#define ALWAYS_INLINE</span>
+<span class="cp">#endif</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>The attribute name can also be specified with a preceding and following <code class="docutils literal"><span class="pre">__</span></code>
+(double underscore) to avoid interference from a macro with the same name.  For
+instance, <code class="docutils literal"><span class="pre">__always_inline__</span></code> can be used instead of <code class="docutils literal"><span class="pre">always_inline</span></code>.</p>
+</div>
+<div class="section" id="has-declspec-attribute">
+<h3><code class="docutils literal"><span class="pre">__has_declspec_attribute</span></code><a class="headerlink" href="#has-declspec-attribute" title="Permalink to this headline">¶</a></h3>
+<p>This function-like macro takes a single identifier argument that is the name of
+an attribute implemented as a Microsoft-style <code class="docutils literal"><span class="pre">__declspec</span></code> attribute.  It
+evaluates to 1 if the attribute is supported by the current compilation target,
+or 0 if not.  It can be used like this:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#ifndef __has_declspec_attribute         </span><span class="c1">// Optional of course.</span>
+  <span class="cp">#define __has_declspec_attribute(x) 0  </span><span class="c1">// Compatibility with non-clang compilers.</span>
+<span class="cp">#endif</span>
+
+<span class="p">...</span>
+<span class="cp">#if __has_declspec_attribute(dllexport)</span>
+<span class="cp">#define DLLEXPORT __declspec(dllexport)</span>
+<span class="cp">#else</span>
+<span class="cp">#define DLLEXPORT</span>
+<span class="cp">#endif</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>The attribute name can also be specified with a preceding and following <code class="docutils literal"><span class="pre">__</span></code>
+(double underscore) to avoid interference from a macro with the same name.  For
+instance, <code class="docutils literal"><span class="pre">__dllexport__</span></code> can be used instead of <code class="docutils literal"><span class="pre">dllexport</span></code>.</p>
+</div>
+<div class="section" id="is-identifier">
+<h3><code class="docutils literal"><span class="pre">__is_identifier</span></code><a class="headerlink" href="#is-identifier" title="Permalink to this headline">¶</a></h3>
+<p>This function-like macro takes a single identifier argument that might be either
+a reserved word or a regular identifier. It evaluates to 1 if the argument is just
+a regular identifier and not a reserved word, in the sense that it can then be
+used as the name of a user-defined function or variable. Otherwise it evaluates
+to 0.  It can be used like this:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="p">...</span>
+<span class="cp">#ifdef __is_identifier          </span><span class="c1">// Compatibility with non-clang compilers.</span>
+  <span class="cp">#if __is_identifier(__wchar_t)</span>
+    <span class="k">typedef</span> <span class="kt">wchar_t</span> <span class="kt">__wchar_t</span><span class="p">;</span>
+  <span class="cp">#endif</span>
+<span class="cp">#endif</span>
+
+<span class="kt">__wchar_t</span> <span class="n">WideCharacter</span><span class="p">;</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="include-file-checking-macros">
+<h2><a class="toc-backref" href="#id3">Include File Checking Macros</a><a class="headerlink" href="#include-file-checking-macros" title="Permalink to this headline">¶</a></h2>
+<p>Not all developments systems have the same include files.  The
+<a class="reference internal" href="#langext-has-include"><span>__has_include</span></a> and <a class="reference internal" href="#langext-has-include-next"><span>__has_include_next</span></a> macros allow
+you to check for the existence of an include file before doing a possibly
+failing <code class="docutils literal"><span class="pre">#include</span></code> directive.  Include file checking macros must be used
+as expressions in <code class="docutils literal"><span class="pre">#if</span></code> or <code class="docutils literal"><span class="pre">#elif</span></code> preprocessing directives.</p>
+<div class="section" id="has-include">
+<span id="langext-has-include"></span><h3><code class="docutils literal"><span class="pre">__has_include</span></code><a class="headerlink" href="#has-include" title="Permalink to this headline">¶</a></h3>
+<p>This function-like macro takes a single file name string argument that is the
+name of an include file.  It evaluates to 1 if the file can be found using the
+include paths, or 0 otherwise:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// Note the two possible file name string formats.</span>
+<span class="cp">#if __has_include(&quot;myinclude.h&quot;) &amp;&amp; __has_include(&lt;stdint.h&gt;)</span>
+<span class="cp"># include &quot;myinclude.h&quot;</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>To test for this feature, use <code class="docutils literal"><span class="pre">#if</span> <span class="pre">defined(__has_include)</span></code>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// To avoid problem with non-clang compilers not having this macro.</span>
+<span class="cp">#if defined(__has_include)</span>
+<span class="cp">#if __has_include(&quot;myinclude.h&quot;)</span>
+<span class="cp"># include &quot;myinclude.h&quot;</span>
+<span class="cp">#endif</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="has-include-next">
+<span id="langext-has-include-next"></span><h3><code class="docutils literal"><span class="pre">__has_include_next</span></code><a class="headerlink" href="#has-include-next" title="Permalink to this headline">¶</a></h3>
+<p>This function-like macro takes a single file name string argument that is the
+name of an include file.  It is like <code class="docutils literal"><span class="pre">__has_include</span></code> except that it looks for
+the second instance of the given file found in the include paths.  It evaluates
+to 1 if the second instance of the file can be found using the include paths,
+or 0 otherwise:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// Note the two possible file name string formats.</span>
+<span class="cp">#if __has_include_next(&quot;myinclude.h&quot;) &amp;&amp; __has_include_next(&lt;stdint.h&gt;)</span>
+<span class="cp"># include_next &quot;myinclude.h&quot;</span>
+<span class="cp">#endif</span>
+
+<span class="c1">// To avoid problem with non-clang compilers not having this macro.</span>
+<span class="cp">#if defined(__has_include_next)</span>
+<span class="cp">#if __has_include_next(&quot;myinclude.h&quot;)</span>
+<span class="cp"># include_next &quot;myinclude.h&quot;</span>
+<span class="cp">#endif</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal"><span class="pre">__has_include_next</span></code>, like the GNU extension <code class="docutils literal"><span class="pre">#include_next</span></code>
+directive, is intended for use in headers only, and will issue a warning if
+used in the top-level compilation file.  A warning will also be issued if an
+absolute path is used in the file argument.</p>
+</div>
+<div class="section" id="has-warning">
+<h3><code class="docutils literal"><span class="pre">__has_warning</span></code><a class="headerlink" href="#has-warning" title="Permalink to this headline">¶</a></h3>
+<p>This function-like macro takes a string literal that represents a command line
+option for a warning and returns true if that is a valid warning option.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#if __has_warning(&quot;-Wformat&quot;)</span>
+<span class="p">...</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="builtin-macros">
+<h2><a class="toc-backref" href="#id4">Builtin Macros</a><a class="headerlink" href="#builtin-macros" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">__BASE_FILE__</span></code></dt>
+<dd>Defined to a string that contains the name of the main input file passed to
+Clang.</dd>
+<dt><code class="docutils literal"><span class="pre">__COUNTER__</span></code></dt>
+<dd>Defined to an integer value that starts at zero and is incremented each time
+the <code class="docutils literal"><span class="pre">__COUNTER__</span></code> macro is expanded.</dd>
+<dt><code class="docutils literal"><span class="pre">__INCLUDE_LEVEL__</span></code></dt>
+<dd>Defined to an integral value that is the include depth of the file currently
+being translated.  For the main file, this value is zero.</dd>
+<dt><code class="docutils literal"><span class="pre">__TIMESTAMP__</span></code></dt>
+<dd>Defined to the date and time of the last modification of the current source
+file.</dd>
+<dt><code class="docutils literal"><span class="pre">__clang__</span></code></dt>
+<dd>Defined when compiling with Clang</dd>
+<dt><code class="docutils literal"><span class="pre">__clang_major__</span></code></dt>
+<dd>Defined to the major marketing version number of Clang (e.g., the 2 in
+2.0.1).  Note that marketing version numbers should not be used to check for
+language features, as different vendors use different numbering schemes.
+Instead, use the <a class="reference internal" href="#langext-feature-check"><span>Feature Checking Macros</span></a>.</dd>
+<dt><code class="docutils literal"><span class="pre">__clang_minor__</span></code></dt>
+<dd>Defined to the minor version number of Clang (e.g., the 0 in 2.0.1).  Note
+that marketing version numbers should not be used to check for language
+features, as different vendors use different numbering schemes.  Instead, use
+the <a class="reference internal" href="#langext-feature-check"><span>Feature Checking Macros</span></a>.</dd>
+<dt><code class="docutils literal"><span class="pre">__clang_patchlevel__</span></code></dt>
+<dd>Defined to the marketing patch level of Clang (e.g., the 1 in 2.0.1).</dd>
+<dt><code class="docutils literal"><span class="pre">__clang_version__</span></code></dt>
+<dd>Defined to a string that captures the Clang marketing version, including the
+Subversion tag or revision number, e.g., &#8220;<code class="docutils literal"><span class="pre">1.5</span> <span class="pre">(trunk</span> <span class="pre">102332)</span></code>&#8221;.</dd>
+</dl>
+</div>
+<div class="section" id="vectors-and-extended-vectors">
+<span id="langext-vectors"></span><h2><a class="toc-backref" href="#id5">Vectors and Extended Vectors</a><a class="headerlink" href="#vectors-and-extended-vectors" title="Permalink to this headline">¶</a></h2>
+<p>Supports the GCC, OpenCL, AltiVec and NEON vector extensions.</p>
+<p>OpenCL vector types are created using <code class="docutils literal"><span class="pre">ext_vector_type</span></code> attribute.  It
+support for <code class="docutils literal"><span class="pre">V.xyzw</span></code> syntax and other tidbits as seen in OpenCL.  An example
+is:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">typedef</span> <span class="kt">float</span> <span class="n">float4</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">ext_vector_type</span><span class="p">(</span><span class="mi">4</span><span class="p">)));</span>
+<span class="k">typedef</span> <span class="kt">float</span> <span class="n">float2</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">ext_vector_type</span><span class="p">(</span><span class="mi">2</span><span class="p">)));</span>
+
+<span class="n">float4</span> <span class="nf">foo</span><span class="p">(</span><span class="n">float2</span> <span class="n">a</span><span class="p">,</span> <span class="n">float2</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">float4</span> <span class="n">c</span><span class="p">;</span>
+  <span class="n">c</span><span class="p">.</span><span class="n">xz</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+  <span class="n">c</span><span class="p">.</span><span class="n">yw</span> <span class="o">=</span> <span class="n">b</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">c</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Query for this feature with <code class="docutils literal"><span class="pre">__has_extension(attribute_ext_vector_type)</span></code>.</p>
+<p>Giving <code class="docutils literal"><span class="pre">-faltivec</span></code> option to clang enables support for AltiVec vector syntax
+and functions.  For example:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">vector</span> <span class="kt">float</span> <span class="nf">foo</span><span class="p">(</span><span class="n">vector</span> <span class="kt">int</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">vector</span> <span class="kt">int</span> <span class="n">b</span><span class="p">;</span>
+  <span class="n">b</span> <span class="o">=</span> <span class="n">vec_add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">a</span><span class="p">;</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">vector</span> <span class="kt">float</span><span class="p">)</span><span class="n">b</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>NEON vector types are created using <code class="docutils literal"><span class="pre">neon_vector_type</span></code> and
+<code class="docutils literal"><span class="pre">neon_polyvector_type</span></code> attributes.  For example:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">typedef</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">neon_vector_type</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span> <span class="kt">int8_t</span> <span class="kt">int8x8_t</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">neon_polyvector_type</span><span class="p">(</span><span class="mi">16</span><span class="p">)))</span> <span class="kt">poly8_t</span> <span class="kt">poly8x16_t</span><span class="p">;</span>
+
+<span class="kt">int8x8_t</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">int8x8_t</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">int8x8_t</span> <span class="n">v</span><span class="p">;</span>
+  <span class="n">v</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">v</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="section" id="vector-literals">
+<h3>Vector Literals<a class="headerlink" href="#vector-literals" title="Permalink to this headline">¶</a></h3>
+<p>Vector literals can be used to create vectors from a set of scalars, or
+vectors.  Either parentheses or braces form can be used.  In the parentheses
+form the number of literal values specified must be one, i.e. referring to a
+scalar value, or must match the size of the vector type being created.  If a
+single scalar literal value is specified, the scalar literal value will be
+replicated to all the components of the vector type.  In the brackets form any
+number of literals can be specified.  For example:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">typedef</span> <span class="kt">int</span> <span class="n">v4si</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">__vector_size__</span><span class="p">(</span><span class="mi">16</span><span class="p">)));</span>
+<span class="k">typedef</span> <span class="kt">float</span> <span class="n">float4</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">ext_vector_type</span><span class="p">(</span><span class="mi">4</span><span class="p">)));</span>
+<span class="k">typedef</span> <span class="kt">float</span> <span class="n">float2</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">ext_vector_type</span><span class="p">(</span><span class="mi">2</span><span class="p">)));</span>
+
+<span class="n">v4si</span> <span class="n">vsi</span> <span class="o">=</span> <span class="p">(</span><span class="n">v4si</span><span class="p">){</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">};</span>
+<span class="n">float4</span> <span class="n">vf</span> <span class="o">=</span> <span class="p">(</span><span class="n">float4</span><span class="p">)(</span><span class="mf">1.0f</span><span class="p">,</span> <span class="mf">2.0f</span><span class="p">,</span> <span class="mf">3.0f</span><span class="p">,</span> <span class="mf">4.0f</span><span class="p">);</span>
+<span class="n">vector</span> <span class="kt">int</span> <span class="n">vi1</span> <span class="o">=</span> <span class="p">(</span><span class="n">vector</span> <span class="kt">int</span><span class="p">)(</span><span class="mi">1</span><span class="p">);</span>    <span class="c1">// vi1 will be (1, 1, 1, 1).</span>
+<span class="n">vector</span> <span class="kt">int</span> <span class="n">vi2</span> <span class="o">=</span> <span class="p">(</span><span class="n">vector</span> <span class="kt">int</span><span class="p">){</span><span class="mi">1</span><span class="p">};</span>    <span class="c1">// vi2 will be (1, 0, 0, 0).</span>
+<span class="n">vector</span> <span class="kt">int</span> <span class="n">vi3</span> <span class="o">=</span> <span class="p">(</span><span class="n">vector</span> <span class="kt">int</span><span class="p">)(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// error</span>
+<span class="n">vector</span> <span class="kt">int</span> <span class="n">vi4</span> <span class="o">=</span> <span class="p">(</span><span class="n">vector</span> <span class="kt">int</span><span class="p">){</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">};</span> <span class="c1">// vi4 will be (1, 2, 0, 0).</span>
+<span class="n">vector</span> <span class="kt">int</span> <span class="n">vi5</span> <span class="o">=</span> <span class="p">(</span><span class="n">vector</span> <span class="kt">int</span><span class="p">)(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="n">float4</span> <span class="n">vf</span> <span class="o">=</span> <span class="p">(</span><span class="n">float4</span><span class="p">)((</span><span class="n">float2</span><span class="p">)(</span><span class="mf">1.0f</span><span class="p">,</span> <span class="mf">2.0f</span><span class="p">),</span> <span class="p">(</span><span class="n">float2</span><span class="p">)(</span><span class="mf">3.0f</span><span class="p">,</span> <span class="mf">4.0f</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="vector-operations">
+<h3>Vector Operations<a class="headerlink" href="#vector-operations" title="Permalink to this headline">¶</a></h3>
+<p>The table below shows the support for each operation by vector extension.  A
+dash indicates that an operation is not accepted according to a corresponding
+specification.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Opeator</th>
+<th class="head">OpenCL</th>
+<th class="head">AltiVec</th>
+<th class="head">GCC</th>
+<th class="head">NEON</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>[]</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>&#8211;</td>
+</tr>
+<tr class="row-odd"><td>unary operators +, &#8211;</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>&#8211;</td>
+</tr>
+<tr class="row-even"><td>++, &#8211; &#8211;</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>&#8211;</td>
+</tr>
+<tr class="row-odd"><td>+,&#8211;,*,/,%</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>&#8211;</td>
+</tr>
+<tr class="row-even"><td>bitwise operators &amp;,|,^,~</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>&#8211;</td>
+</tr>
+<tr class="row-odd"><td>&gt;&gt;,&lt;&lt;</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>&#8211;</td>
+</tr>
+<tr class="row-even"><td>!, &amp;&amp;, ||</td>
+<td>yes</td>
+<td>&#8211;</td>
+<td>&#8211;</td>
+<td>&#8211;</td>
+</tr>
+<tr class="row-odd"><td>==, !=, &gt;, &lt;, &gt;=, &lt;=</td>
+<td>yes</td>
+<td>yes</td>
+<td>&#8211;</td>
+<td>&#8211;</td>
+</tr>
+<tr class="row-even"><td>=</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-odd"><td>:?</td>
+<td>yes</td>
+<td>&#8211;</td>
+<td>&#8211;</td>
+<td>&#8211;</td>
+</tr>
+<tr class="row-even"><td>sizeof</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="row-odd"><td>C-style cast</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-even"><td>reinterpret_cast</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-odd"><td>static_cast</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="row-even"><td>const_cast</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p>See also <a class="reference internal" href="#langext-builtin-shufflevector"><span>__builtin_shufflevector</span></a>, <a class="reference internal" href="#langext-builtin-convertvector"><span>__builtin_convertvector</span></a>.</p>
+</div>
+</div>
+<div class="section" id="messages-on-deprecated-and-unavailable-attributes">
+<h2><a class="toc-backref" href="#id6">Messages on <code class="docutils literal"><span class="pre">deprecated</span></code> and <code class="docutils literal"><span class="pre">unavailable</span></code> Attributes</a><a class="headerlink" href="#messages-on-deprecated-and-unavailable-attributes" title="Permalink to this headline">¶</a></h2>
+<p>An optional string message can be added to the <code class="docutils literal"><span class="pre">deprecated</span></code> and
+<code class="docutils literal"><span class="pre">unavailable</span></code> attributes.  For example:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">explode</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">deprecated</span><span class="p">(</span><span class="s">&quot;extremely unsafe, use &#39;combust&#39; instead!!!&quot;</span><span class="p">)));</span>
+</pre></div>
+</div>
+<p>If the deprecated or unavailable declaration is used, the message will be
+incorporated into the appropriate diagnostic:</p>
+<div class="highlight-c++"><div class="highlight"><pre>harmless.c:4:3: warning: &#39;explode&#39; is deprecated: extremely unsafe, use &#39;combust&#39; instead!!!
+      [-Wdeprecated-declarations]
+  explode();
+  ^
+</pre></div>
+</div>
+<p>Query for this feature with
+<code class="docutils literal"><span class="pre">__has_extension(attribute_deprecated_with_message)</span></code> and
+<code class="docutils literal"><span class="pre">__has_extension(attribute_unavailable_with_message)</span></code>.</p>
+</div>
+<div class="section" id="attributes-on-enumerators">
+<h2><a class="toc-backref" href="#id7">Attributes on Enumerators</a><a class="headerlink" href="#attributes-on-enumerators" title="Permalink to this headline">¶</a></h2>
+<p>Clang allows attributes to be written on individual enumerators.  This allows
+enumerators to be deprecated, made unavailable, etc.  The attribute must appear
+after the enumerator name and before any initializer, like so:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">enum</span> <span class="n">OperationMode</span> <span class="p">{</span>
+  <span class="n">OM_Invalid</span><span class="p">,</span>
+  <span class="n">OM_Normal</span><span class="p">,</span>
+  <span class="n">OM_Terrified</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">deprecated</span><span class="p">)),</span>
+  <span class="n">OM_AbortOnError</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">deprecated</span><span class="p">))</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Attributes on the <code class="docutils literal"><span class="pre">enum</span></code> declaration do not apply to individual enumerators.</p>
+<p>Query for this feature with <code class="docutils literal"><span class="pre">__has_extension(enumerator_attributes)</span></code>.</p>
+</div>
+<div class="section" id="user-specified-system-frameworks">
+<h2><a class="toc-backref" href="#id8">&#8216;User-Specified&#8217; System Frameworks</a><a class="headerlink" href="#user-specified-system-frameworks" title="Permalink to this headline">¶</a></h2>
+<p>Clang provides a mechanism by which frameworks can be built in such a way that
+they will always be treated as being &#8220;system frameworks&#8221;, even if they are not
+present in a system framework directory.  This can be useful to system
+framework developers who want to be able to test building other applications
+with development builds of their framework, including the manner in which the
+compiler changes warning behavior for system headers.</p>
+<p>Framework developers can opt-in to this mechanism by creating a
+&#8220;<code class="docutils literal"><span class="pre">.system_framework</span></code>&#8221; file at the top-level of their framework.  That is, the
+framework should have contents like:</p>
+<div class="highlight-none"><div class="highlight"><pre>.../TestFramework.framework
+.../TestFramework.framework/.system_framework
+.../TestFramework.framework/Headers
+.../TestFramework.framework/Headers/TestFramework.h
+...
+</pre></div>
+</div>
+<p>Clang will treat the presence of this file as an indicator that the framework
+should be treated as a system framework, regardless of how it was found in the
+framework search path.  For consistency, we recommend that such files never be
+included in installed versions of the framework.</p>
+</div>
+<div class="section" id="checks-for-standard-language-features">
+<h2><a class="toc-backref" href="#id9">Checks for Standard Language Features</a><a class="headerlink" href="#checks-for-standard-language-features" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">__has_feature</span></code> macro can be used to query if certain standard language
+features are enabled.  The <code class="docutils literal"><span class="pre">__has_extension</span></code> macro can be used to query if
+language features are available as an extension when compiling for a standard
+which does not provide them.  The features which can be tested are listed here.</p>
+<p>Since Clang 3.4, the C++ SD-6 feature test macros are also supported.
+These are macros with names of the form <code class="docutils literal"><span class="pre">__cpp_&lt;feature_name&gt;</span></code>, and are
+intended to be a portable way to query the supported features of the compiler.
+See <a class="reference external" href="http://clang.llvm.org/cxx_status.html#ts">the C++ status page</a> for
+information on the version of SD-6 supported by each Clang release, and the
+macros provided by that revision of the recommendations.</p>
+<div class="section" id="c-98">
+<h3>C++98<a class="headerlink" href="#c-98" title="Permalink to this headline">¶</a></h3>
+<p>The features listed below are part of the C++98 standard.  These features are
+enabled by default when compiling C++ code.</p>
+<div class="section" id="c-exceptions">
+<h4>C++ exceptions<a class="headerlink" href="#c-exceptions" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_exceptions)</span></code> to determine if C++ exceptions have been
+enabled.  For example, compiling code with <code class="docutils literal"><span class="pre">-fno-exceptions</span></code> disables C++
+exceptions.</p>
+</div>
+<div class="section" id="c-rtti">
+<h4>C++ RTTI<a class="headerlink" href="#c-rtti" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_rtti)</span></code> to determine if C++ RTTI has been enabled.  For
+example, compiling code with <code class="docutils literal"><span class="pre">-fno-rtti</span></code> disables the use of RTTI.</p>
+</div>
+</div>
+<div class="section" id="c-11">
+<h3>C++11<a class="headerlink" href="#c-11" title="Permalink to this headline">¶</a></h3>
+<p>The features listed below are part of the C++11 standard.  As a result, all
+these features are enabled with the <code class="docutils literal"><span class="pre">-std=c++11</span></code> or <code class="docutils literal"><span class="pre">-std=gnu++11</span></code> option
+when compiling C++ code.</p>
+<div class="section" id="c-11-sfinae-includes-access-control">
+<h4>C++11 SFINAE includes access control<a class="headerlink" href="#c-11-sfinae-includes-access-control" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_access_control_sfinae)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_access_control_sfinae)</span></code> to determine whether
+access-control errors (e.g., calling a private constructor) are considered to
+be template argument deduction errors (aka SFINAE errors), per <a class="reference external" href="http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#1170">C++ DR1170</a>.</p>
+</div>
+<div class="section" id="c-11-alias-templates">
+<h4>C++11 alias templates<a class="headerlink" href="#c-11-alias-templates" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_alias_templates)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_alias_templates)</span></code> to determine if support for C++11&#8217;s
+alias declarations and alias templates is enabled.</p>
+</div>
+<div class="section" id="c-11-alignment-specifiers">
+<h4>C++11 alignment specifiers<a class="headerlink" href="#c-11-alignment-specifiers" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_alignas)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(cxx_alignas)</span></code> to
+determine if support for alignment specifiers using <code class="docutils literal"><span class="pre">alignas</span></code> is enabled.</p>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_alignof)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(cxx_alignof)</span></code> to
+determine if support for the <code class="docutils literal"><span class="pre">alignof</span></code> keyword is enabled.</p>
+</div>
+<div class="section" id="c-11-attributes">
+<h4>C++11 attributes<a class="headerlink" href="#c-11-attributes" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_attributes)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(cxx_attributes)</span></code> to
+determine if support for attribute parsing with C++11&#8217;s square bracket notation
+is enabled.</p>
+</div>
+<div class="section" id="c-11-generalized-constant-expressions">
+<h4>C++11 generalized constant expressions<a class="headerlink" href="#c-11-generalized-constant-expressions" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_constexpr)</span></code> to determine if support for generalized
+constant expressions (e.g., <code class="docutils literal"><span class="pre">constexpr</span></code>) is enabled.</p>
+</div>
+<div class="section" id="c-11-decltype">
+<h4>C++11 <code class="docutils literal"><span class="pre">decltype()</span></code><a class="headerlink" href="#c-11-decltype" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_decltype)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(cxx_decltype)</span></code> to
+determine if support for the <code class="docutils literal"><span class="pre">decltype()</span></code> specifier is enabled.  C++11&#8217;s
+<code class="docutils literal"><span class="pre">decltype</span></code> does not require type-completeness of a function call expression.
+Use <code class="docutils literal"><span class="pre">__has_feature(cxx_decltype_incomplete_return_types)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_decltype_incomplete_return_types)</span></code> to determine if
+support for this feature is enabled.</p>
+</div>
+<div class="section" id="c-11-default-template-arguments-in-function-templates">
+<h4>C++11 default template arguments in function templates<a class="headerlink" href="#c-11-default-template-arguments-in-function-templates" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_default_function_template_args)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_default_function_template_args)</span></code> to determine if support
+for default template arguments in function templates is enabled.</p>
+</div>
+<div class="section" id="c-11-defaulted-functions">
+<h4>C++11 <code class="docutils literal"><span class="pre">default</span></code>ed functions<a class="headerlink" href="#c-11-defaulted-functions" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_defaulted_functions)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_defaulted_functions)</span></code> to determine if support for
+defaulted function definitions (with <code class="docutils literal"><span class="pre">=</span> <span class="pre">default</span></code>) is enabled.</p>
+</div>
+<div class="section" id="c-11-delegating-constructors">
+<h4>C++11 delegating constructors<a class="headerlink" href="#c-11-delegating-constructors" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_delegating_constructors)</span></code> to determine if support for
+delegating constructors is enabled.</p>
+</div>
+<div class="section" id="c-11-deleted-functions">
+<h4>C++11 <code class="docutils literal"><span class="pre">deleted</span></code> functions<a class="headerlink" href="#c-11-deleted-functions" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_deleted_functions)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_deleted_functions)</span></code> to determine if support for deleted
+function definitions (with <code class="docutils literal"><span class="pre">=</span> <span class="pre">delete</span></code>) is enabled.</p>
+</div>
+<div class="section" id="c-11-explicit-conversion-functions">
+<h4>C++11 explicit conversion functions<a class="headerlink" href="#c-11-explicit-conversion-functions" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_explicit_conversions)</span></code> to determine if support for
+<code class="docutils literal"><span class="pre">explicit</span></code> conversion functions is enabled.</p>
+</div>
+<div class="section" id="c-11-generalized-initializers">
+<h4>C++11 generalized initializers<a class="headerlink" href="#c-11-generalized-initializers" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_generalized_initializers)</span></code> to determine if support for
+generalized initializers (using braced lists and <code class="docutils literal"><span class="pre">std::initializer_list</span></code>) is
+enabled.</p>
+</div>
+<div class="section" id="c-11-implicit-move-constructors-assignment-operators">
+<h4>C++11 implicit move constructors/assignment operators<a class="headerlink" href="#c-11-implicit-move-constructors-assignment-operators" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_implicit_moves)</span></code> to determine if Clang will implicitly
+generate move constructors and move assignment operators where needed.</p>
+</div>
+<div class="section" id="c-11-inheriting-constructors">
+<h4>C++11 inheriting constructors<a class="headerlink" href="#c-11-inheriting-constructors" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_inheriting_constructors)</span></code> to determine if support for
+inheriting constructors is enabled.</p>
+</div>
+<div class="section" id="c-11-inline-namespaces">
+<h4>C++11 inline namespaces<a class="headerlink" href="#c-11-inline-namespaces" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_inline_namespaces)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_inline_namespaces)</span></code> to determine if support for inline
+namespaces is enabled.</p>
+</div>
+<div class="section" id="c-11-lambdas">
+<h4>C++11 lambdas<a class="headerlink" href="#c-11-lambdas" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_lambdas)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(cxx_lambdas)</span></code> to
+determine if support for lambdas is enabled.</p>
+</div>
+<div class="section" id="c-11-local-and-unnamed-types-as-template-arguments">
+<h4>C++11 local and unnamed types as template arguments<a class="headerlink" href="#c-11-local-and-unnamed-types-as-template-arguments" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_local_type_template_args)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_local_type_template_args)</span></code> to determine if support for
+local and unnamed types as template arguments is enabled.</p>
+</div>
+<div class="section" id="c-11-noexcept">
+<h4>C++11 noexcept<a class="headerlink" href="#c-11-noexcept" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_noexcept)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(cxx_noexcept)</span></code> to
+determine if support for noexcept exception specifications is enabled.</p>
+</div>
+<div class="section" id="c-11-in-class-non-static-data-member-initialization">
+<h4>C++11 in-class non-static data member initialization<a class="headerlink" href="#c-11-in-class-non-static-data-member-initialization" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_nonstatic_member_init)</span></code> to determine whether in-class
+initialization of non-static data members is enabled.</p>
+</div>
+<div class="section" id="c-11-nullptr">
+<h4>C++11 <code class="docutils literal"><span class="pre">nullptr</span></code><a class="headerlink" href="#c-11-nullptr" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_nullptr)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(cxx_nullptr)</span></code> to
+determine if support for <code class="docutils literal"><span class="pre">nullptr</span></code> is enabled.</p>
+</div>
+<div class="section" id="c-11-override-control">
+<h4>C++11 <code class="docutils literal"><span class="pre">override</span> <span class="pre">control</span></code><a class="headerlink" href="#c-11-override-control" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_override_control)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_override_control)</span></code> to determine if support for the
+override control keywords is enabled.</p>
+</div>
+<div class="section" id="c-11-reference-qualified-functions">
+<h4>C++11 reference-qualified functions<a class="headerlink" href="#c-11-reference-qualified-functions" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_reference_qualified_functions)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_reference_qualified_functions)</span></code> to determine if support
+for reference-qualified functions (e.g., member functions with <code class="docutils literal"><span class="pre">&amp;</span></code> or <code class="docutils literal"><span class="pre">&amp;&amp;</span></code>
+applied to <code class="docutils literal"><span class="pre">*this</span></code>) is enabled.</p>
+</div>
+<div class="section" id="c-11-range-based-for-loop">
+<h4>C++11 range-based <code class="docutils literal"><span class="pre">for</span></code> loop<a class="headerlink" href="#c-11-range-based-for-loop" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_range_for)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(cxx_range_for)</span></code> to
+determine if support for the range-based for loop is enabled.</p>
+</div>
+<div class="section" id="c-11-raw-string-literals">
+<h4>C++11 raw string literals<a class="headerlink" href="#c-11-raw-string-literals" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_raw_string_literals)</span></code> to determine if support for raw
+string literals (e.g., <code class="docutils literal"><span class="pre">R&quot;x(foo\bar)x&quot;</span></code>) is enabled.</p>
+</div>
+<div class="section" id="c-11-rvalue-references">
+<h4>C++11 rvalue references<a class="headerlink" href="#c-11-rvalue-references" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_rvalue_references)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_rvalue_references)</span></code> to determine if support for rvalue
+references is enabled.</p>
+</div>
+<div class="section" id="c-11-static-assert">
+<h4>C++11 <code class="docutils literal"><span class="pre">static_assert()</span></code><a class="headerlink" href="#c-11-static-assert" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_static_assert)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_static_assert)</span></code> to determine if support for compile-time
+assertions using <code class="docutils literal"><span class="pre">static_assert</span></code> is enabled.</p>
+</div>
+<div class="section" id="c-11-thread-local">
+<h4>C++11 <code class="docutils literal"><span class="pre">thread_local</span></code><a class="headerlink" href="#c-11-thread-local" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_thread_local)</span></code> to determine if support for
+<code class="docutils literal"><span class="pre">thread_local</span></code> variables is enabled.</p>
+</div>
+<div class="section" id="c-11-type-inference">
+<h4>C++11 type inference<a class="headerlink" href="#c-11-type-inference" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_auto_type)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(cxx_auto_type)</span></code> to
+determine C++11 type inference is supported using the <code class="docutils literal"><span class="pre">auto</span></code> specifier.  If
+this is disabled, <code class="docutils literal"><span class="pre">auto</span></code> will instead be a storage class specifier, as in C
+or C++98.</p>
+</div>
+<div class="section" id="c-11-strongly-typed-enumerations">
+<h4>C++11 strongly typed enumerations<a class="headerlink" href="#c-11-strongly-typed-enumerations" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_strong_enums)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_strong_enums)</span></code> to determine if support for strongly
+typed, scoped enumerations is enabled.</p>
+</div>
+<div class="section" id="c-11-trailing-return-type">
+<h4>C++11 trailing return type<a class="headerlink" href="#c-11-trailing-return-type" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_trailing_return)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_trailing_return)</span></code> to determine if support for the
+alternate function declaration syntax with trailing return type is enabled.</p>
+</div>
+<div class="section" id="c-11-unicode-string-literals">
+<h4>C++11 Unicode string literals<a class="headerlink" href="#c-11-unicode-string-literals" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_unicode_literals)</span></code> to determine if support for Unicode
+string literals is enabled.</p>
+</div>
+<div class="section" id="c-11-unrestricted-unions">
+<h4>C++11 unrestricted unions<a class="headerlink" href="#c-11-unrestricted-unions" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_unrestricted_unions)</span></code> to determine if support for
+unrestricted unions is enabled.</p>
+</div>
+<div class="section" id="c-11-user-defined-literals">
+<h4>C++11 user-defined literals<a class="headerlink" href="#c-11-user-defined-literals" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_user_literals)</span></code> to determine if support for
+user-defined literals is enabled.</p>
+</div>
+<div class="section" id="c-11-variadic-templates">
+<h4>C++11 variadic templates<a class="headerlink" href="#c-11-variadic-templates" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_variadic_templates)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_variadic_templates)</span></code> to determine if support for
+variadic templates is enabled.</p>
+</div>
+</div>
+<div class="section" id="c-1y">
+<h3>C++1y<a class="headerlink" href="#c-1y" title="Permalink to this headline">¶</a></h3>
+<p>The features listed below are part of the committee draft for the C++1y
+standard.  As a result, all these features are enabled with the <code class="docutils literal"><span class="pre">-std=c++1y</span></code>
+or <code class="docutils literal"><span class="pre">-std=gnu++1y</span></code> option when compiling C++ code.</p>
+<div class="section" id="c-1y-binary-literals">
+<h4>C++1y binary literals<a class="headerlink" href="#c-1y-binary-literals" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_binary_literals)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_binary_literals)</span></code> to determine whether
+binary literals (for instance, <code class="docutils literal"><span class="pre">0b10010</span></code>) are recognized. Clang supports this
+feature as an extension in all language modes.</p>
+</div>
+<div class="section" id="c-1y-contextual-conversions">
+<h4>C++1y contextual conversions<a class="headerlink" href="#c-1y-contextual-conversions" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_contextual_conversions)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_contextual_conversions)</span></code> to determine if the C++1y rules
+are used when performing an implicit conversion for an array bound in a
+<em>new-expression</em>, the operand of a <em>delete-expression</em>, an integral constant
+expression, or a condition in a <code class="docutils literal"><span class="pre">switch</span></code> statement.</p>
+</div>
+<div class="section" id="c-1y-decltype-auto">
+<h4>C++1y decltype(auto)<a class="headerlink" href="#c-1y-decltype-auto" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_decltype_auto)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_decltype_auto)</span></code> to determine if support
+for the <code class="docutils literal"><span class="pre">decltype(auto)</span></code> placeholder type is enabled.</p>
+</div>
+<div class="section" id="c-1y-default-initializers-for-aggregates">
+<h4>C++1y default initializers for aggregates<a class="headerlink" href="#c-1y-default-initializers-for-aggregates" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_aggregate_nsdmi)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_aggregate_nsdmi)</span></code> to determine if support
+for default initializers in aggregate members is enabled.</p>
+</div>
+<div class="section" id="c-1y-digit-separators">
+<h4>C++1y digit separators<a class="headerlink" href="#c-1y-digit-separators" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__cpp_digit_separators</span></code> to determine if support for digit separators
+using single quotes (for instance, <code class="docutils literal"><span class="pre">10'000</span></code>) is enabled. At this time, there
+is no corresponding <code class="docutils literal"><span class="pre">__has_feature</span></code> name</p>
+</div>
+<div class="section" id="c-1y-generalized-lambda-capture">
+<h4>C++1y generalized lambda capture<a class="headerlink" href="#c-1y-generalized-lambda-capture" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_init_captures)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_init_captures)</span></code> to determine if support for
+lambda captures with explicit initializers is enabled
+(for instance, <code class="docutils literal"><span class="pre">[n(0)]</span> <span class="pre">{</span> <span class="pre">return</span> <span class="pre">++n;</span> <span class="pre">}</span></code>).</p>
+</div>
+<div class="section" id="c-1y-generic-lambdas">
+<h4>C++1y generic lambdas<a class="headerlink" href="#c-1y-generic-lambdas" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_generic_lambdas)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_generic_lambdas)</span></code> to determine if support for generic
+(polymorphic) lambdas is enabled
+(for instance, <code class="docutils literal"><span class="pre">[]</span> <span class="pre">(auto</span> <span class="pre">x)</span> <span class="pre">{</span> <span class="pre">return</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">1;</span> <span class="pre">}</span></code>).</p>
+</div>
+<div class="section" id="c-1y-relaxed-constexpr">
+<h4>C++1y relaxed constexpr<a class="headerlink" href="#c-1y-relaxed-constexpr" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_relaxed_constexpr)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_relaxed_constexpr)</span></code> to determine if variable
+declarations, local variable modification, and control flow constructs
+are permitted in <code class="docutils literal"><span class="pre">constexpr</span></code> functions.</p>
+</div>
+<div class="section" id="c-1y-return-type-deduction">
+<h4>C++1y return type deduction<a class="headerlink" href="#c-1y-return-type-deduction" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_return_type_deduction)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_return_type_deduction)</span></code> to determine if support
+for return type deduction for functions (using <code class="docutils literal"><span class="pre">auto</span></code> as a return type)
+is enabled.</p>
+</div>
+<div class="section" id="c-1y-runtime-sized-arrays">
+<h4>C++1y runtime-sized arrays<a class="headerlink" href="#c-1y-runtime-sized-arrays" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_runtime_array)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_runtime_array)</span></code> to determine if support
+for arrays of runtime bound (a restricted form of variable-length arrays)
+is enabled.
+Clang&#8217;s implementation of this feature is incomplete.</p>
+</div>
+<div class="section" id="c-1y-variable-templates">
+<h4>C++1y variable templates<a class="headerlink" href="#c-1y-variable-templates" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(cxx_variable_templates)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(cxx_variable_templates)</span></code> to determine if support for
+templated variable declarations is enabled.</p>
+</div>
+</div>
+<div class="section" id="c11">
+<h3>C11<a class="headerlink" href="#c11" title="Permalink to this headline">¶</a></h3>
+<p>The features listed below are part of the C11 standard.  As a result, all these
+features are enabled with the <code class="docutils literal"><span class="pre">-std=c11</span></code> or <code class="docutils literal"><span class="pre">-std=gnu11</span></code> option when
+compiling C code.  Additionally, because these features are all
+backward-compatible, they are available as extensions in all language modes.</p>
+<div class="section" id="c11-alignment-specifiers">
+<h4>C11 alignment specifiers<a class="headerlink" href="#c11-alignment-specifiers" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(c_alignas)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(c_alignas)</span></code> to determine
+if support for alignment specifiers using <code class="docutils literal"><span class="pre">_Alignas</span></code> is enabled.</p>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(c_alignof)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(c_alignof)</span></code> to determine
+if support for the <code class="docutils literal"><span class="pre">_Alignof</span></code> keyword is enabled.</p>
+</div>
+<div class="section" id="c11-atomic-operations">
+<h4>C11 atomic operations<a class="headerlink" href="#c11-atomic-operations" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(c_atomic)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(c_atomic)</span></code> to determine
+if support for atomic types using <code class="docutils literal"><span class="pre">_Atomic</span></code> is enabled.  Clang also provides
+<a class="reference internal" href="#langext-c11-atomic"><span>a set of builtins</span></a> which can be used to implement
+the <code class="docutils literal"><span class="pre">&lt;stdatomic.h&gt;</span></code> operations on <code class="docutils literal"><span class="pre">_Atomic</span></code> types. Use
+<code class="docutils literal"><span class="pre">__has_include(&lt;stdatomic.h&gt;)</span></code> to determine if C11&#8217;s <code class="docutils literal"><span class="pre">&lt;stdatomic.h&gt;</span></code> header
+is available.</p>
+<p>Clang will use the system&#8217;s <code class="docutils literal"><span class="pre">&lt;stdatomic.h&gt;</span></code> header when one is available, and
+will otherwise use its own. When using its own, implementations of the atomic
+operations are provided as macros. In the cases where C11 also requires a real
+function, this header provides only the declaration of that function (along
+with a shadowing macro implementation), and you must link to a library which
+provides a definition of the function if you use it instead of the macro.</p>
+</div>
+<div class="section" id="c11-generic-selections">
+<h4>C11 generic selections<a class="headerlink" href="#c11-generic-selections" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(c_generic_selections)</span></code> or
+<code class="docutils literal"><span class="pre">__has_extension(c_generic_selections)</span></code> to determine if support for generic
+selections is enabled.</p>
+<p>As an extension, the C11 generic selection expression is available in all
+languages supported by Clang.  The syntax is the same as that given in the C11
+standard.</p>
+<p>In C, type compatibility is decided according to the rules given in the
+appropriate standard, but in C++, which lacks the type compatibility rules used
+in C, types are considered compatible only if they are equivalent.</p>
+</div>
+<div class="section" id="c11-static-assert">
+<h4>C11 <code class="docutils literal"><span class="pre">_Static_assert()</span></code><a class="headerlink" href="#c11-static-assert" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(c_static_assert)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(c_static_assert)</span></code>
+to determine if support for compile-time assertions using <code class="docutils literal"><span class="pre">_Static_assert</span></code> is
+enabled.</p>
+</div>
+<div class="section" id="c11-thread-local">
+<h4>C11 <code class="docutils literal"><span class="pre">_Thread_local</span></code><a class="headerlink" href="#c11-thread-local" title="Permalink to this headline">¶</a></h4>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(c_thread_local)</span></code> or <code class="docutils literal"><span class="pre">__has_extension(c_thread_local)</span></code>
+to determine if support for <code class="docutils literal"><span class="pre">_Thread_local</span></code> variables is enabled.</p>
+</div>
+</div>
+<div class="section" id="modules">
+<h3>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h3>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(modules)</span></code> to determine if Modules have been enabled.
+For example, compiling code with <code class="docutils literal"><span class="pre">-fmodules</span></code> enables the use of Modules.</p>
+<p>More information could be found <a class="reference external" href="http://clang.llvm.org/docs/Modules.html">here</a>.</p>
+</div>
+</div>
+<div class="section" id="checks-for-type-trait-primitives">
+<h2><a class="toc-backref" href="#id10">Checks for Type Trait Primitives</a><a class="headerlink" href="#checks-for-type-trait-primitives" title="Permalink to this headline">¶</a></h2>
+<p>Type trait primitives are special builtin constant expressions that can be used
+by the standard C++ library to facilitate or simplify the implementation of
+user-facing type traits in the &lt;type_traits&gt; header.</p>
+<p>They are not intended to be used directly by user code because they are
+implementation-defined and subject to change &#8211; as such they&#8217;re tied closely to
+the supported set of system headers, currently:</p>
+<ul class="simple">
+<li>LLVM&#8217;s own libc++</li>
+<li>GNU libstdc++</li>
+<li>The Microsoft standard C++ library</li>
+</ul>
+<p>Clang supports the <a class="reference external" href="http://gcc.gnu.org/onlinedocs/gcc/Type-Traits.html">GNU C++ type traits</a> and a subset of the
+<a class="reference external" href="http://msdn.microsoft.com/en-us/library/ms177194(v=VS.100).aspx">Microsoft Visual C++ Type traits</a>.</p>
+<p>Feature detection is supported only for some of the primitives at present. User
+code should not use these checks because they bear no direct relation to the
+actual set of type traits supported by the C++ standard library.</p>
+<p>For type trait <code class="docutils literal"><span class="pre">__X</span></code>, <code class="docutils literal"><span class="pre">__has_extension(X)</span></code> indicates the presence of the
+type trait primitive in the compiler. A simplistic usage example as might be
+seen in standard C++ headers follows:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#if __has_extension(is_convertible_to)</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">From</span><span class="p">,</span> <span class="k">typename</span> <span class="n">To</span><span class="o">&gt;</span>
+<span class="k">struct</span> <span class="n">is_convertible_to</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="k">const</span> <span class="kt">bool</span> <span class="n">value</span> <span class="o">=</span> <span class="n">__is_convertible_to</span><span class="p">(</span><span class="n">From</span><span class="p">,</span> <span class="n">To</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="cp">#else</span>
+<span class="c1">// Emulate type trait for compatibility with other compilers.</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>The following type trait primitives are supported by Clang:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">__has_nothrow_assign</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__has_nothrow_copy</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__has_nothrow_constructor</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__has_trivial_assign</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__has_trivial_copy</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__has_trivial_constructor</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__has_trivial_destructor</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__has_virtual_destructor</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_abstract</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_base_of</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_class</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_convertible_to</span></code> (Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_empty</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_enum</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_interface_class</span></code> (Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_pod</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_polymorphic</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_union</span></code> (GNU, Microsoft)</li>
+<li><code class="docutils literal"><span class="pre">__is_literal(type)</span></code>: Determines whether the given type is a literal type</li>
+<li><code class="docutils literal"><span class="pre">__is_final</span></code>: Determines whether the given type is declared with a
+<code class="docutils literal"><span class="pre">final</span></code> class-virt-specifier.</li>
+<li><code class="docutils literal"><span class="pre">__underlying_type(type)</span></code>: Retrieves the underlying type for a given
+<code class="docutils literal"><span class="pre">enum</span></code> type.  This trait is required to implement the C++11 standard
+library.</li>
+<li><code class="docutils literal"><span class="pre">__is_trivially_assignable(totype,</span> <span class="pre">fromtype)</span></code>: Determines whether a value
+of type <code class="docutils literal"><span class="pre">totype</span></code> can be assigned to from a value of type <code class="docutils literal"><span class="pre">fromtype</span></code> such
+that no non-trivial functions are called as part of that assignment.  This
+trait is required to implement the C++11 standard library.</li>
+<li><code class="docutils literal"><span class="pre">__is_trivially_constructible(type,</span> <span class="pre">argtypes...)</span></code>: Determines whether a
+value of type <code class="docutils literal"><span class="pre">type</span></code> can be direct-initialized with arguments of types
+<code class="docutils literal"><span class="pre">argtypes...</span></code> such that no non-trivial functions are called as part of
+that initialization.  This trait is required to implement the C++11 standard
+library.</li>
+<li><code class="docutils literal"><span class="pre">__is_destructible</span></code> (MSVC 2013): partially implemented</li>
+<li><code class="docutils literal"><span class="pre">__is_nothrow_destructible</span></code> (MSVC 2013): partially implemented</li>
+<li><code class="docutils literal"><span class="pre">__is_nothrow_assignable</span></code> (MSVC 2013, clang)</li>
+<li><code class="docutils literal"><span class="pre">__is_constructible</span></code> (MSVC 2013, clang)</li>
+<li><code class="docutils literal"><span class="pre">__is_nothrow_constructible</span></code> (MSVC 2013, clang)</li>
+</ul>
+</div>
+<div class="section" id="blocks">
+<h2><a class="toc-backref" href="#id11">Blocks</a><a class="headerlink" href="#blocks" title="Permalink to this headline">¶</a></h2>
+<p>The syntax and high level language feature description is in
+<a class="reference internal" href="BlockLanguageSpec.html"><em>BlockLanguageSpec</em></a>. Implementation and ABI details for
+the clang implementation are in <a class="reference internal" href="Block-ABI-Apple.html"><em>Block-ABI-Apple</em></a>.</p>
+<p>Query for this feature with <code class="docutils literal"><span class="pre">__has_extension(blocks)</span></code>.</p>
+</div>
+<div class="section" id="objective-c-features">
+<h2><a class="toc-backref" href="#id12">Objective-C Features</a><a class="headerlink" href="#objective-c-features" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="related-result-types">
+<h3>Related result types<a class="headerlink" href="#related-result-types" title="Permalink to this headline">¶</a></h3>
+<p>According to Cocoa conventions, Objective-C methods with certain names
+(&#8220;<code class="docutils literal"><span class="pre">init</span></code>&#8221;, &#8220;<code class="docutils literal"><span class="pre">alloc</span></code>&#8221;, etc.) always return objects that are an instance of
+the receiving class&#8217;s type.  Such methods are said to have a &#8220;related result
+type&#8221;, meaning that a message send to one of these methods will have the same
+static type as an instance of the receiver class.  For example, given the
+following classes:</p>
+<div class="highlight-objc"><div class="highlight"><pre><span class="k">@interface</span> <span class="bp">NSObject</span>
+<span class="p">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">alloc</span><span class="p">;</span>
+<span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span><span class="p">;</span>
+<span class="k">@end</span>
+
+<span class="k">@interface</span> <span class="bp">NSArray</span> : <span class="bp">NSObject</span>
+<span class="k">@end</span>
+</pre></div>
+</div>
+<p>and this common initialization pattern</p>
+<div class="highlight-objc"><div class="highlight"><pre><span class="bp">NSArray</span> <span class="o">*</span><span class="n">array</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">NSArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</pre></div>
+</div>
+<p>the type of the expression <code class="docutils literal"><span class="pre">[NSArray</span> <span class="pre">alloc]</span></code> is <code class="docutils literal"><span class="pre">NSArray*</span></code> because
+<code class="docutils literal"><span class="pre">alloc</span></code> implicitly has a related result type.  Similarly, the type of the
+expression <code class="docutils literal"><span class="pre">[[NSArray</span> <span class="pre">alloc]</span> <span class="pre">init]</span></code> is <code class="docutils literal"><span class="pre">NSArray*</span></code>, since <code class="docutils literal"><span class="pre">init</span></code> has a
+related result type and its receiver is known to have the type <code class="docutils literal"><span class="pre">NSArray</span> <span class="pre">*</span></code>.
+If neither <code class="docutils literal"><span class="pre">alloc</span></code> nor <code class="docutils literal"><span class="pre">init</span></code> had a related result type, the expressions
+would have had type <code class="docutils literal"><span class="pre">id</span></code>, as declared in the method signature.</p>
+<p>A method with a related result type can be declared by using the type
+<code class="docutils literal"><span class="pre">instancetype</span></code> as its result type.  <code class="docutils literal"><span class="pre">instancetype</span></code> is a contextual keyword
+that is only permitted in the result type of an Objective-C method, e.g.</p>
+<div class="highlight-objc"><div class="highlight"><pre><span class="k">@interface</span> <span class="nc">A</span>
+<span class="p">+</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="nf">constructAnA</span><span class="p">;</span>
+<span class="k">@end</span>
+</pre></div>
+</div>
+<p>The related result type can also be inferred for some methods.  To determine
+whether a method has an inferred related result type, the first word in the
+camel-case selector (e.g., &#8220;<code class="docutils literal"><span class="pre">init</span></code>&#8221; in &#8220;<code class="docutils literal"><span class="pre">initWithObjects</span></code>&#8221;) is considered,
+and the method will have a related result type if its return type is compatible
+with the type of its class and if:</p>
+<ul class="simple">
+<li>the first word is &#8220;<code class="docutils literal"><span class="pre">alloc</span></code>&#8221; or &#8220;<code class="docutils literal"><span class="pre">new</span></code>&#8221;, and the method is a class method,
+or</li>
+<li>the first word is &#8220;<code class="docutils literal"><span class="pre">autorelease</span></code>&#8221;, &#8220;<code class="docutils literal"><span class="pre">init</span></code>&#8221;, &#8220;<code class="docutils literal"><span class="pre">retain</span></code>&#8221;, or &#8220;<code class="docutils literal"><span class="pre">self</span></code>&#8221;,
+and the method is an instance method.</li>
+</ul>
+<p>If a method with a related result type is overridden by a subclass method, the
+subclass method must also return a type that is compatible with the subclass
+type.  For example:</p>
+<div class="highlight-objc"><div class="highlight"><pre><span class="k">@interface</span> <span class="bp">NSString</span> : <span class="bp">NSObject</span>
+<span class="p">-</span> <span class="p">(</span><span class="n">NSUnrelated</span> <span class="o">*</span><span class="p">)</span><span class="nf">init</span><span class="p">;</span> <span class="c1">// incorrect usage: NSUnrelated is not NSString or a superclass of NSString</span>
+<span class="k">@end</span>
+</pre></div>
+</div>
+<p>Related result types only affect the type of a message send or property access
+via the given method.  In all other respects, a method with a related result
+type is treated the same way as method that returns <code class="docutils literal"><span class="pre">id</span></code>.</p>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(objc_instancetype)</span></code> to determine whether the
+<code class="docutils literal"><span class="pre">instancetype</span></code> contextual keyword is available.</p>
+</div>
+<div class="section" id="automatic-reference-counting">
+<h3>Automatic reference counting<a class="headerlink" href="#automatic-reference-counting" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides support for <a class="reference internal" href="AutomaticReferenceCounting.html"><em>automated reference counting</em></a> in Objective-C, which eliminates the need
+for manual <code class="docutils literal"><span class="pre">retain</span></code>/<code class="docutils literal"><span class="pre">release</span></code>/<code class="docutils literal"><span class="pre">autorelease</span></code> message sends.  There are two
+feature macros associated with automatic reference counting:
+<code class="docutils literal"><span class="pre">__has_feature(objc_arc)</span></code> indicates the availability of automated reference
+counting in general, while <code class="docutils literal"><span class="pre">__has_feature(objc_arc_weak)</span></code> indicates that
+automated reference counting also includes support for <code class="docutils literal"><span class="pre">__weak</span></code> pointers to
+Objective-C objects.</p>
+</div>
+<div class="section" id="enumerations-with-a-fixed-underlying-type">
+<span id="objc-fixed-enum"></span><h3>Enumerations with a fixed underlying type<a class="headerlink" href="#enumerations-with-a-fixed-underlying-type" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides support for C++11 enumerations with a fixed underlying type
+within Objective-C.  For example, one can write an enumeration type as:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">enum</span> <span class="o">:</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="p">{</span> <span class="n">Red</span><span class="p">,</span> <span class="n">Green</span><span class="p">,</span> <span class="n">Blue</span> <span class="p">}</span> <span class="n">Color</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This specifies that the underlying type, which is used to store the enumeration
+value, is <code class="docutils literal"><span class="pre">unsigned</span> <span class="pre">char</span></code>.</p>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(objc_fixed_enum)</span></code> to determine whether support for fixed
+underlying types is available in Objective-C.</p>
+</div>
+<div class="section" id="interoperability-with-c-11-lambdas">
+<h3>Interoperability with C++11 lambdas<a class="headerlink" href="#interoperability-with-c-11-lambdas" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides interoperability between C++11 lambdas and blocks-based APIs, by
+permitting a lambda to be implicitly converted to a block pointer with the
+corresponding signature.  For example, consider an API such as <code class="docutils literal"><span class="pre">NSArray</span></code>&#8216;s
+array-sorting method:</p>
+<div class="highlight-objc"><div class="highlight"><pre><span class="p">-</span> <span class="p">(</span><span class="bp">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">sortedArrayUsingComparator:</span><span class="p">(</span><span class="n">NSComparator</span><span class="p">)</span><span class="nv">cmptr</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">NSComparator</span></code> is simply a typedef for the block pointer <code class="docutils literal"><span class="pre">NSComparisonResult</span>
+<span class="pre">(^)(id,</span> <span class="pre">id)</span></code>, and parameters of this type are generally provided with block
+literals as arguments.  However, one can also use a C++11 lambda so long as it
+provides the same signature (in this case, accepting two parameters of type
+<code class="docutils literal"><span class="pre">id</span></code> and returning an <code class="docutils literal"><span class="pre">NSComparisonResult</span></code>):</p>
+<div class="highlight-objc"><div class="highlight"><pre><span class="bp">NSArray</span> <span class="o">*</span><span class="n">array</span> <span class="o">=</span> <span class="l">@[</span><span class="s">@&quot;string 1&quot;</span><span class="p">,</span> <span class="s">@&quot;string 21&quot;</span><span class="p">,</span> <span class="s">@&quot;string 12&quot;</span><span class="p">,</span> <span class="s">@&quot;String 11&quot;</span><span class="p">,</span>
+                   <span class="s">@&quot;String 02&quot;</span><span class="l">]</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">NSStringCompareOptions</span> <span class="n">comparisonOptions</span>
+  <span class="o">=</span> <span class="n">NSCaseInsensitiveSearch</span> <span class="o">|</span> <span class="n">NSNumericSearch</span> <span class="o">|</span>
+    <span class="n">NSWidthInsensitiveSearch</span> <span class="o">|</span> <span class="n">NSForcedOrderingSearch</span><span class="p">;</span>
+<span class="bp">NSLocale</span> <span class="o">*</span><span class="n">currentLocale</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSLocale</span> <span class="n">currentLocale</span><span class="p">];</span>
+<span class="bp">NSArray</span> <span class="o">*</span><span class="n">sorted</span>
+  <span class="o">=</span> <span class="p">[</span><span class="n">array</span> <span class="nl">sortedArrayUsingComparator</span><span class="p">:[</span><span class="o">=</span><span class="p">](</span><span class="kt">id</span> <span class="n">s1</span><span class="p">,</span> <span class="kt">id</span> <span class="n">s2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NSComparisonResult</span> <span class="p">{</span>
+             <span class="n">NSRange</span> <span class="n">string1Range</span> <span class="o">=</span> <span class="n">NSMakeRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="n">s1</span> <span class="n">length</span><span class="p">]);</span>
+             <span class="k">return</span> <span class="p">[</span><span class="n">s1</span> <span class="nl">compare</span><span class="p">:</span><span class="n">s2</span> <span class="nl">options</span><span class="p">:</span><span class="n">comparisonOptions</span>
+             <span class="nl">range</span><span class="p">:</span><span class="n">string1Range</span> <span class="nl">locale</span><span class="p">:</span><span class="n">currentLocale</span><span class="p">];</span>
+     <span class="p">}];</span>
+<span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;sorted: %@&quot;</span><span class="p">,</span> <span class="n">sorted</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This code relies on an implicit conversion from the type of the lambda
+expression (an unnamed, local class type called the <em>closure type</em>) to the
+corresponding block pointer type.  The conversion itself is expressed by a
+conversion operator in that closure type that produces a block pointer with the
+same signature as the lambda itself, e.g.,</p>
+<div class="highlight-objc"><div class="highlight"><pre><span class="n">operator</span> <span class="n">NSComparisonResult</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="kt">id</span><span class="p">,</span> <span class="kt">id</span><span class="p">)()</span> <span class="k">const</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This conversion function returns a new block that simply forwards the two
+parameters to the lambda object (which it captures by copy), then returns the
+result.  The returned block is first copied (with <code class="docutils literal"><span class="pre">Block_copy</span></code>) and then
+autoreleased.  As an optimization, if a lambda expression is immediately
+converted to a block pointer (as in the first example, above), then the block
+is not copied and autoreleased: rather, it is given the same lifetime as a
+block literal written at that point in the program, which avoids the overhead
+of copying a block to the heap in the common case.</p>
+<p>The conversion from a lambda to a block pointer is only available in
+Objective-C++, and not in C++ with blocks, due to its use of Objective-C memory
+management (autorelease).</p>
+</div>
+<div class="section" id="object-literals-and-subscripting">
+<h3>Object Literals and Subscripting<a class="headerlink" href="#object-literals-and-subscripting" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides support for <a class="reference internal" href="ObjectiveCLiterals.html"><em>Object Literals and Subscripting</em></a> in Objective-C, which simplifies common Objective-C
+programming patterns, makes programs more concise, and improves the safety of
+container creation.  There are several feature macros associated with object
+literals and subscripting: <code class="docutils literal"><span class="pre">__has_feature(objc_array_literals)</span></code> tests the
+availability of array literals; <code class="docutils literal"><span class="pre">__has_feature(objc_dictionary_literals)</span></code>
+tests the availability of dictionary literals;
+<code class="docutils literal"><span class="pre">__has_feature(objc_subscripting)</span></code> tests the availability of object
+subscripting.</p>
+</div>
+<div class="section" id="objective-c-autosynthesis-of-properties">
+<h3>Objective-C Autosynthesis of Properties<a class="headerlink" href="#objective-c-autosynthesis-of-properties" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides support for autosynthesis of declared properties.  Using this
+feature, clang provides default synthesis of those properties not declared
+&#64;dynamic and not having user provided backing getter and setter methods.
+<code class="docutils literal"><span class="pre">__has_feature(objc_default_synthesize_properties)</span></code> checks for availability
+of this feature in version of clang being used.</p>
+</div>
+<div class="section" id="objective-c-retaining-behavior-attributes">
+<span id="langext-objc-retain-release"></span><h3>Objective-C retaining behavior attributes<a class="headerlink" href="#objective-c-retaining-behavior-attributes" title="Permalink to this headline">¶</a></h3>
+<p>In Objective-C, functions and methods are generally assumed to follow the
+<a class="reference external" href="http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmRules.html">Cocoa Memory Management</a>
+conventions for ownership of object arguments and
+return values. However, there are exceptions, and so Clang provides attributes
+to allow these exceptions to be documented. This are used by ARC and the
+<a class="reference external" href="http://clang-analyzer.llvm.org">static analyzer</a> Some exceptions may be
+better described using the <code class="docutils literal"><span class="pre">objc_method_family</span></code> attribute instead.</p>
+<p><strong>Usage</strong>: The <code class="docutils literal"><span class="pre">ns_returns_retained</span></code>, <code class="docutils literal"><span class="pre">ns_returns_not_retained</span></code>,
+<code class="docutils literal"><span class="pre">ns_returns_autoreleased</span></code>, <code class="docutils literal"><span class="pre">cf_returns_retained</span></code>, and
+<code class="docutils literal"><span class="pre">cf_returns_not_retained</span></code> attributes can be placed on methods and functions
+that return Objective-C or CoreFoundation objects. They are commonly placed at
+the end of a function prototype or method declaration:</p>
+<div class="highlight-objc"><div class="highlight"><pre><span class="kt">id</span> <span class="nf">foo</span><span class="p">()</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">ns_returns_retained</span><span class="p">));</span>
+
+<span class="p">-</span> <span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">bar:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">x</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">ns_returns_retained</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">*_returns_retained</span></code> attributes specify that the returned object has a +1
+retain count.  The <code class="docutils literal"><span class="pre">*_returns_not_retained</span></code> attributes specify that the return
+object has a +0 retain count, even if the normal convention for its selector
+would be +1.  <code class="docutils literal"><span class="pre">ns_returns_autoreleased</span></code> specifies that the returned object is
++0, but is guaranteed to live at least as long as the next flush of an
+autorelease pool.</p>
+<p><strong>Usage</strong>: The <code class="docutils literal"><span class="pre">ns_consumed</span></code> and <code class="docutils literal"><span class="pre">cf_consumed</span></code> attributes can be placed on
+an parameter declaration; they specify that the argument is expected to have a
++1 retain count, which will be balanced in some way by the function or method.
+The <code class="docutils literal"><span class="pre">ns_consumes_self</span></code> attribute can only be placed on an Objective-C
+method; it specifies that the method expects its <code class="docutils literal"><span class="pre">self</span></code> parameter to have a
++1 retain count, which it will balance in some way.</p>
+<div class="highlight-objc"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="n">__attribute__</span><span class="p">((</span><span class="n">ns_consumed</span><span class="p">))</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">string</span><span class="p">);</span>
+
+<span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">bar</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">ns_consumes_self</span><span class="p">));</span>
+<span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">baz:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="nv">__attribute__</span><span class="p">((</span><span class="n">ns_consumed</span><span class="p">))</span> <span class="nv">x</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Further examples of these attributes are available in the static analyzer&#8217;s <a class="reference external" href="http://clang-analyzer.llvm.org/annotations.html#cocoa_mem">list of annotations for analysis</a>.</p>
+<p>Query for these features with <code class="docutils literal"><span class="pre">__has_attribute(ns_consumed)</span></code>,
+<code class="docutils literal"><span class="pre">__has_attribute(ns_returns_retained)</span></code>, etc.</p>
+</div>
+<div class="section" id="objective-c-abi-protocol-qualifier-mangling-of-parameters">
+<h3>Objective-C++ ABI: protocol-qualifier mangling of parameters<a class="headerlink" href="#objective-c-abi-protocol-qualifier-mangling-of-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Starting with LLVM 3.4, Clang produces a new mangling for parameters whose
+type is a qualified-<code class="docutils literal"><span class="pre">id</span></code> (e.g., <code class="docutils literal"><span class="pre">id&lt;Foo&gt;</span></code>).  This mangling allows such
+parameters to be differentiated from those with the regular unqualified <code class="docutils literal"><span class="pre">id</span></code>
+type.</p>
+<p>This was a non-backward compatible mangling change to the ABI.  This change
+allows proper overloading, and also prevents mangling conflicts with template
+parameters of protocol-qualified type.</p>
+<p>Query the presence of this new mangling with
+<code class="docutils literal"><span class="pre">__has_feature(objc_protocol_qualifier_mangling)</span></code>.</p>
+</div>
+</div>
+<div class="section" id="initializer-lists-for-complex-numbers-in-c">
+<span id="langext-overloading"></span><h2><a class="toc-backref" href="#id13">Initializer lists for complex numbers in C</a><a class="headerlink" href="#initializer-lists-for-complex-numbers-in-c" title="Permalink to this headline">¶</a></h2>
+<p>clang supports an extension which allows the following in C:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &lt;math.h&gt;</span>
+<span class="cp">#include &lt;complex.h&gt;</span>
+<span class="n">complex</span> <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="p">{</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="n">INFINITY</span> <span class="p">};</span> <span class="c1">// Init to (1, Inf)</span>
+</pre></div>
+</div>
+<p>This construct is useful because there is no way to separately initialize the
+real and imaginary parts of a complex variable in standard C, given that clang
+does not support <code class="docutils literal"><span class="pre">_Imaginary</span></code>.  (Clang also supports the <code class="docutils literal"><span class="pre">__real__</span></code> and
+<code class="docutils literal"><span class="pre">__imag__</span></code> extensions from gcc, which help in some cases, but are not usable
+in static initializers.)</p>
+<p>Note that this extension does not allow eliding the braces; the meaning of the
+following two lines is different:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">complex</span> <span class="kt">float</span> <span class="n">x</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="p">{</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">1.0f</span> <span class="p">}</span> <span class="p">};</span> <span class="c1">// [0] = (1, 1)</span>
+<span class="n">complex</span> <span class="kt">float</span> <span class="n">x</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="mf">1.0f</span> <span class="p">};</span> <span class="c1">// [0] = (1, 0), [1] = (1, 0)</span>
+</pre></div>
+</div>
+<p>This extension also works in C++ mode, as far as that goes, but does not apply
+to the C++ <code class="docutils literal"><span class="pre">std::complex</span></code>.  (In C++11, list initialization allows the same
+syntax to be used with <code class="docutils literal"><span class="pre">std::complex</span></code> with the same meaning.)</p>
+</div>
+<div class="section" id="builtin-functions">
+<h2><a class="toc-backref" href="#id14">Builtin Functions</a><a class="headerlink" href="#builtin-functions" title="Permalink to this headline">¶</a></h2>
+<p>Clang supports a number of builtin library functions with the same syntax as
+GCC, including things like <code class="docutils literal"><span class="pre">__builtin_nan</span></code>, <code class="docutils literal"><span class="pre">__builtin_constant_p</span></code>,
+<code class="docutils literal"><span class="pre">__builtin_choose_expr</span></code>, <code class="docutils literal"><span class="pre">__builtin_types_compatible_p</span></code>,
+<code class="docutils literal"><span class="pre">__builtin_assume_aligned</span></code>, <code class="docutils literal"><span class="pre">__sync_fetch_and_add</span></code>, etc.  In addition to
+the GCC builtins, Clang supports a number of builtins that GCC does not, which
+are listed here.</p>
+<p>Please note that Clang does not and will not support all of the GCC builtins
+for vector operations.  Instead of using builtins, you should use the functions
+defined in target-specific header files like <code class="docutils literal"><span class="pre">&lt;xmmintrin.h&gt;</span></code>, which define
+portable wrappers for these.  Many of the Clang versions of these functions are
+implemented directly in terms of <a class="reference internal" href="#langext-vectors"><span>extended vector support</span></a> instead of builtins, in order to reduce the number of
+builtins that we need to implement.</p>
+<div class="section" id="builtin-assume">
+<h3><code class="docutils literal"><span class="pre">__builtin_assume</span></code><a class="headerlink" href="#builtin-assume" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">__builtin_assume</span></code> is used to provide the optimizer with a boolean
+invariant that is defined to be true.</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">__builtin_assume</span><span class="p">(</span><span class="kt">bool</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example of Use</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="kt">int</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">__builtin_assume</span><span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">);</span>
+
+  <span class="c1">// The optimizer may short-circuit this check using the invariant.</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">do_something</span><span class="p">();</span>
+
+  <span class="k">return</span> <span class="n">do_something_else</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Description</strong>:</p>
+<p>The boolean argument to this function is defined to be true. The optimizer may
+analyze the form of the expression provided as the argument and deduce from
+that information used to optimize the program. If the condition is violated
+during execution, the behavior is undefined. The argument itself is never
+evaluated, so any side effects of the expression will be discarded.</p>
+<p>Query for this feature with <code class="docutils literal"><span class="pre">__has_builtin(__builtin_assume)</span></code>.</p>
+</div>
+<div class="section" id="builtin-readcyclecounter">
+<h3><code class="docutils literal"><span class="pre">__builtin_readcyclecounter</span></code><a class="headerlink" href="#builtin-readcyclecounter" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">__builtin_readcyclecounter</span></code> is used to access the cycle counter register (or
+a similar low-latency, high-accuracy clock) on those targets that support it.</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">__builtin_readcyclecounter</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Example of Use</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">t0</span> <span class="o">=</span> <span class="n">__builtin_readcyclecounter</span><span class="p">();</span>
+<span class="n">do_something</span><span class="p">();</span>
+<span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">t1</span> <span class="o">=</span> <span class="n">__builtin_readcyclecounter</span><span class="p">();</span>
+<span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">cycles_to_do_something</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span><span class="p">;</span> <span class="c1">// assuming no overflow</span>
+</pre></div>
+</div>
+<p><strong>Description</strong>:</p>
+<p>The <code class="docutils literal"><span class="pre">__builtin_readcyclecounter()</span></code> builtin returns the cycle counter value,
+which may be either global or process/thread-specific depending on the target.
+As the backing counters often overflow quickly (on the order of seconds) this
+should only be used for timing small intervals.  When not supported by the
+target, the return value is always zero.  This builtin takes no arguments and
+produces an unsigned long long result.</p>
+<p>Query for this feature with <code class="docutils literal"><span class="pre">__has_builtin(__builtin_readcyclecounter)</span></code>. Note
+that even if present, its use may depend on run-time privilege or other OS
+controlled state.</p>
+</div>
+<div class="section" id="builtin-shufflevector">
+<span id="langext-builtin-shufflevector"></span><h3><code class="docutils literal"><span class="pre">__builtin_shufflevector</span></code><a class="headerlink" href="#builtin-shufflevector" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">__builtin_shufflevector</span></code> is used to express generic vector
+permutation/shuffle/swizzle operations.  This builtin is also very important
+for the implementation of various target-specific header files like
+<code class="docutils literal"><span class="pre">&lt;xmmintrin.h&gt;</span></code>.</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">__builtin_shufflevector</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">,</span> <span class="n">index1</span><span class="p">,</span> <span class="n">index2</span><span class="p">,</span> <span class="p">...)</span>
+</pre></div>
+</div>
+<p><strong>Examples</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// identity operation - return 4-element vector v1.</span>
+<span class="n">__builtin_shufflevector</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="c1">// &quot;Splat&quot; element 0 of V1 into a 4-element result.</span>
+<span class="n">__builtin_shufflevector</span><span class="p">(</span><span class="n">V1</span><span class="p">,</span> <span class="n">V1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1">// Reverse 4-element vector V1.</span>
+<span class="n">__builtin_shufflevector</span><span class="p">(</span><span class="n">V1</span><span class="p">,</span> <span class="n">V1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1">// Concatenate every other element of 4-element vectors V1 and V2.</span>
+<span class="n">__builtin_shufflevector</span><span class="p">(</span><span class="n">V1</span><span class="p">,</span> <span class="n">V2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+<span class="c1">// Concatenate every other element of 8-element vectors V1 and V2.</span>
+<span class="n">__builtin_shufflevector</span><span class="p">(</span><span class="n">V1</span><span class="p">,</span> <span class="n">V2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
+
+<span class="c1">// Shuffle v1 with some elements being undefined</span>
+<span class="n">__builtin_shufflevector</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Description</strong>:</p>
+<p>The first two arguments to <code class="docutils literal"><span class="pre">__builtin_shufflevector</span></code> are vectors that have
+the same element type.  The remaining arguments are a list of integers that
+specify the elements indices of the first two vectors that should be extracted
+and returned in a new vector.  These element indices are numbered sequentially
+starting with the first vector, continuing into the second vector.  Thus, if
+<code class="docutils literal"><span class="pre">vec1</span></code> is a 4-element vector, index 5 would refer to the second element of
+<code class="docutils literal"><span class="pre">vec2</span></code>. An index of -1 can be used to indicate that the corresponding element
+in the returned vector is a don&#8217;t care and can be optimized by the backend.</p>
+<p>The result of <code class="docutils literal"><span class="pre">__builtin_shufflevector</span></code> is a vector with the same element
+type as <code class="docutils literal"><span class="pre">vec1</span></code>/<code class="docutils literal"><span class="pre">vec2</span></code> but that has an element count equal to the number of
+indices specified.</p>
+<p>Query for this feature with <code class="docutils literal"><span class="pre">__has_builtin(__builtin_shufflevector)</span></code>.</p>
+</div>
+<div class="section" id="builtin-convertvector">
+<span id="langext-builtin-convertvector"></span><h3><code class="docutils literal"><span class="pre">__builtin_convertvector</span></code><a class="headerlink" href="#builtin-convertvector" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">__builtin_convertvector</span></code> is used to express generic vector
+type-conversion operations. The input vector and the output vector
+type must have the same number of elements.</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">__builtin_convertvector</span><span class="p">(</span><span class="n">src_vec</span><span class="p">,</span> <span class="n">dst_vec_type</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Examples</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">typedef</span> <span class="kt">double</span> <span class="n">vector4double</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">__vector_size__</span><span class="p">(</span><span class="mi">32</span><span class="p">)));</span>
+<span class="k">typedef</span> <span class="kt">float</span>  <span class="n">vector4float</span>  <span class="nf">__attribute__</span><span class="p">((</span><span class="n">__vector_size__</span><span class="p">(</span><span class="mi">16</span><span class="p">)));</span>
+<span class="k">typedef</span> <span class="kt">short</span>  <span class="n">vector4short</span>  <span class="nf">__attribute__</span><span class="p">((</span><span class="n">__vector_size__</span><span class="p">(</span><span class="mi">8</span><span class="p">)));</span>
+<span class="n">vector4float</span> <span class="n">vf</span><span class="p">;</span> <span class="n">vector4short</span> <span class="n">vs</span><span class="p">;</span>
+
+<span class="c1">// convert from a vector of 4 floats to a vector of 4 doubles.</span>
+<span class="n">__builtin_convertvector</span><span class="p">(</span><span class="n">vf</span><span class="p">,</span> <span class="n">vector4double</span><span class="p">)</span>
+<span class="c1">// equivalent to:</span>
+<span class="p">(</span><span class="n">vector4double</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span> <span class="n">vf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span> <span class="n">vf</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span> <span class="n">vf</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span> <span class="n">vf</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="p">}</span>
+
+<span class="c1">// convert from a vector of 4 shorts to a vector of 4 floats.</span>
+<span class="n">__builtin_convertvector</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span> <span class="n">vector4float</span><span class="p">)</span>
+<span class="c1">// equivalent to:</span>
+<span class="p">(</span><span class="n">vector4float</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span> <span class="n">vs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span> <span class="n">vs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span> <span class="n">vs</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span> <span class="n">vs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Description</strong>:</p>
+<p>The first argument to <code class="docutils literal"><span class="pre">__builtin_convertvector</span></code> is a vector, and the second
+argument is a vector type with the same number of elements as the first
+argument.</p>
+<p>The result of <code class="docutils literal"><span class="pre">__builtin_convertvector</span></code> is a vector with the same element
+type as the second argument, with a value defined in terms of the action of a
+C-style cast applied to each element of the first argument.</p>
+<p>Query for this feature with <code class="docutils literal"><span class="pre">__has_builtin(__builtin_convertvector)</span></code>.</p>
+</div>
+<div class="section" id="builtin-unreachable">
+<h3><code class="docutils literal"><span class="pre">__builtin_unreachable</span></code><a class="headerlink" href="#builtin-unreachable" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">__builtin_unreachable</span></code> is used to indicate that a specific point in the
+program cannot be reached, even if the compiler might otherwise think it can.
+This is useful to improve optimization and eliminates certain warnings.  For
+example, without the <code class="docutils literal"><span class="pre">__builtin_unreachable</span></code> in the example below, the
+compiler assumes that the inline asm can fall through and prints a &#8220;function
+declared &#8216;<code class="docutils literal"><span class="pre">noreturn</span></code>&#8216; should not return&#8221; warning.</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">__builtin_unreachable</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Example of use</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">myabort</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">noreturn</span><span class="p">));</span>
+<span class="kt">void</span> <span class="nf">myabort</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">asm</span><span class="p">(</span><span class="s">&quot;int3&quot;</span><span class="p">);</span>
+  <span class="n">__builtin_unreachable</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Description</strong>:</p>
+<p>The <code class="docutils literal"><span class="pre">__builtin_unreachable()</span></code> builtin has completely undefined behavior.
+Since it has undefined behavior, it is a statement that it is never reached and
+the optimizer can take advantage of this to produce better code.  This builtin
+takes no arguments and produces a void result.</p>
+<p>Query for this feature with <code class="docutils literal"><span class="pre">__has_builtin(__builtin_unreachable)</span></code>.</p>
+</div>
+<div class="section" id="sync-swap">
+<h3><code class="docutils literal"><span class="pre">__sync_swap</span></code><a class="headerlink" href="#sync-swap" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">__sync_swap</span></code> is used to atomically swap integers or pointers in memory.</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">type</span> <span class="n">__sync_swap</span><span class="p">(</span><span class="n">type</span> <span class="o">*</span><span class="n">ptr</span><span class="p">,</span> <span class="n">type</span> <span class="n">value</span><span class="p">,</span> <span class="p">...)</span>
+</pre></div>
+</div>
+<p><strong>Example of Use</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="kt">int</span> <span class="n">old_value</span> <span class="o">=</span> <span class="n">__sync_swap</span><span class="p">(</span><span class="o">&amp;</span><span class="n">value</span><span class="p">,</span> <span class="n">new_value</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Description</strong>:</p>
+<p>The <code class="docutils literal"><span class="pre">__sync_swap()</span></code> builtin extends the existing <code class="docutils literal"><span class="pre">__sync_*()</span></code> family of
+atomic intrinsics to allow code to atomically swap the current value with the
+new value.  More importantly, it helps developers write more efficient and
+correct code by avoiding expensive loops around
+<code class="docutils literal"><span class="pre">__sync_bool_compare_and_swap()</span></code> or relying on the platform specific
+implementation details of <code class="docutils literal"><span class="pre">__sync_lock_test_and_set()</span></code>.  The
+<code class="docutils literal"><span class="pre">__sync_swap()</span></code> builtin is a full barrier.</p>
+</div>
+<div class="section" id="builtin-addressof">
+<h3><code class="docutils literal"><span class="pre">__builtin_addressof</span></code><a class="headerlink" href="#builtin-addressof" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">__builtin_addressof</span></code> performs the functionality of the built-in <code class="docutils literal"><span class="pre">&amp;</span></code>
+operator, ignoring any <code class="docutils literal"><span class="pre">operator&amp;</span></code> overload.  This is useful in constant
+expressions in C++11, where there is no other way to take the address of an
+object that overloads <code class="docutils literal"><span class="pre">operator&amp;</span></code>.</p>
+<p><strong>Example of use</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="k">constexpr</span> <span class="n">T</span> <span class="o">*</span><span class="n">addressof</span><span class="p">(</span><span class="n">T</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">__builtin_addressof</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="builtin-operator-new-and-builtin-operator-delete">
+<h3><code class="docutils literal"><span class="pre">__builtin_operator_new</span></code> and <code class="docutils literal"><span class="pre">__builtin_operator_delete</span></code><a class="headerlink" href="#builtin-operator-new-and-builtin-operator-delete" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">__builtin_operator_new</span></code> allocates memory just like a non-placement non-class
+<em>new-expression</em>. This is exactly like directly calling the normal
+non-placement <code class="docutils literal"><span class="pre">::operator</span> <span class="pre">new</span></code>, except that it allows certain optimizations
+that the C++ standard does not permit for a direct function call to
+<code class="docutils literal"><span class="pre">::operator</span> <span class="pre">new</span></code> (in particular, removing <code class="docutils literal"><span class="pre">new</span></code> / <code class="docutils literal"><span class="pre">delete</span></code> pairs and
+merging allocations).</p>
+<p>Likewise, <code class="docutils literal"><span class="pre">__builtin_operator_delete</span></code> deallocates memory just like a
+non-class <em>delete-expression</em>, and is exactly like directly calling the normal
+<code class="docutils literal"><span class="pre">::operator</span> <span class="pre">delete</span></code>, except that it permits optimizations. Only the unsized
+form of <code class="docutils literal"><span class="pre">__builtin_operator_delete</span></code> is currently available.</p>
+<p>These builtins are intended for use in the implementation of <code class="docutils literal"><span class="pre">std::allocator</span></code>
+and other similar allocation libraries, and are only available in C++.</p>
+</div>
+<div class="section" id="multiprecision-arithmetic-builtins">
+<h3>Multiprecision Arithmetic Builtins<a class="headerlink" href="#multiprecision-arithmetic-builtins" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides a set of builtins which expose multiprecision arithmetic in a
+manner amenable to C. They all have the following form:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">unsigned</span> <span class="n">x</span> <span class="o">=</span> <span class="p">...,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">...,</span> <span class="n">carryin</span> <span class="o">=</span> <span class="p">...,</span> <span class="n">carryout</span><span class="p">;</span>
+<span class="kt">unsigned</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">__builtin_addc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">carryin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">carryout</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Thus one can form a multiprecision addition chain in the following manner:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">unsigned</span> <span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">y</span><span class="p">,</span> <span class="o">*</span><span class="n">z</span><span class="p">,</span> <span class="n">carryin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">carryout</span><span class="p">;</span>
+<span class="n">z</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">__builtin_addc</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">carryin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">carryout</span><span class="p">);</span>
+<span class="n">carryin</span> <span class="o">=</span> <span class="n">carryout</span><span class="p">;</span>
+<span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">__builtin_addc</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">carryin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">carryout</span><span class="p">);</span>
+<span class="n">carryin</span> <span class="o">=</span> <span class="n">carryout</span><span class="p">;</span>
+<span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">__builtin_addc</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">carryin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">carryout</span><span class="p">);</span>
+<span class="n">carryin</span> <span class="o">=</span> <span class="n">carryout</span><span class="p">;</span>
+<span class="n">z</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">__builtin_addc</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">carryin</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">carryout</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The complete list of builtins are:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">unsigned</span> <span class="kt">char</span>      <span class="nf">__builtin_addcb</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">carryin</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">carryout</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">short</span>     <span class="nf">__builtin_addcs</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">carryin</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="n">carryout</span><span class="p">);</span>
+<span class="kt">unsigned</span>           <span class="nf">__builtin_addc</span>  <span class="p">(</span><span class="kt">unsigned</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">carryin</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">carryout</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">long</span>      <span class="nf">__builtin_addcl</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">carryin</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="o">*</span><span class="n">carryout</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="nf">__builtin_addcll</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">carryin</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="o">*</span><span class="n">carryout</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">char</span>      <span class="nf">__builtin_subcb</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">carryin</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">carryout</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">short</span>     <span class="nf">__builtin_subcs</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">carryin</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="n">carryout</span><span class="p">);</span>
+<span class="kt">unsigned</span>           <span class="nf">__builtin_subc</span>  <span class="p">(</span><span class="kt">unsigned</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">carryin</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">carryout</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">long</span>      <span class="nf">__builtin_subcl</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">carryin</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="o">*</span><span class="n">carryout</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="nf">__builtin_subcll</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">carryin</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="o">*</span><span class="n">carryout</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="checked-arithmetic-builtins">
+<h3>Checked Arithmetic Builtins<a class="headerlink" href="#checked-arithmetic-builtins" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides a set of builtins that implement checked arithmetic for security
+critical applications in a manner that is fast and easily expressable in C. As
+an example of their usage:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">errorcode_t</span> <span class="nf">security_critical_application</span><span class="p">(...)</span> <span class="p">{</span>
+  <span class="kt">unsigned</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">result</span><span class="p">;</span>
+  <span class="p">...</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">__builtin_umul_overflow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">result</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">kErrorCodeHackers</span><span class="p">;</span>
+  <span class="p">...</span>
+  <span class="n">use_multiply</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A complete enumeration of the builtins are:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">bool</span> <span class="nf">__builtin_uadd_overflow</span>  <span class="p">(</span><span class="kt">unsigned</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_uaddl_overflow</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_uaddll_overflow</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_usub_overflow</span>  <span class="p">(</span><span class="kt">unsigned</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">diff</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_usubl_overflow</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="o">*</span><span class="n">diff</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_usubll_overflow</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="o">*</span><span class="n">diff</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_umul_overflow</span>  <span class="p">(</span><span class="kt">unsigned</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">prod</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_umull_overflow</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="o">*</span><span class="n">prod</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_umulll_overflow</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="o">*</span><span class="n">prod</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_sadd_overflow</span>  <span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_saddl_overflow</span> <span class="p">(</span><span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">long</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_saddll_overflow</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">long</span> <span class="kt">long</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_ssub_overflow</span>  <span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">diff</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_ssubl_overflow</span> <span class="p">(</span><span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">long</span> <span class="o">*</span><span class="n">diff</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_ssubll_overflow</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">long</span> <span class="kt">long</span> <span class="o">*</span><span class="n">diff</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_smul_overflow</span>  <span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">prod</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_smull_overflow</span> <span class="p">(</span><span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">long</span> <span class="o">*</span><span class="n">prod</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_smulll_overflow</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">long</span> <span class="kt">long</span> <span class="o">*</span><span class="n">prod</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="c11-atomic-builtins">
+<span id="langext-c11-atomic"></span><h3>__c11_atomic builtins<a class="headerlink" href="#c11-atomic-builtins" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides a set of builtins which are intended to be used to implement
+C11&#8217;s <code class="docutils literal"><span class="pre">&lt;stdatomic.h&gt;</span></code> header.  These builtins provide the semantics of the
+<code class="docutils literal"><span class="pre">_explicit</span></code> form of the corresponding C11 operation, and are named with a
+<code class="docutils literal"><span class="pre">__c11_</span></code> prefix.  The supported operations, and the differences from
+the corresponding C11 operations, are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">__c11_atomic_init</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_thread_fence</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_signal_fence</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_is_lock_free</span></code> (The argument is the size of the
+<code class="docutils literal"><span class="pre">_Atomic(...)</span></code> object, instead of its address)</li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_store</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_load</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_exchange</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_compare_exchange_strong</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_compare_exchange_weak</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_fetch_add</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_fetch_sub</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_fetch_and</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_fetch_or</span></code></li>
+<li><code class="docutils literal"><span class="pre">__c11_atomic_fetch_xor</span></code></li>
+</ul>
+<p>The macros <code class="docutils literal"><span class="pre">__ATOMIC_RELAXED</span></code>, <code class="docutils literal"><span class="pre">__ATOMIC_CONSUME</span></code>, <code class="docutils literal"><span class="pre">__ATOMIC_ACQUIRE</span></code>,
+<code class="docutils literal"><span class="pre">__ATOMIC_RELEASE</span></code>, <code class="docutils literal"><span class="pre">__ATOMIC_ACQ_REL</span></code>, and <code class="docutils literal"><span class="pre">__ATOMIC_SEQ_CST</span></code> are
+provided, with values corresponding to the enumerators of C11&#8217;s
+<code class="docutils literal"><span class="pre">memory_order</span></code> enumeration.</p>
+</div>
+<div class="section" id="low-level-arm-exclusive-memory-builtins">
+<h3>Low-level ARM exclusive memory builtins<a class="headerlink" href="#low-level-arm-exclusive-memory-builtins" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides overloaded builtins giving direct access to the three key ARM
+instructions for implementing atomic operations.</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="n">T</span> <span class="nf">__builtin_arm_ldrex</span><span class="p">(</span><span class="k">const</span> <span class="k">volatile</span> <span class="n">T</span> <span class="o">*</span><span class="n">addr</span><span class="p">);</span>
+<span class="n">T</span> <span class="nf">__builtin_arm_ldaex</span><span class="p">(</span><span class="k">const</span> <span class="k">volatile</span> <span class="n">T</span> <span class="o">*</span><span class="n">addr</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">__builtin_arm_strex</span><span class="p">(</span><span class="n">T</span> <span class="n">val</span><span class="p">,</span> <span class="k">volatile</span> <span class="n">T</span> <span class="o">*</span><span class="n">addr</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">__builtin_arm_stlex</span><span class="p">(</span><span class="n">T</span> <span class="n">val</span><span class="p">,</span> <span class="k">volatile</span> <span class="n">T</span> <span class="o">*</span><span class="n">addr</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">__builtin_arm_clrex</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The types <code class="docutils literal"><span class="pre">T</span></code> currently supported are:
+* Integer types with width at most 64 bits (or 128 bits on AArch64).
+* Floating-point types
+* Pointer types.</p>
+<p>Note that the compiler does not guarantee it will not insert stores which clear
+the exclusive monitor in between an <code class="docutils literal"><span class="pre">ldrex</span></code> type operation and its paired
+<code class="docutils literal"><span class="pre">strex</span></code>. In practice this is only usually a risk when the extra store is on
+the same cache line as the variable being modified and Clang will only insert
+stack stores on its own, so it is best not to use these operations on variables
+with automatic storage duration.</p>
+<p>Also, loads and stores may be implicit in code written between the <code class="docutils literal"><span class="pre">ldrex</span></code> and
+<code class="docutils literal"><span class="pre">strex</span></code>. Clang will not necessarily mitigate the effects of these either, so
+care should be exercised.</p>
+<p>For these reasons the higher level atomic primitives should be preferred where
+possible.</p>
+</div>
+</div>
+<div class="section" id="non-standard-c-11-attributes">
+<h2><a class="toc-backref" href="#id15">Non-standard C++11 Attributes</a><a class="headerlink" href="#non-standard-c-11-attributes" title="Permalink to this headline">¶</a></h2>
+<p>Clang&#8217;s non-standard C++11 attributes live in the <code class="docutils literal"><span class="pre">clang</span></code> attribute
+namespace.</p>
+<p>Clang supports GCC&#8217;s <code class="docutils literal"><span class="pre">gnu</span></code> attribute namespace. All GCC attributes which
+are accepted with the <code class="docutils literal"><span class="pre">__attribute__((foo))</span></code> syntax are also accepted as
+<code class="docutils literal"><span class="pre">[[gnu::foo]]</span></code>. This only extends to attributes which are specified by GCC
+(see the list of <a class="reference external" href="http://gcc.gnu.org/onlinedocs/gcc/Function-Attributes.html">GCC function attributes</a>, <a class="reference external" href="http://gcc.gnu.org/onlinedocs/gcc/Variable-Attributes.html">GCC variable
+attributes</a>, and
+<a class="reference external" href="http://gcc.gnu.org/onlinedocs/gcc/Type-Attributes.html">GCC type attributes</a>). As with the GCC
+implementation, these attributes must appertain to the <em>declarator-id</em> in a
+declaration, which means they must go either at the start of the declaration or
+immediately after the name being declared.</p>
+<p>For example, this applies the GNU <code class="docutils literal"><span class="pre">unused</span></code> attribute to <code class="docutils literal"><span class="pre">a</span></code> and <code class="docutils literal"><span class="pre">f</span></code>, and
+also applies the GNU <code class="docutils literal"><span class="pre">noreturn</span></code> attribute to <code class="docutils literal"><span class="pre">f</span></code>.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="p">[[</span><span class="n">gnu</span><span class="o">::</span><span class="n">unused</span><span class="p">]]</span> <span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="n">f</span> <span class="p">[[</span><span class="n">gnu</span><span class="o">::</span><span class="n">noreturn</span><span class="p">]]</span> <span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="target-specific-extensions">
+<h2><a class="toc-backref" href="#id16">Target-Specific Extensions</a><a class="headerlink" href="#target-specific-extensions" title="Permalink to this headline">¶</a></h2>
+<p>Clang supports some language features conditionally on some targets.</p>
+<div class="section" id="arm-aarch64-language-extensions">
+<h3>ARM/AArch64 Language Extensions<a class="headerlink" href="#arm-aarch64-language-extensions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="memory-barrier-intrinsics">
+<h4>Memory Barrier Intrinsics<a class="headerlink" href="#memory-barrier-intrinsics" title="Permalink to this headline">¶</a></h4>
+<p>Clang implements the <code class="docutils literal"><span class="pre">__dmb</span></code>, <code class="docutils literal"><span class="pre">__dsb</span></code> and <code class="docutils literal"><span class="pre">__isb</span></code> intrinsics as defined
+in the <a class="reference external" href="http://infocenter.arm.com/help/topic/com.arm.doc.ihi0053c/IHI0053C_acle_2_0.pdf">ARM C Language Extensions Release 2.0</a>.
+Note that these intrinsics are implemented as motion barriers that block
+reordering of memory accesses and side effect instructions. Other instructions
+like simple arithmatic may be reordered around the intrinsic. If you expect to
+have no reordering at all, use inline assembly instead.</p>
+</div>
+</div>
+<div class="section" id="x86-x86-64-language-extensions">
+<h3>X86/X86-64 Language Extensions<a class="headerlink" href="#x86-x86-64-language-extensions" title="Permalink to this headline">¶</a></h3>
+<p>The X86 backend has these language extensions:</p>
+<div class="section" id="memory-references-off-the-gs-segment">
+<h4>Memory references off the GS segment<a class="headerlink" href="#memory-references-off-the-gs-segment" title="Permalink to this headline">¶</a></h4>
+<p>Annotating a pointer with address space #256 causes it to be code generated
+relative to the X86 GS segment register, and address space #257 causes it to be
+relative to the X86 FS segment.  Note that this is a very very low-level
+feature that should only be used if you know what you&#8217;re doing (for example in
+an OS kernel).</p>
+<p>Here is an example:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#define GS_RELATIVE __attribute__((address_space(256)))</span>
+<span class="kt">int</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">int</span> <span class="n">GS_RELATIVE</span> <span class="o">*</span><span class="n">P</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="o">*</span><span class="n">P</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Which compiles to (on X86-32):</p>
+<div class="highlight-gas"><div class="highlight"><pre><span class="nl">_foo:</span>
+        <span class="nf">movl</span>    <span class="mi">4</span><span class="p">(</span><span class="nv">%esp</span><span class="p">),</span> <span class="nv">%eax</span>
+        <span class="nf">movl</span>    <span class="nv">%gs</span><span class="p">:(</span><span class="nv">%eax</span><span class="p">),</span> <span class="nv">%eax</span>
+        <span class="nf">ret</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="extensions-for-static-analysis">
+<h2><a class="toc-backref" href="#id17">Extensions for Static Analysis</a><a class="headerlink" href="#extensions-for-static-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Clang supports additional attributes that are useful for documenting program
+invariants and rules for static analysis tools, such as the <a class="reference external" href="http://clang-analyzer.llvm.org/">Clang Static
+Analyzer</a>. These attributes are documented
+in the analyzer&#8217;s <a class="reference external" href="http://clang-analyzer.llvm.org/annotations.html">list of source-level annotations</a>.</p>
+</div>
+<div class="section" id="extensions-for-dynamic-analysis">
+<h2><a class="toc-backref" href="#id18">Extensions for Dynamic Analysis</a><a class="headerlink" href="#extensions-for-dynamic-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(address_sanitizer)</span></code> to check if the code is being built
+with <a class="reference internal" href="AddressSanitizer.html"><em>AddressSanitizer</em></a>.</p>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(thread_sanitizer)</span></code> to check if the code is being built
+with <a class="reference internal" href="ThreadSanitizer.html"><em>ThreadSanitizer</em></a>.</p>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(memory_sanitizer)</span></code> to check if the code is being built
+with <a class="reference internal" href="MemorySanitizer.html"><em>MemorySanitizer</em></a>.</p>
+<p>Use <code class="docutils literal"><span class="pre">__has_feature(safe_stack)</span></code> to check if the code is being built
+with <a class="reference internal" href="SafeStack.html"><em>SafeStack</em></a>.</p>
+</div>
+<div class="section" id="extensions-for-selectively-disabling-optimization">
+<h2><a class="toc-backref" href="#id19">Extensions for selectively disabling optimization</a><a class="headerlink" href="#extensions-for-selectively-disabling-optimization" title="Permalink to this headline">¶</a></h2>
+<p>Clang provides a mechanism for selectively disabling optimizations in functions
+and methods.</p>
+<p>To disable optimizations in a single function definition, the GNU-style or C++11
+non-standard attribute <code class="docutils literal"><span class="pre">optnone</span></code> can be used.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// The following functions will not be optimized.</span>
+<span class="c1">// GNU-style attribute</span>
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">optnone</span><span class="p">))</span> <span class="kt">int</span> <span class="n">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// ... code</span>
+<span class="p">}</span>
+<span class="c1">// C++11 attribute</span>
+<span class="p">[[</span><span class="n">clang</span><span class="o">::</span><span class="n">optnone</span><span class="p">]]</span> <span class="kt">int</span> <span class="n">bar</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// ... code</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To facilitate disabling optimization for a range of function definitions, a
+range-based pragma is provided. Its syntax is <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">clang</span> <span class="pre">optimize</span></code>
+followed by <code class="docutils literal"><span class="pre">off</span></code> or <code class="docutils literal"><span class="pre">on</span></code>.</p>
+<p>All function definitions in the region between an <code class="docutils literal"><span class="pre">off</span></code> and the following
+<code class="docutils literal"><span class="pre">on</span></code> will be decorated with the <code class="docutils literal"><span class="pre">optnone</span></code> attribute unless doing so would
+conflict with explicit attributes already present on the function (e.g. the
+ones that control inlining).</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#pragma clang optimize off</span>
+<span class="c1">// This function will be decorated with optnone.</span>
+<span class="kt">int</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// ... code</span>
+<span class="p">}</span>
+
+<span class="c1">// optnone conflicts with always_inline, so bar() will not be decorated.</span>
+<span class="n">__attribute__</span><span class="p">((</span><span class="n">always_inline</span><span class="p">))</span> <span class="kt">int</span> <span class="n">bar</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// ... code</span>
+<span class="p">}</span>
+<span class="cp">#pragma clang optimize on</span>
+</pre></div>
+</div>
+<p>If no <code class="docutils literal"><span class="pre">on</span></code> is found to close an <code class="docutils literal"><span class="pre">off</span></code> region, the end of the region is the
+end of the compilation unit.</p>
+<p>Note that a stray <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">clang</span> <span class="pre">optimize</span> <span class="pre">on</span></code> does not selectively enable
+additional optimizations when compiling at low optimization levels. This feature
+can only be used to selectively disable optimizations.</p>
+<p>The pragma has an effect on functions only at the point of their definition; for
+function templates, this means that the state of the pragma at the point of an
+instantiation is not necessarily relevant. Consider the following example:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="n">twice</span><span class="p">(</span><span class="n">T</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">t</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cp">#pragma clang optimize off</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">T</span> <span class="n">thrice</span><span class="p">(</span><span class="n">T</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">t</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">container</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">twice</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">thrice</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="cp">#pragma clang optimize on</span>
+</pre></div>
+</div>
+<p>In this example, the definition of the template function <code class="docutils literal"><span class="pre">twice</span></code> is outside
+the pragma region, whereas the definition of <code class="docutils literal"><span class="pre">thrice</span></code> is inside the region.
+The <code class="docutils literal"><span class="pre">container</span></code> function is also in the region and will not be optimized, but
+it causes the instantiation of <code class="docutils literal"><span class="pre">twice</span></code> and <code class="docutils literal"><span class="pre">thrice</span></code> with an <code class="docutils literal"><span class="pre">int</span></code> type; of
+these two instantiations, <code class="docutils literal"><span class="pre">twice</span></code> will be optimized (because its definition
+was outside the region) and <code class="docutils literal"><span class="pre">thrice</span></code> will not be optimized.</p>
+</div>
+<div class="section" id="extensions-for-loop-hint-optimizations">
+<h2><a class="toc-backref" href="#id20">Extensions for loop hint optimizations</a><a class="headerlink" href="#extensions-for-loop-hint-optimizations" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">clang</span> <span class="pre">loop</span></code> directive is used to specify hints for optimizing the
+subsequent for, while, do-while, or c++11 range-based for loop. The directive
+provides options for vectorization, interleaving, and unrolling. Loop hints can
+be specified before any loop and will be ignored if the optimization is not safe
+to apply.</p>
+<div class="section" id="vectorization-and-interleaving">
+<h3>Vectorization and Interleaving<a class="headerlink" href="#vectorization-and-interleaving" title="Permalink to this headline">¶</a></h3>
+<p>A vectorized loop performs multiple iterations of the original loop
+in parallel using vector instructions. The instruction set of the target
+processor determines which vector instructions are available and their vector
+widths. This restricts the types of loops that can be vectorized. The vectorizer
+automatically determines if the loop is safe and profitable to vectorize. A
+vector instruction cost model is used to select the vector width.</p>
+<p>Interleaving multiple loop iterations allows modern processors to further
+improve instruction-level parallelism (ILP) using advanced hardware features,
+such as multiple execution units and out-of-order execution. The vectorizer uses
+a cost model that depends on the register pressure and generated code size to
+select the interleaving count.</p>
+<p>Vectorization is enabled by <code class="docutils literal"><span class="pre">vectorize(enable)</span></code> and interleaving is enabled
+by <code class="docutils literal"><span class="pre">interleave(enable)</span></code>. This is useful when compiling with <code class="docutils literal"><span class="pre">-Os</span></code> to
+manually enable vectorization or interleaving.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#pragma clang loop vectorize(enable)</span>
+<span class="cp">#pragma clang loop interleave(enable)</span>
+<span class="k">for</span><span class="p">(...)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The vector width is specified by <code class="docutils literal"><span class="pre">vectorize_width(_value_)</span></code> and the interleave
+count is specified by <code class="docutils literal"><span class="pre">interleave_count(_value_)</span></code>, where
+_value_ is a positive integer. This is useful for specifying the optimal
+width/count of the set of target architectures supported by your application.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#pragma clang loop vectorize_width(2)</span>
+<span class="cp">#pragma clang loop interleave_count(2)</span>
+<span class="k">for</span><span class="p">(...)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Specifying a width/count of 1 disables the optimization, and is equivalent to
+<code class="docutils literal"><span class="pre">vectorize(disable)</span></code> or <code class="docutils literal"><span class="pre">interleave(disable)</span></code>.</p>
+</div>
+<div class="section" id="loop-unrolling">
+<h3>Loop Unrolling<a class="headerlink" href="#loop-unrolling" title="Permalink to this headline">¶</a></h3>
+<p>Unrolling a loop reduces the loop control overhead and exposes more
+opportunities for ILP. Loops can be fully or partially unrolled. Full unrolling
+eliminates the loop and replaces it with an enumerated sequence of loop
+iterations. Full unrolling is only possible if the loop trip count is known at
+compile time. Partial unrolling replicates the loop body within the loop and
+reduces the trip count.</p>
+<p>If <code class="docutils literal"><span class="pre">unroll(full)</span></code> is specified the unroller will attempt to fully unroll the
+loop if the trip count is known at compile time. If the fully unrolled code size
+is greater than an internal limit the loop will be partially unrolled up to this
+limit. If the loop count is not known at compile time the loop will not be
+unrolled.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#pragma clang loop unroll(full)</span>
+<span class="k">for</span><span class="p">(...)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The unroll count can be specified explicitly with <code class="docutils literal"><span class="pre">unroll_count(_value_)</span></code> where
+_value_ is a positive integer. If this value is greater than the trip count the
+loop will be fully unrolled. Otherwise the loop is partially unrolled subject
+to the same code size limit as with <code class="docutils literal"><span class="pre">unroll(full)</span></code>.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#pragma clang loop unroll_count(8)</span>
+<span class="k">for</span><span class="p">(...)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Unrolling of a loop can be prevented by specifying <code class="docutils literal"><span class="pre">unroll(disable)</span></code>.</p>
+</div>
+<div class="section" id="additional-information">
+<h3>Additional Information<a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h3>
+<p>For convenience multiple loop hints can be specified on a single line.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#pragma clang loop vectorize_width(4) interleave_count(8)</span>
+<span class="k">for</span><span class="p">(...)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If an optimization cannot be applied any hints that apply to it will be ignored.
+For example, the hint <code class="docutils literal"><span class="pre">vectorize_width(4)</span></code> is ignored if the loop is not
+proven safe to vectorize. To identify and diagnose optimization issues use
+<cite>-Rpass</cite>, <cite>-Rpass-missed</cite>, and <cite>-Rpass-analysis</cite> command line options. See the
+user guide for details.</p>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="UsersManual.html">Clang Compiler User&#8217;s Manual</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="ObjectiveCLiterals.html">Objective-C Literals</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2007-2015, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

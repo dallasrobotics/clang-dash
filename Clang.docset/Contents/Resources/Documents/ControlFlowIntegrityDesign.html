@@ -1,0 +1,601 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Control Flow Integrity Design Documentation &mdash; Clang 3.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="up" title="Control Flow Integrity" href="ControlFlowIntegrity.html" />
+    <link rel="next" title="SafeStack" href="SafeStack.html" />
+    <link rel="prev" title="Control Flow Integrity" href="ControlFlowIntegrity.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Clang 3.7 documentation</span></a></h1>
+        <h2 class="heading"><span>Control Flow Integrity Design Documentation</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="ControlFlowIntegrity.html">Control Flow Integrity</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="SafeStack.html">SafeStack</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="control-flow-integrity-design-documentation">
+<h1>Control Flow Integrity Design Documentation<a class="headerlink" href="#control-flow-integrity-design-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This page documents the design of the <a class="reference internal" href="ControlFlowIntegrity.html"><em>Control Flow Integrity</em></a> schemes
+supported by Clang.</p>
+<div class="section" id="forward-edge-cfi-for-virtual-calls">
+<h2>Forward-Edge CFI for Virtual Calls<a class="headerlink" href="#forward-edge-cfi-for-virtual-calls" title="Permalink to this headline">¶</a></h2>
+<p>This scheme works by allocating, for each static type used to make a virtual
+call, a region of read-only storage in the object file holding a bit vector
+that maps onto to the region of storage used for those virtual tables. Each
+set bit in the bit vector corresponds to the <a class="reference external" href="https://mentorembedded.github.io/cxx-abi/abi.html#vtable-general">address point</a> for a virtual
+table compatible with the static type for which the bit vector is being built.</p>
+<p>For example, consider the following three C++ classes:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">struct</span> <span class="n">A</span> <span class="p">{</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f1</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f2</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f3</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nl">B</span> <span class="p">:</span> <span class="n">A</span> <span class="p">{</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f1</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f2</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f3</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nl">C</span> <span class="p">:</span> <span class="n">A</span> <span class="p">{</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f1</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f2</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f3</span><span class="p">();</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The scheme will cause the virtual tables for A, B and C to be laid out
+consecutively:</p>
+<table border="1" class="docutils" id="id1">
+<caption><span class="caption-text">Virtual Table Layout for A, B, C</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">0</th>
+<th class="head">1</th>
+<th class="head">2</th>
+<th class="head">3</th>
+<th class="head">4</th>
+<th class="head">5</th>
+<th class="head">6</th>
+<th class="head">7</th>
+<th class="head">8</th>
+<th class="head">9</th>
+<th class="head">10</th>
+<th class="head">11</th>
+<th class="head">12</th>
+<th class="head">13</th>
+<th class="head">14</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>A::offset-to-top</td>
+<td>&amp;A::rtti</td>
+<td>&amp;A::f1</td>
+<td>&amp;A::f2</td>
+<td>&amp;A::f3</td>
+<td>B::offset-to-top</td>
+<td>&amp;B::rtti</td>
+<td>&amp;B::f1</td>
+<td>&amp;B::f2</td>
+<td>&amp;B::f3</td>
+<td>C::offset-to-top</td>
+<td>&amp;C::rtti</td>
+<td>&amp;C::f1</td>
+<td>&amp;C::f2</td>
+<td>&amp;C::f3</td>
+</tr>
+</tbody>
+</table>
+<p>The bit vector for static types A, B and C will look like this:</p>
+<table border="1" class="docutils" id="id2">
+<caption><span class="caption-text">Bit Vectors for A, B, C</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Class</th>
+<th class="head">0</th>
+<th class="head">1</th>
+<th class="head">2</th>
+<th class="head">3</th>
+<th class="head">4</th>
+<th class="head">5</th>
+<th class="head">6</th>
+<th class="head">7</th>
+<th class="head">8</th>
+<th class="head">9</th>
+<th class="head">10</th>
+<th class="head">11</th>
+<th class="head">12</th>
+<th class="head">13</th>
+<th class="head">14</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>A</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="row-odd"><td>B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="row-even"><td>C</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Bit vectors are represented in the object file as byte arrays. By loading
+from indexed offsets into the byte array and applying a mask, a program can
+test bits from the bit set with a relatively short instruction sequence. Bit
+vectors may overlap so long as they use different bits. For the full details,
+see the <a class="reference external" href="http://llvm.org/docs/doxygen/html/structllvm_1_1ByteArrayBuilder.html">ByteArrayBuilder</a> class.</p>
+<p>In this case, assuming A is laid out at offset 0 in bit 0, B at offset 0 in
+bit 1 and C at offset 0 in bit 2, the byte array would look like this:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="kt">char</span> <span class="n">bits</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+</pre></div>
+</div>
+<p>To emit a virtual call, the compiler will assemble code that checks that
+the object&#8217;s virtual table pointer is in-bounds and aligned and that the
+relevant bit is set in the bit vector.</p>
+<p>For example on x86 a typical virtual call may look like this:</p>
+<div class="highlight-none"><div class="highlight"><pre>ca7fbb:       48 8b 0f                mov    (%rdi),%rcx
+ca7fbe:       48 8d 15 c3 42 fb 07    lea    0x7fb42c3(%rip),%rdx
+ca7fc5:       48 89 c8                mov    %rcx,%rax
+ca7fc8:       48 29 d0                sub    %rdx,%rax
+ca7fcb:       48 c1 c0 3d             rol    $0x3d,%rax
+ca7fcf:       48 3d 7f 01 00 00       cmp    $0x17f,%rax
+ca7fd5:       0f 87 36 05 00 00       ja     ca8511
+ca7fdb:       48 8d 15 c0 0b f7 06    lea    0x6f70bc0(%rip),%rdx
+ca7fe2:       f6 04 10 10             testb  $0x10,(%rax,%rdx,1)
+ca7fe6:       0f 84 25 05 00 00       je     ca8511
+ca7fec:       ff 91 98 00 00 00       callq  *0x98(%rcx)
+  [...]
+ca8511:       0f 0b                   ud2
+</pre></div>
+</div>
+<p>The compiler relies on co-operation from the linker in order to assemble
+the bit vectors for the whole program. It currently does this using LLVM&#8217;s
+<a class="reference external" href="http://llvm.org/docs/BitSets.html">bit sets</a> mechanism together with link-time optimization.</p>
+<div class="section" id="optimizations">
+<h3>Optimizations<a class="headerlink" href="#optimizations" title="Permalink to this headline">¶</a></h3>
+<p>The scheme as described above is the fully general variant of the scheme.
+Most of the time we are able to apply one or more of the following
+optimizations to improve binary size or performance.</p>
+<p>In fact, if you try the above example with the current version of the
+compiler, you will probably find that it will not use the described virtual
+table layout or machine instructions. Some of the optimizations we are about
+to introduce cause the compiler to use a different layout or a different
+sequence of machine instructions.</p>
+<div class="section" id="stripping-leading-trailing-zeros-in-bit-vectors">
+<h4>Stripping Leading/Trailing Zeros in Bit Vectors<a class="headerlink" href="#stripping-leading-trailing-zeros-in-bit-vectors" title="Permalink to this headline">¶</a></h4>
+<p>If a bit vector contains leading or trailing zeros, we can strip them from
+the vector. The compiler will emit code to check if the pointer is in range
+of the region covered by ones, and perform the bit vector check using a
+truncated version of the bit vector. For example, the bit vectors for our
+example class hierarchy will be emitted like this:</p>
+<table border="1" class="docutils" id="id3">
+<caption><span class="caption-text">Bit Vectors for A, B, C</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Class</th>
+<th class="head">0</th>
+<th class="head">1</th>
+<th class="head">2</th>
+<th class="head">3</th>
+<th class="head">4</th>
+<th class="head">5</th>
+<th class="head">6</th>
+<th class="head">7</th>
+<th class="head">8</th>
+<th class="head">9</th>
+<th class="head">10</th>
+<th class="head">11</th>
+<th class="head">12</th>
+<th class="head">13</th>
+<th class="head">14</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>A</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>B</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>1</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>C</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>1</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="short-inline-bit-vectors">
+<h4>Short Inline Bit Vectors<a class="headerlink" href="#short-inline-bit-vectors" title="Permalink to this headline">¶</a></h4>
+<p>If the vector is sufficiently short, we can represent it as an inline constant
+on x86. This saves us a few instructions when reading the correct element
+of the bit vector.</p>
+<p>If the bit vector fits in 32 bits, the code looks like this:</p>
+<div class="highlight-none"><div class="highlight"><pre> dc2:       48 8b 03                mov    (%rbx),%rax
+ dc5:       48 8d 15 14 1e 00 00    lea    0x1e14(%rip),%rdx
+ dcc:       48 89 c1                mov    %rax,%rcx
+ dcf:       48 29 d1                sub    %rdx,%rcx
+ dd2:       48 c1 c1 3d             rol    $0x3d,%rcx
+ dd6:       48 83 f9 03             cmp    $0x3,%rcx
+ dda:       77 2f                   ja     e0b &lt;main+0x9b&gt;
+ ddc:       ba 09 00 00 00          mov    $0x9,%edx
+ de1:       0f a3 ca                bt     %ecx,%edx
+ de4:       73 25                   jae    e0b &lt;main+0x9b&gt;
+ de6:       48 89 df                mov    %rbx,%rdi
+ de9:       ff 10                   callq  *(%rax)
+[...]
+ e0b:       0f 0b                   ud2
+</pre></div>
+</div>
+<p>Or if the bit vector fits in 64 bits:</p>
+<div class="highlight-none"><div class="highlight"><pre>11a6:       48 8b 03                mov    (%rbx),%rax
+11a9:       48 8d 15 d0 28 00 00    lea    0x28d0(%rip),%rdx
+11b0:       48 89 c1                mov    %rax,%rcx
+11b3:       48 29 d1                sub    %rdx,%rcx
+11b6:       48 c1 c1 3d             rol    $0x3d,%rcx
+11ba:       48 83 f9 2a             cmp    $0x2a,%rcx
+11be:       77 35                   ja     11f5 &lt;main+0xb5&gt;
+11c0:       48 ba 09 00 00 00 00    movabs $0x40000000009,%rdx
+11c7:       04 00 00
+11ca:       48 0f a3 ca             bt     %rcx,%rdx
+11ce:       73 25                   jae    11f5 &lt;main+0xb5&gt;
+11d0:       48 89 df                mov    %rbx,%rdi
+11d3:       ff 10                   callq  *(%rax)
+[...]
+11f5:       0f 0b                   ud2
+</pre></div>
+</div>
+<p>If the bit vector consists of a single bit, there is only one possible
+virtual table, and the check can consist of a single equality comparison:</p>
+<div class="highlight-none"><div class="highlight"><pre>9a2:   48 8b 03                mov    (%rbx),%rax
+9a5:   48 8d 0d a4 13 00 00    lea    0x13a4(%rip),%rcx
+9ac:   48 39 c8                cmp    %rcx,%rax
+9af:   75 25                   jne    9d6 &lt;main+0x86&gt;
+9b1:   48 89 df                mov    %rbx,%rdi
+9b4:   ff 10                   callq  *(%rax)
+[...]
+9d6:   0f 0b                   ud2
+</pre></div>
+</div>
+</div>
+<div class="section" id="virtual-table-layout">
+<h4>Virtual Table Layout<a class="headerlink" href="#virtual-table-layout" title="Permalink to this headline">¶</a></h4>
+<p>The compiler lays out classes of disjoint hierarchies in separate regions
+of the object file. At worst, bit vectors in disjoint hierarchies only
+need to cover their disjoint hierarchy. But the closer that classes in
+sub-hierarchies are laid out to each other, the smaller the bit vectors for
+those sub-hierarchies need to be (see &#8220;Stripping Leading/Trailing Zeros in Bit
+Vectors&#8221; above). The <a class="reference external" href="http://llvm.org/viewvc/llvm-project/llvm/trunk/include/llvm/Transforms/IPO/LowerBitSets.h?view=markup">GlobalLayoutBuilder</a> class is responsible for laying
+out the globals efficiently to minimize the sizes of the underlying bitsets.</p>
+</div>
+<div class="section" id="alignment">
+<h4>Alignment<a class="headerlink" href="#alignment" title="Permalink to this headline">¶</a></h4>
+<p>If all gaps between address points in a particular bit vector are multiples
+of powers of 2, the compiler can compress the bit vector by strengthening
+the alignment requirements of the virtual table pointer. For example, given
+this class hierarchy:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">struct</span> <span class="n">A</span> <span class="p">{</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f1</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f2</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nl">B</span> <span class="p">:</span> <span class="n">A</span> <span class="p">{</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f1</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f2</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f3</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f4</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f5</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f6</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nl">C</span> <span class="p">:</span> <span class="n">A</span> <span class="p">{</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="n">f1</span><span class="p">();</span>
+  <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">f2</span><span class="p">();</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The virtual tables will be laid out like this:</p>
+<table border="1" class="docutils" id="id4">
+<caption><span class="caption-text">Virtual Table Layout for A, B, C</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">0</th>
+<th class="head">1</th>
+<th class="head">2</th>
+<th class="head">3</th>
+<th class="head">4</th>
+<th class="head">5</th>
+<th class="head">6</th>
+<th class="head">7</th>
+<th class="head">8</th>
+<th class="head">9</th>
+<th class="head">10</th>
+<th class="head">11</th>
+<th class="head">12</th>
+<th class="head">13</th>
+<th class="head">14</th>
+<th class="head">15</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>A::offset-to-top</td>
+<td>&amp;A::rtti</td>
+<td>&amp;A::f1</td>
+<td>&amp;A::f2</td>
+<td>B::offset-to-top</td>
+<td>&amp;B::rtti</td>
+<td>&amp;B::f1</td>
+<td>&amp;B::f2</td>
+<td>&amp;B::f3</td>
+<td>&amp;B::f4</td>
+<td>&amp;B::f5</td>
+<td>&amp;B::f6</td>
+<td>C::offset-to-top</td>
+<td>&amp;C::rtti</td>
+<td>&amp;C::f1</td>
+<td>&amp;C::f2</td>
+</tr>
+</tbody>
+</table>
+<p>Notice that each address point for A is separated by 4 words. This lets us
+emit a compressed bit vector for A that looks like this:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">2</th>
+<th class="head">6</th>
+<th class="head">10</th>
+<th class="head">14</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>At call sites, the compiler will strengthen the alignment requirements by
+using a different rotate count. For example, on a 64-bit machine where the
+address points are 4-word aligned (as in A from our example), the <code class="docutils literal"><span class="pre">rol</span></code>
+instruction may look like this:</p>
+<div class="highlight-none"><div class="highlight"><pre>dd2:       48 c1 c1 3b             rol    $0x3b,%rcx
+</pre></div>
+</div>
+</div>
+<div class="section" id="padding-to-powers-of-2">
+<h4>Padding to Powers of 2<a class="headerlink" href="#padding-to-powers-of-2" title="Permalink to this headline">¶</a></h4>
+<p>Of course, this alignment scheme works best if the address points are
+in fact aligned correctly. To make this more likely to happen, we insert
+padding between virtual tables that in many cases aligns address points to
+a power of 2. Specifically, our padding aligns virtual tables to the next
+highest power of 2 bytes; because address points for specific base classes
+normally appear at fixed offsets within the virtual table, this normally
+has the effect of aligning the address points as well.</p>
+<p>This scheme introduces tradeoffs between decreased space overhead for
+instructions and bit vectors and increased overhead in the form of padding. We
+therefore limit the amount of padding so that we align to no more than 128
+bytes. This number was found experimentally to provide a good tradeoff.</p>
+</div>
+<div class="section" id="eliminating-bit-vector-checks-for-all-ones-bit-vectors">
+<h4>Eliminating Bit Vector Checks for All-Ones Bit Vectors<a class="headerlink" href="#eliminating-bit-vector-checks-for-all-ones-bit-vectors" title="Permalink to this headline">¶</a></h4>
+<p>If the bit vector is all ones, the bit vector check is redundant; we simply
+need to check that the address is in range and well aligned. This is more
+likely to occur if the virtual tables are padded.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="ControlFlowIntegrity.html">Control Flow Integrity</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="SafeStack.html">SafeStack</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2007-2015, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

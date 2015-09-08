@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Control Flow Integrity &mdash; Clang 3.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="next" title="Control Flow Integrity Design Documentation" href="ControlFlowIntegrityDesign.html" />
+    <link rel="prev" title="Sanitizer special case list" href="SanitizerSpecialCaseList.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Clang 3.7 documentation</span></a></h1>
+        <h2 class="heading"><span>Control Flow Integrity</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="SanitizerSpecialCaseList.html">Sanitizer special case list</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="ControlFlowIntegrityDesign.html">Control Flow Integrity Design Documentation</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="control-flow-integrity">
+<h1>Control Flow Integrity<a class="headerlink" href="#control-flow-integrity" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="id1">Introduction</a><ul>
+<li><a class="reference internal" href="#forward-edge-cfi-for-virtual-calls" id="id2">Forward-Edge CFI for Virtual Calls</a><ul>
+<li><a class="reference internal" href="#performance" id="id3">Performance</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bad-cast-checking" id="id4">Bad Cast Checking</a></li>
+<li><a class="reference internal" href="#non-virtual-member-function-call-checking" id="id5">Non-Virtual Member Function Call Checking</a><ul>
+<li><a class="reference internal" href="#strictness" id="id6">Strictness</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#design" id="id7">Design</a></li>
+<li><a class="reference internal" href="#publications" id="id8">Publications</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="introduction">
+<h2><a class="toc-backref" href="#id1">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Clang includes an implementation of a number of control flow integrity (CFI)
+schemes, which are designed to abort the program upon detecting certain forms
+of undefined behavior that can potentially allow attackers to subvert the
+program&#8217;s control flow. These schemes have been optimized for performance,
+allowing developers to enable them in release builds.</p>
+<p>To enable Clang&#8217;s available CFI schemes, use the flag <code class="docutils literal"><span class="pre">-fsanitize=cfi</span></code>.
+As currently implemented, CFI relies on link-time optimization (LTO); so it is
+required to specify <code class="docutils literal"><span class="pre">-flto</span></code>, and the linker used must support LTO, for example
+via the <a class="reference external" href="http://llvm.org/docs/GoldPlugin.html">gold plugin</a>. To allow the checks to be implemented efficiently,
+the program must be structured such that certain object files are compiled
+with CFI enabled, and are statically linked into the program. This may
+preclude the use of shared libraries in some cases.</p>
+<p>Clang currently implements forward-edge CFI for member function calls and
+bad cast checking. More schemes are under development.</p>
+<div class="section" id="forward-edge-cfi-for-virtual-calls">
+<h3><a class="toc-backref" href="#id2">Forward-Edge CFI for Virtual Calls</a><a class="headerlink" href="#forward-edge-cfi-for-virtual-calls" title="Permalink to this headline">¶</a></h3>
+<p>This scheme checks that virtual calls take place using a vptr of the correct
+dynamic type; that is, the dynamic type of the called object must be a
+derived class of the static type of the object used to make the call.
+This CFI scheme can be enabled on its own using <code class="docutils literal"><span class="pre">-fsanitize=cfi-vcall</span></code>.</p>
+<p>For this scheme to work, all translation units containing the definition
+of a virtual member function (whether inline or not) must be compiled
+with <code class="docutils literal"><span class="pre">-fsanitize=cfi-vcall</span></code> enabled and be statically linked into the
+program. Classes in the C++ standard library (under namespace <code class="docutils literal"><span class="pre">std</span></code>) are
+exempted from checking, and therefore programs may be linked against a
+pre-built standard library, but this may change in the future.</p>
+<div class="section" id="performance">
+<h4><a class="toc-backref" href="#id3">Performance</a><a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h4>
+<p>A performance overhead of less than 1% has been measured by running the
+Dromaeo benchmark suite against an instrumented version of the Chromium
+web browser. Another good performance benchmark for this mechanism is the
+virtual-call-heavy SPEC 2006 xalancbmk.</p>
+<p>Note that this scheme has not yet been optimized for binary size; an increase
+of up to 15% has been observed for Chromium.</p>
+</div>
+</div>
+<div class="section" id="bad-cast-checking">
+<h3><a class="toc-backref" href="#id4">Bad Cast Checking</a><a class="headerlink" href="#bad-cast-checking" title="Permalink to this headline">¶</a></h3>
+<p>This scheme checks that pointer casts are made to an object of the correct
+dynamic type; that is, the dynamic type of the object must be a derived class
+of the pointee type of the cast. The checks are currently only introduced
+where the class being casted to is a polymorphic class.</p>
+<p>Bad casts are not in themselves control flow integrity violations, but they
+can also create security vulnerabilities, and the implementation uses many
+of the same mechanisms.</p>
+<p>There are two types of bad cast that may be forbidden: bad casts
+from a base class to a derived class (which can be checked with
+<code class="docutils literal"><span class="pre">-fsanitize=cfi-derived-cast</span></code>), and bad casts from a pointer of
+type <code class="docutils literal"><span class="pre">void*</span></code> or another unrelated type (which can be checked with
+<code class="docutils literal"><span class="pre">-fsanitize=cfi-unrelated-cast</span></code>).</p>
+<p>The difference between these two types of casts is that the first is defined
+by the C++ standard to produce an undefined value, while the second is not
+in itself undefined behavior (it is well defined to cast the pointer back
+to its original type).</p>
+<p>If a program as a matter of policy forbids the second type of cast, that
+restriction can normally be enforced. However it may in some cases be necessary
+for a function to perform a forbidden cast to conform with an external API
+(e.g. the <code class="docutils literal"><span class="pre">allocate</span></code> member function of a standard library allocator). Such
+functions may be blacklisted using a <a class="reference internal" href="SanitizerSpecialCaseList.html"><em>Sanitizer special case list</em></a>.</p>
+<p>For this scheme to work, all translation units containing the definition
+of a virtual member function (whether inline or not) must be compiled with
+<code class="docutils literal"><span class="pre">-fsanitize=cfi-derived-cast</span></code> or <code class="docutils literal"><span class="pre">-fsanitize=cfi-unrelated-cast</span></code> enabled
+and be statically linked into the program. Classes in the C++ standard library
+(under namespace <code class="docutils literal"><span class="pre">std</span></code>) are exempted from checking, and therefore programs
+may be linked against a pre-built standard library, but this may change in
+the future.</p>
+</div>
+<div class="section" id="non-virtual-member-function-call-checking">
+<h3><a class="toc-backref" href="#id5">Non-Virtual Member Function Call Checking</a><a class="headerlink" href="#non-virtual-member-function-call-checking" title="Permalink to this headline">¶</a></h3>
+<p>This scheme checks that non-virtual calls take place using an object of
+the correct dynamic type; that is, the dynamic type of the called object
+must be a derived class of the static type of the object used to make the
+call. The checks are currently only introduced where the object is of a
+polymorphic class type.  This CFI scheme can be enabled on its own using
+<code class="docutils literal"><span class="pre">-fsanitize=cfi-nvcall</span></code>.</p>
+<p>For this scheme to work, all translation units containing the definition
+of a virtual member function (whether inline or not) must be compiled
+with <code class="docutils literal"><span class="pre">-fsanitize=cfi-nvcall</span></code> enabled and be statically linked into the
+program. Classes in the C++ standard library (under namespace <code class="docutils literal"><span class="pre">std</span></code>) are
+exempted from checking, and therefore programs may be linked against a
+pre-built standard library, but this may change in the future.</p>
+<div class="section" id="strictness">
+<span id="cfi-strictness"></span><h4><a class="toc-backref" href="#id6">Strictness</a><a class="headerlink" href="#strictness" title="Permalink to this headline">¶</a></h4>
+<p>If a class has a single non-virtual base and does not introduce or override
+virtual member functions or fields other than an implicitly defined virtual
+destructor, it will have the same layout and virtual function semantics as
+its base. By default, casts to such classes are checked as if they were made
+to the least derived such class.</p>
+<p>Casting an instance of a base class to such a derived class is technically
+undefined behavior, but it is a relatively common hack for introducing
+member functions on class instances with specific properties that works under
+most compilers and should not have security implications, so we allow it by
+default. It can be disabled with <code class="docutils literal"><span class="pre">-fsanitize=cfi-cast-strict</span></code>.</p>
+</div>
+</div>
+<div class="section" id="design">
+<h3><a class="toc-backref" href="#id7">Design</a><a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h3>
+<p>Please refer to the <a class="reference internal" href="ControlFlowIntegrityDesign.html"><em>design document</em></a>.</p>
+</div>
+<div class="section" id="publications">
+<h3><a class="toc-backref" href="#id8">Publications</a><a class="headerlink" href="#publications" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://research.microsoft.com/pubs/64250/ccs05.pdf">Control-Flow Integrity: Principles, Implementations, and Applications</a>.
+Martin Abadi, Mihai Budiu, Úlfar Erlingsson, Jay Ligatti.</p>
+<p><a class="reference external" href="http://www.pcc.me.uk/~peter/acad/usenix14.pdf">Enforcing Forward-Edge Control-Flow Integrity in GCC &amp; LLVM</a>.
+Caroline Tice, Tom Roeder, Peter Collingbourne, Stephen Checkoway,
+Úlfar Erlingsson, Luis Lozano, Geoff Pike.</p>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="SanitizerSpecialCaseList.html">Sanitizer special case list</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="ControlFlowIntegrityDesign.html">Control Flow Integrity Design Documentation</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2007-2015, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,2136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Clang Compiler User’s Manual &mdash; Clang 3.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="next" title="Clang Language Extensions" href="LanguageExtensions.html" />
+    <link rel="prev" title="Clang 3.7 Release Notes" href="ReleaseNotes.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Clang 3.7 documentation</span></a></h1>
+        <h2 class="heading"><span>Clang Compiler User’s Manual</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="ReleaseNotes.html">Clang 3.7 Release Notes</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="LanguageExtensions.html">Clang Language Extensions</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="clang-compiler-user-s-manual">
+<h1>Clang Compiler User&#8217;s Manual<a class="headerlink" href="#clang-compiler-user-s-manual" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="id7">Introduction</a><ul>
+<li><a class="reference internal" href="#terminology" id="id8">Terminology</a></li>
+<li><a class="reference internal" href="#basic-usage" id="id9">Basic Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#command-line-options" id="id10">Command Line Options</a><ul>
+<li><a class="reference internal" href="#options-to-control-error-and-warning-messages" id="id11">Options to Control Error and Warning Messages</a><ul>
+<li><a class="reference internal" href="#formatting-of-diagnostics" id="id12">Formatting of Diagnostics</a></li>
+<li><a class="reference internal" href="#individual-warning-groups" id="id13">Individual Warning Groups</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#options-to-control-clang-crash-diagnostics" id="id14">Options to Control Clang Crash Diagnostics</a></li>
+<li><a class="reference internal" href="#options-to-emit-optimization-reports" id="id15">Options to Emit Optimization Reports</a><ul>
+<li><a class="reference internal" href="#current-limitations" id="id16">Current limitations</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-options" id="id17">Other Options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#language-and-target-independent-features" id="id18">Language and Target-Independent Features</a><ul>
+<li><a class="reference internal" href="#controlling-errors-and-warnings" id="id19">Controlling Errors and Warnings</a><ul>
+<li><a class="reference internal" href="#controlling-how-clang-displays-diagnostics" id="id20">Controlling How Clang Displays Diagnostics</a></li>
+<li><a class="reference internal" href="#diagnostic-mappings" id="id21">Diagnostic Mappings</a></li>
+<li><a class="reference internal" href="#diagnostic-categories" id="id22">Diagnostic Categories</a></li>
+<li><a class="reference internal" href="#controlling-diagnostics-via-command-line-flags" id="id23">Controlling Diagnostics via Command Line Flags</a></li>
+<li><a class="reference internal" href="#controlling-diagnostics-via-pragmas" id="id24">Controlling Diagnostics via Pragmas</a></li>
+<li><a class="reference internal" href="#controlling-diagnostics-in-system-headers" id="id25">Controlling Diagnostics in System Headers</a></li>
+<li><a class="reference internal" href="#enabling-all-diagnostics" id="id26">Enabling All Diagnostics</a></li>
+<li><a class="reference internal" href="#controlling-static-analyzer-diagnostics" id="id27">Controlling Static Analyzer Diagnostics</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#precompiled-headers" id="id28">Precompiled Headers</a><ul>
+<li><a class="reference internal" href="#generating-a-pch-file" id="id29">Generating a PCH File</a></li>
+<li><a class="reference internal" href="#using-a-pch-file" id="id30">Using a PCH File</a></li>
+<li><a class="reference internal" href="#relocatable-pch-files" id="id31">Relocatable PCH Files</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#controlling-code-generation" id="id32">Controlling Code Generation</a></li>
+<li><a class="reference internal" href="#profile-guided-optimization" id="id33">Profile Guided Optimization</a><ul>
+<li><a class="reference internal" href="#differences-between-sampling-and-instrumentation" id="id34">Differences Between Sampling and Instrumentation</a></li>
+<li><a class="reference internal" href="#using-sampling-profilers" id="id35">Using Sampling Profilers</a><ul>
+<li><a class="reference internal" href="#sample-profile-formats" id="id36">Sample Profile Formats</a></li>
+<li><a class="reference internal" href="#sample-profile-text-format" id="id37">Sample Profile Text Format</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#profiling-with-instrumentation" id="id38">Profiling with Instrumentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#controlling-size-of-debug-information" id="id39">Controlling Size of Debug Information</a></li>
+<li><a class="reference internal" href="#comment-parsing-options" id="id40">Comment Parsing Options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#c-language-features" id="id41">C Language Features</a><ul>
+<li><a class="reference internal" href="#extensions-supported-by-clang" id="id42">Extensions supported by clang</a></li>
+<li><a class="reference internal" href="#differences-between-various-standard-modes" id="id43">Differences between various standard modes</a></li>
+<li><a class="reference internal" href="#gcc-extensions-not-implemented-yet" id="id44">GCC extensions not implemented yet</a></li>
+<li><a class="reference internal" href="#intentionally-unsupported-gcc-extensions" id="id45">Intentionally unsupported GCC extensions</a></li>
+<li><a class="reference internal" href="#microsoft-extensions" id="id46">Microsoft extensions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cxx" id="id47">C++ Language Features</a><ul>
+<li><a class="reference internal" href="#controlling-implementation-limits" id="id48">Controlling implementation limits</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#objective-c-language-features" id="id49">Objective-C Language Features</a></li>
+<li><a class="reference internal" href="#objcxx" id="id50">Objective-C++ Language Features</a></li>
+<li><a class="reference internal" href="#target-specific-features-and-limitations" id="id51">Target-Specific Features and Limitations</a><ul>
+<li><a class="reference internal" href="#cpu-architectures-features-and-limitations" id="id52">CPU Architectures Features and Limitations</a><ul>
+<li><a class="reference internal" href="#x86" id="id53">X86</a></li>
+<li><a class="reference internal" href="#arm" id="id54">ARM</a></li>
+<li><a class="reference internal" href="#powerpc" id="id55">PowerPC</a></li>
+<li><a class="reference internal" href="#other-platforms" id="id56">Other platforms</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#operating-system-features-and-limitations" id="id57">Operating System Features and Limitations</a><ul>
+<li><a class="reference internal" href="#darwin-mac-os-x" id="id58">Darwin (Mac OS X)</a></li>
+<li><a class="reference internal" href="#windows" id="id59">Windows</a><ul>
+<li><a class="reference internal" href="#cygwin" id="id60">Cygwin</a></li>
+<li><a class="reference internal" href="#mingw32" id="id61">MinGW32</a></li>
+<li><a class="reference internal" href="#mingw-w64" id="id62">MinGW-w64</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#clang-cl" id="id63">clang-cl</a><ul>
+<li><a class="reference internal" href="#id6" id="id64">Command-Line Options</a><ul>
+<li><a class="reference internal" href="#the-fallback-option" id="id65">The /fallback Option</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="introduction">
+<h2><a class="toc-backref" href="#id7">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The Clang Compiler is an open-source compiler for the C family of
+programming languages, aiming to be the best in class implementation of
+these languages. Clang builds on the LLVM optimizer and code generator,
+allowing it to provide high-quality optimization and code generation
+support for many targets. For more general information, please see the
+<a class="reference external" href="http://clang.llvm.org">Clang Web Site</a> or the <a class="reference external" href="http://llvm.org">LLVM Web
+Site</a>.</p>
+<p>This document describes important notes about using Clang as a compiler
+for an end-user, documenting the supported features, command line
+options, etc. If you are interested in using Clang to build a tool that
+processes code, please see <a class="reference internal" href="InternalsManual.html"><em>&#8220;Clang&#8221; CFE Internals Manual</em></a>. If you are interested in the
+<a class="reference external" href="http://clang-analyzer.llvm.org">Clang Static Analyzer</a>, please see its web
+page.</p>
+<p>Clang is designed to support the C family of programming languages,
+which includes <a class="reference internal" href="#c"><span>C</span></a>, <a class="reference internal" href="#objc"><span>Objective-C</span></a>, <a class="reference internal" href="#cxx"><span>C++</span></a>, and
+<a class="reference internal" href="#objcxx"><span>Objective-C++</span></a> as well as many dialects of those. For
+language-specific information, please see the corresponding language
+specific section:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#c"><span>C Language</span></a>: K&amp;R C, ANSI C89, ISO C90, ISO C94 (C89+AMD1), ISO
+C99 (+TC1, TC2, TC3).</li>
+<li><a class="reference internal" href="#objc"><span>Objective-C Language</span></a>: ObjC 1, ObjC 2, ObjC 2.1, plus
+variants depending on base language.</li>
+<li><a class="reference internal" href="#cxx"><span>C++ Language</span></a></li>
+<li><a class="reference internal" href="#objcxx"><span>Objective C++ Language</span></a></li>
+</ul>
+<p>In addition to these base languages and their dialects, Clang supports a
+broad variety of language extensions, which are documented in the
+corresponding language section. These extensions are provided to be
+compatible with the GCC, Microsoft, and other popular compilers as well
+as to improve functionality through Clang-specific features. The Clang
+driver and language features are intentionally designed to be as
+compatible with the GNU GCC compiler as reasonably possible, easing
+migration from GCC to Clang. In most cases, code &#8220;just works&#8221;.
+Clang also provides an alternative driver, <a class="reference internal" href="#clang-cl"><span>clang-cl</span></a>, that is designed
+to be compatible with the Visual C++ compiler, cl.exe.</p>
+<p>In addition to language specific features, Clang has a variety of
+features that depend on what CPU architecture or operating system is
+being compiled for. Please see the <a class="reference internal" href="#target-features"><span>Target-Specific Features and
+Limitations</span></a> section for more details.</p>
+<p>The rest of the introduction introduces some basic <a class="reference internal" href="#terminology"><span>compiler
+terminology</span></a> that is used throughout this manual and
+contains a basic <a class="reference internal" href="#basicusage"><span>introduction to using Clang</span></a> as a
+command line compiler.</p>
+<div class="section" id="terminology">
+<span id="id1"></span><h3><a class="toc-backref" href="#id8">Terminology</a><a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h3>
+<p>Front end, parser, backend, preprocessor, undefined behavior,
+diagnostic, optimizer</p>
+</div>
+<div class="section" id="basic-usage">
+<span id="basicusage"></span><h3><a class="toc-backref" href="#id9">Basic Usage</a><a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h3>
+<p>Intro to how to use a C compiler for newbies.</p>
+<p>compile + link compile then link debug info enabling optimizations
+picking a language to use, defaults to C11 by default. Autosenses based
+on extension. using a makefile</p>
+</div>
+</div>
+<div class="section" id="command-line-options">
+<h2><a class="toc-backref" href="#id10">Command Line Options</a><a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h2>
+<p>This section is generally an index into other sections. It does not go
+into depth on the ones that are covered by other sections. However, the
+first part introduces the language selection and other high level
+options like <a class="reference internal" href="CommandGuide/clang.html#cmdoption-c"><code class="xref std std-option docutils literal"><span class="pre">-c</span></code></a>, <a class="reference internal" href="#cmdoption-g"><code class="xref std std-option docutils literal"><span class="pre">-g</span></code></a>, etc.</p>
+<div class="section" id="options-to-control-error-and-warning-messages">
+<h3><a class="toc-backref" href="#id11">Options to Control Error and Warning Messages</a><a class="headerlink" href="#options-to-control-error-and-warning-messages" title="Permalink to this headline">¶</a></h3>
+<dl class="option">
+<dt id="cmdoption-Werror">
+<code class="descname">-Werror</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Werror" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn warnings into errors.</p>
+</dd></dl>
+
+<p><code class="docutils literal"><span class="pre">-Werror=foo</span></code></p>
+<blockquote>
+<div>Turn warning &#8220;foo&#8221; into an error.</div></blockquote>
+<dl class="option">
+<dt id="cmdoption-Wno-error">
+<code class="descname">-Wno-error</code><code class="descclassname">=foo</code><a class="headerlink" href="#cmdoption-Wno-error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn warning &#8220;foo&#8221; into an warning even if <a class="reference internal" href="#cmdoption-Werror"><code class="xref std std-option docutils literal"><span class="pre">-Werror</span></code></a> is specified.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-Wfoo">
+<code class="descname">-Wfoo</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Wfoo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable warning &#8220;foo&#8221;.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-Wno-foo">
+<code class="descname">-Wno-foo</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Wno-foo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disable warning &#8220;foo&#8221;.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-w">
+<code class="descname">-w</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disable all diagnostics.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-Weverything">
+<code class="descname">-Weverything</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Weverything" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#diagnostics-enable-everything"><span>Enable all diagnostics.</span></a></p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-pedantic">
+<code class="descname">-pedantic</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-pedantic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Warn on language extensions.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-pedantic-errors">
+<code class="descname">-pedantic-errors</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-pedantic-errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error on language extensions.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-Wsystem-headers">
+<code class="descname">-Wsystem-headers</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Wsystem-headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable warnings from system headers.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-ferror-limit">
+<code class="descname">-ferror-limit</code><code class="descclassname">=123</code><a class="headerlink" href="#cmdoption-ferror-limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop emitting diagnostics after 123 errors have been produced. The default is
+20, and the error limit can be disabled with <code class="xref std std-option docutils literal"><span class="pre">-ferror-limit=0</span></code>.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-ftemplate-backtrace-limit">
+<code class="descname">-ftemplate-backtrace-limit</code><code class="descclassname">=123</code><a class="headerlink" href="#cmdoption-ftemplate-backtrace-limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only emit up to 123 template instantiation notes within the template
+instantiation backtrace for a single warning or error. The default is 10, and
+the limit can be disabled with <code class="xref std std-option docutils literal"><span class="pre">-ftemplate-backtrace-limit=0</span></code>.</p>
+</dd></dl>
+
+<div class="section" id="formatting-of-diagnostics">
+<span id="cl-diag-formatting"></span><h4><a class="toc-backref" href="#id12">Formatting of Diagnostics</a><a class="headerlink" href="#formatting-of-diagnostics" title="Permalink to this headline">¶</a></h4>
+<p>Clang aims to produce beautiful diagnostics by default, particularly for
+new users that first come to Clang. However, different people have
+different preferences, and sometimes Clang is driven by another program
+that wants to parse simple and consistent output, not a person. For
+these cases, Clang provides a wide range of options to control the exact
+output format of the diagnostics that it generates.</p>
+<dl class="docutils" id="opt-fshow-column">
+<dt><strong>-f[no-]show-column</strong></dt>
+<dd><p class="first">Print column number in diagnostic.</p>
+<p>This option, which defaults to on, controls whether or not Clang
+prints the column number of a diagnostic. For example, when this is
+enabled, Clang will print something like:</p>
+<div class="highlight-python"><div class="highlight"><pre>test.c:28:8: warning: extra tokens at end of #endif directive [-Wextra-tokens]
+#endif bad
+       ^
+       //
+</pre></div>
+</div>
+<p>When this is disabled, Clang will print &#8220;test.c:28: warning...&#8221; with
+no column number.</p>
+<p class="last">The printed column numbers count bytes from the beginning of the
+line; take care if your source contains multibyte characters.</p>
+</dd>
+</dl>
+<dl class="docutils" id="opt-fshow-source-location">
+<dt><strong>-f[no-]show-source-location</strong></dt>
+<dd><p class="first">Print source file/line/column information in diagnostic.</p>
+<p>This option, which defaults to on, controls whether or not Clang
+prints the filename, line number and column number of a diagnostic.
+For example, when this is enabled, Clang will print something like:</p>
+<div class="highlight-python"><div class="highlight"><pre>test.c:28:8: warning: extra tokens at end of #endif directive [-Wextra-tokens]
+#endif bad
+       ^
+       //
+</pre></div>
+</div>
+<p class="last">When this is disabled, Clang will not print the &#8220;test.c:28:8: &#8221;
+part.</p>
+</dd>
+</dl>
+<dl class="docutils" id="opt-fcaret-diagnostics">
+<dt><strong>-f[no-]caret-diagnostics</strong></dt>
+<dd><p class="first">Print source line and ranges from source code in diagnostic.
+This option, which defaults to on, controls whether or not Clang
+prints the source line, source ranges, and caret when emitting a
+diagnostic. For example, when this is enabled, Clang will print
+something like:</p>
+<div class="last highlight-python"><div class="highlight"><pre>test.c:28:8: warning: extra tokens at end of #endif directive [-Wextra-tokens]
+#endif bad
+       ^
+       //
+</pre></div>
+</div>
+</dd>
+<dt><strong>-f[no-]color-diagnostics</strong></dt>
+<dd><p class="first">This option, which defaults to on when a color-capable terminal is
+detected, controls whether or not Clang prints diagnostics in color.</p>
+<p>When this option is enabled, Clang will use colors to highlight
+specific parts of the diagnostic, e.g.,</p>
+<pre>
+  <b><span style="color:black">test.c:28:8: <span style="color:magenta">warning</span>: extra tokens at end of #endif directive [-Wextra-tokens]</span></b>
+  #endif bad
+         <span style="color:green">^</span>
+         <span style="color:green">//</span>
+</pre><p>When this is disabled, Clang will just print:</p>
+<div class="last highlight-python"><div class="highlight"><pre>test.c:2:8: warning: extra tokens at end of #endif directive [-Wextra-tokens]
+#endif bad
+       ^
+       //
+</pre></div>
+</div>
+</dd>
+<dt><strong>-fansi-escape-codes</strong></dt>
+<dd>Controls whether ANSI escape codes are used instead of the Windows Console
+API to output colored diagnostics. This option is only used on Windows and
+defaults to off.</dd>
+</dl>
+<dl class="option">
+<dt id="cmdoption-fdiagnostics-format">
+<code class="descname">-fdiagnostics-format</code><code class="descclassname">=clang/msvc/vi</code><a class="headerlink" href="#cmdoption-fdiagnostics-format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes diagnostic output format to better match IDEs and command line tools.</p>
+<p>This option controls the output format of the filename, line number,
+and column printed in diagnostic messages. The options, and their
+affect on formatting a simple conversion diagnostic, follow:</p>
+<dl class="docutils">
+<dt><strong>clang</strong> (default)</dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre>t.c:3:11: warning: conversion specifies type &#39;char *&#39; but the argument has type &#39;int&#39;
+</pre></div>
+</div>
+</dd>
+<dt><strong>msvc</strong></dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre>t.c(3,11) : warning: conversion specifies type &#39;char *&#39; but the argument has type &#39;int&#39;
+</pre></div>
+</div>
+</dd>
+<dt><strong>vi</strong></dt>
+<dd><div class="first last highlight-python"><div class="highlight"><pre>t.c +3:11: warning: conversion specifies type &#39;char *&#39; but the argument has type &#39;int&#39;
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="docutils" id="opt-fdiagnostics-show-option">
+<dt><strong>-f[no-]diagnostics-show-option</strong></dt>
+<dd><p class="first">Enable <code class="docutils literal"><span class="pre">[-Woption]</span></code> information in diagnostic line.</p>
+<p>This option, which defaults to on, controls whether or not Clang
+prints the associated <a class="reference internal" href="#cl-diag-warning-groups"><span>warning group</span></a>
+option name when outputting a warning diagnostic. For example, in
+this output:</p>
+<div class="highlight-python"><div class="highlight"><pre>test.c:28:8: warning: extra tokens at end of #endif directive [-Wextra-tokens]
+#endif bad
+       ^
+       //
+</pre></div>
+</div>
+<p class="last">Passing <strong>-fno-diagnostics-show-option</strong> will prevent Clang from
+printing the [<a class="reference internal" href="#opt-wextra-tokens"><span>-Wextra-tokens</span></a>] information in
+the diagnostic. This information tells you the flag needed to enable
+or disable the diagnostic, either from the command line or through
+<a class="reference internal" href="#pragma-gcc-diagnostic"><span>#pragma GCC diagnostic</span></a>.</p>
+</dd>
+</dl>
+<span class="target" id="opt-fdiagnostics-show-category"></span><dl class="option">
+<dt id="cmdoption-fdiagnostics-show-category">
+<code class="descname">-fdiagnostics-show-category</code><code class="descclassname">=none/id/name</code><a class="headerlink" href="#cmdoption-fdiagnostics-show-category" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable printing category information in diagnostic line.</p>
+<p>This option, which defaults to &#8220;none&#8221;, controls whether or not Clang
+prints the category associated with a diagnostic when emitting it.
+Each diagnostic may or many not have an associated category, if it
+has one, it is listed in the diagnostic categorization field of the
+diagnostic line (in the []&#8217;s).</p>
+<p>For example, a format string warning will produce these three
+renditions based on the setting of this option:</p>
+<div class="highlight-python"><div class="highlight"><pre>t.c:3:11: warning: conversion specifies type &#39;char *&#39; but the argument has type &#39;int&#39; [-Wformat]
+t.c:3:11: warning: conversion specifies type &#39;char *&#39; but the argument has type &#39;int&#39; [-Wformat,1]
+t.c:3:11: warning: conversion specifies type &#39;char *&#39; but the argument has type &#39;int&#39; [-Wformat,Format String]
+</pre></div>
+</div>
+<p>This category can be used by clients that want to group diagnostics
+by category, so it should be a high level category. We want dozens
+of these, not hundreds or thousands of them.</p>
+</dd></dl>
+
+<dl class="docutils" id="opt-fdiagnostics-fixit-info">
+<dt><strong>-f[no-]diagnostics-fixit-info</strong></dt>
+<dd><p class="first">Enable &#8220;FixIt&#8221; information in the diagnostics output.</p>
+<p>This option, which defaults to on, controls whether or not Clang
+prints the information on how to fix a specific diagnostic
+underneath it when it knows. For example, in this output:</p>
+<div class="highlight-python"><div class="highlight"><pre>test.c:28:8: warning: extra tokens at end of #endif directive [-Wextra-tokens]
+#endif bad
+       ^
+       //
+</pre></div>
+</div>
+<p class="last">Passing <strong>-fno-diagnostics-fixit-info</strong> will prevent Clang from
+printing the &#8220;//&#8221; line at the end of the message. This information
+is useful for users who may not understand what is wrong, but can be
+confusing for machine parsing.</p>
+</dd>
+</dl>
+<dl class="docutils" id="opt-fdiagnostics-print-source-range-info">
+<dt><strong>-fdiagnostics-print-source-range-info</strong></dt>
+<dd><p class="first">Print machine parsable information about source ranges.
+This option makes Clang print information about source ranges in a machine
+parsable format after the file/line/column number information. The
+information is a simple sequence of brace enclosed ranges, where each range
+lists the start and end line/column locations. For example, in this output:</p>
+<div class="highlight-python"><div class="highlight"><pre>exprs.c:47:15:{47:8-47:14}{47:17-47:24}: error: invalid operands to binary expression (&#39;int *&#39; and &#39;_Complex float&#39;)
+   P = (P-42) + Gamma*4;
+       ~~~~~~ ^ ~~~~~~~
+</pre></div>
+</div>
+<p>The {}&#8217;s are generated by -fdiagnostics-print-source-range-info.</p>
+<p class="last">The printed column numbers count bytes from the beginning of the
+line; take care if your source contains multibyte characters.</p>
+</dd>
+</dl>
+<dl class="option">
+<dt id="cmdoption-fdiagnostics-parseable-fixits">
+<code class="descname">-fdiagnostics-parseable-fixits</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fdiagnostics-parseable-fixits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print Fix-Its in a machine parseable form.</p>
+<p>This option makes Clang print available Fix-Its in a machine
+parseable format at the end of diagnostics. The following example
+illustrates the format:</p>
+<div class="highlight-python"><div class="highlight"><pre>fix-it:&quot;t.cpp&quot;:{7:25-7:29}:&quot;Gamma&quot;
+</pre></div>
+</div>
+<p>The range printed is a half-open range, so in this example the
+characters at column 25 up to but not including column 29 on line 7
+in t.cpp should be replaced with the string &#8220;Gamma&#8221;. Either the
+range or the replacement string may be empty (representing strict
+insertions and strict erasures, respectively). Both the file name
+and the insertion string escape backslash (as &#8220;\\&#8221;), tabs (as
+&#8220;\t&#8221;), newlines (as &#8220;\n&#8221;), double quotes(as &#8220;\&#8221;&#8221;) and
+non-printable characters (as octal &#8220;\xxx&#8221;).</p>
+<p>The printed column numbers count bytes from the beginning of the
+line; take care if your source contains multibyte characters.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-fno-elide-type">
+<code class="descname">-fno-elide-type</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fno-elide-type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns off elision in template type printing.</p>
+<p>The default for template type printing is to elide as many template
+arguments as possible, removing those which are the same in both
+template types, leaving only the differences. Adding this flag will
+print all the template arguments. If supported by the terminal,
+highlighting will still appear on differing arguments.</p>
+<p>Default:</p>
+<div class="highlight-python"><div class="highlight"><pre>t.cc:4:5: note: candidate function not viable: no known conversion from &#39;vector&lt;map&lt;[...], map&lt;float, [...]&gt;&gt;&gt;&#39; to &#39;vector&lt;map&lt;[...], map&lt;double, [...]&gt;&gt;&gt;&#39; for 1st argument;
+</pre></div>
+</div>
+<p>-fno-elide-type:</p>
+<div class="highlight-python"><div class="highlight"><pre>t.cc:4:5: note: candidate function not viable: no known conversion from &#39;vector&lt;map&lt;int, map&lt;float, int&gt;&gt;&gt;&#39; to &#39;vector&lt;map&lt;int, map&lt;double, int&gt;&gt;&gt;&#39; for 1st argument;
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-fdiagnostics-show-template-tree">
+<code class="descname">-fdiagnostics-show-template-tree</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fdiagnostics-show-template-tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Template type diffing prints a text tree.</p>
+<p>For diffing large templated types, this option will cause Clang to
+display the templates as an indented text tree, one argument per
+line, with differences marked inline. This is compatible with
+-fno-elide-type.</p>
+<p>Default:</p>
+<div class="highlight-python"><div class="highlight"><pre>t.cc:4:5: note: candidate function not viable: no known conversion from &#39;vector&lt;map&lt;[...], map&lt;float, [...]&gt;&gt;&gt;&#39; to &#39;vector&lt;map&lt;[...], map&lt;double, [...]&gt;&gt;&gt;&#39; for 1st argument;
+</pre></div>
+</div>
+<p>With <a class="reference internal" href="#cmdoption-fdiagnostics-show-template-tree"><code class="xref std std-option docutils literal"><span class="pre">-fdiagnostics-show-template-tree</span></code></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre>t.cc:4:5: note: candidate function not viable: no known conversion for 1st argument;
+  vector&lt;
+    map&lt;
+      [...],
+      map&lt;
+        [float != double],
+        [...]&gt;&gt;&gt;
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="individual-warning-groups">
+<span id="cl-diag-warning-groups"></span><h4><a class="toc-backref" href="#id13">Individual Warning Groups</a><a class="headerlink" href="#individual-warning-groups" title="Permalink to this headline">¶</a></h4>
+<p>TODO: Generate this from tblgen. Define one anchor per warning group.</p>
+<span class="target" id="opt-wextra-tokens"></span><dl class="option">
+<dt id="cmdoption-Wextra-tokens">
+<code class="descname">-Wextra-tokens</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Wextra-tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Warn about excess tokens at the end of a preprocessor directive.</p>
+<p>This option, which defaults to on, enables warnings about extra
+tokens at the end of preprocessor directives. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>test.c:28:8: warning: extra tokens at end of #endif directive [-Wextra-tokens]
+#endif bad
+       ^
+</pre></div>
+</div>
+<p>These extra tokens are not strictly conforming, and are usually best
+handled by commenting them out.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-Wambiguous-member-template">
+<code class="descname">-Wambiguous-member-template</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Wambiguous-member-template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Warn about unqualified uses of a member template whose name resolves to
+another template at the location of the use.</p>
+<p>This option, which defaults to on, enables a warning in the
+following code:</p>
+<div class="highlight-python"><div class="highlight"><pre>template&lt;typename T&gt; struct set{};
+template&lt;typename T&gt; struct trait { typedef const T&amp; type; };
+struct Value {
+  template&lt;typename T&gt; void set(typename trait&lt;T&gt;::type value) {}
+};
+void foo() {
+  Value v;
+  v.set&lt;double&gt;(3.2);
+}
+</pre></div>
+</div>
+<p>C++ [basic.lookup.classref] requires this to be an error, but,
+because it&#8217;s hard to work around, Clang downgrades it to a warning
+as an extension.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-Wbind-to-temporary-copy">
+<code class="descname">-Wbind-to-temporary-copy</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Wbind-to-temporary-copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Warn about an unusable copy constructor when binding a reference to a
+temporary.</p>
+<p>This option enables warnings about binding a
+reference to a temporary when the temporary doesn&#8217;t have a usable
+copy constructor. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>struct NonCopyable {
+  NonCopyable();
+private:
+  NonCopyable(const NonCopyable&amp;);
+};
+void foo(const NonCopyable&amp;);
+void bar() {
+  foo(NonCopyable());  // Disallowed in C++98; allowed in C++11.
+}
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>struct NonCopyable2 {
+  NonCopyable2();
+  NonCopyable2(NonCopyable2&amp;);
+};
+void foo(const NonCopyable2&amp;);
+void bar() {
+  foo(NonCopyable2());  // Disallowed in C++98; allowed in C++11.
+}
+</pre></div>
+</div>
+<p>Note that if <code class="docutils literal"><span class="pre">NonCopyable2::NonCopyable2()</span></code> has a default argument
+whose instantiation produces a compile error, that error will still
+be a hard error in C++98 mode even if this warning is turned off.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="options-to-control-clang-crash-diagnostics">
+<h3><a class="toc-backref" href="#id14">Options to Control Clang Crash Diagnostics</a><a class="headerlink" href="#options-to-control-clang-crash-diagnostics" title="Permalink to this headline">¶</a></h3>
+<p>As unbelievable as it may sound, Clang does crash from time to time.
+Generally, this only occurs to those living on the <a class="reference external" href="http://llvm.org/releases/download.html#svn">bleeding
+edge</a>. Clang goes to great
+lengths to assist you in filing a bug report. Specifically, Clang
+generates preprocessed source file(s) and associated run script(s) upon
+a crash. These files should be attached to a bug report to ease
+reproducibility of the failure. Below are the command line options to
+control the crash diagnostics.</p>
+<dl class="option">
+<dt id="cmdoption-fno-crash-diagnostics">
+<code class="descname">-fno-crash-diagnostics</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fno-crash-diagnostics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disable auto-generation of preprocessed source files during a clang crash.</p>
+</dd></dl>
+
+<p>The -fno-crash-diagnostics flag can be helpful for speeding the process
+of generating a delta reduced test case.</p>
+</div>
+<div class="section" id="options-to-emit-optimization-reports">
+<h3><a class="toc-backref" href="#id15">Options to Emit Optimization Reports</a><a class="headerlink" href="#options-to-emit-optimization-reports" title="Permalink to this headline">¶</a></h3>
+<p>Optimization reports trace, at a high-level, all the major decisions
+done by compiler transformations. For instance, when the inliner
+decides to inline function <code class="docutils literal"><span class="pre">foo()</span></code> into <code class="docutils literal"><span class="pre">bar()</span></code>, or the loop unroller
+decides to unroll a loop N times, or the vectorizer decides to
+vectorize a loop body.</p>
+<p>Clang offers a family of flags which the optimizers can use to emit
+a diagnostic in three cases:</p>
+<ol class="arabic simple">
+<li>When the pass makes a transformation (<code class="xref std std-option docutils literal"><span class="pre">-Rpass</span></code>).</li>
+<li>When the pass fails to make a transformation (<code class="xref std std-option docutils literal"><span class="pre">-Rpass-missed</span></code>).</li>
+<li>When the pass determines whether or not to make a transformation
+(<code class="xref std std-option docutils literal"><span class="pre">-Rpass-analysis</span></code>).</li>
+</ol>
+<p>NOTE: Although the discussion below focuses on <code class="xref std std-option docutils literal"><span class="pre">-Rpass</span></code>, the exact
+same options apply to <code class="xref std std-option docutils literal"><span class="pre">-Rpass-missed</span></code> and <code class="xref std std-option docutils literal"><span class="pre">-Rpass-analysis</span></code>.</p>
+<p>Since there are dozens of passes inside the compiler, each of these flags
+take a regular expression that identifies the name of the pass which should
+emit the associated diagnostic. For example, to get a report from the inliner,
+compile the code with:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang -O2 -Rpass<span class="o">=</span>inline code.cc -o code
+<span class="go">code.cc:4:25: remark: foo inlined into bar [-Rpass=inline]</span>
+<span class="go">int bar(int j) { return foo(j, j - 2); }</span>
+<span class="go">                        ^</span>
+</pre></div>
+</div>
+<p>Note that remarks from the inliner are identified with <cite>[-Rpass=inline]</cite>.
+To request a report from every optimization pass, you should use
+<code class="xref std std-option docutils literal"><span class="pre">-Rpass=.*</span></code> (in fact, you can use any valid POSIX regular
+expression). However, do not expect a report from every transformation
+made by the compiler. Optimization remarks do not really make sense
+outside of the major transformations (e.g., inlining, vectorization,
+loop optimizations) and not every optimization pass supports this
+feature.</p>
+<div class="section" id="current-limitations">
+<h4><a class="toc-backref" href="#id16">Current limitations</a><a class="headerlink" href="#current-limitations" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic simple">
+<li>Optimization remarks that refer to function names will display the
+mangled name of the function. Since these remarks are emitted by the
+back end of the compiler, it does not know anything about the input
+language, nor its mangling rules.</li>
+<li>Some source locations are not displayed correctly. The front end has
+a more detailed source location tracking than the locations included
+in the debug info (e.g., the front end can locate code inside macro
+expansions). However, the locations used by <code class="xref std std-option docutils literal"><span class="pre">-Rpass</span></code> are
+translated from debug annotations. That translation can be lossy,
+which results in some remarks having no location information.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="other-options">
+<h3><a class="toc-backref" href="#id17">Other Options</a><a class="headerlink" href="#other-options" title="Permalink to this headline">¶</a></h3>
+<p>Clang options that that don&#8217;t fit neatly into other categories.</p>
+<dl class="option">
+<dt id="cmdoption-MV">
+<code class="descname">-MV</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-MV" title="Permalink to this definition">¶</a></dt>
+<dd><p>When emitting a dependency file, use formatting conventions appropriate
+for NMake or Jom. Ignored unless another option causes Clang to emit a
+dependency file.</p>
+</dd></dl>
+
+<p>When Clang emits a dependency file (e.g., you supplied the -M option)
+most filenames can be written to the file without any special formatting.
+Different Make tools will treat different sets of characters as &#8220;special&#8221;
+and use different conventions for telling the Make tool that the character
+is actually part of the filename. Normally Clang uses backslash to &#8220;escape&#8221;
+a special character, which is the convention used by GNU Make. The -MV
+option tells Clang to put double-quotes around the entire filename, which
+is the convention used by NMake and Jom.</p>
+</div>
+</div>
+<div class="section" id="language-and-target-independent-features">
+<h2><a class="toc-backref" href="#id18">Language and Target-Independent Features</a><a class="headerlink" href="#language-and-target-independent-features" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="controlling-errors-and-warnings">
+<h3><a class="toc-backref" href="#id19">Controlling Errors and Warnings</a><a class="headerlink" href="#controlling-errors-and-warnings" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides a number of ways to control which code constructs cause
+it to emit errors and warning messages, and how they are displayed to
+the console.</p>
+<div class="section" id="controlling-how-clang-displays-diagnostics">
+<h4><a class="toc-backref" href="#id20">Controlling How Clang Displays Diagnostics</a><a class="headerlink" href="#controlling-how-clang-displays-diagnostics" title="Permalink to this headline">¶</a></h4>
+<p>When Clang emits a diagnostic, it includes rich information in the
+output, and gives you fine-grain control over which information is
+printed. Clang has the ability to print this information, and these are
+the options that control it:</p>
+<ol class="arabic simple">
+<li>A file/line/column indicator that shows exactly where the diagnostic
+occurs in your code [<a class="reference internal" href="#opt-fshow-column"><span>-fshow-column</span></a>,
+<a class="reference internal" href="#opt-fshow-source-location"><span>-fshow-source-location</span></a>].</li>
+<li>A categorization of the diagnostic as a note, warning, error, or
+fatal error.</li>
+<li>A text string that describes what the problem is.</li>
+<li>An option that indicates how to control the diagnostic (for
+diagnostics that support it)
+[<a class="reference internal" href="#opt-fdiagnostics-show-option"><span>-fdiagnostics-show-option</span></a>].</li>
+<li>A <a class="reference internal" href="#diagnostics-categories"><span>high-level category</span></a> for the diagnostic
+for clients that want to group diagnostics by class (for diagnostics
+that support it)
+[<a class="reference internal" href="#opt-fdiagnostics-show-category"><span>-fdiagnostics-show-category</span></a>].</li>
+<li>The line of source code that the issue occurs on, along with a caret
+and ranges that indicate the important locations
+[<a class="reference internal" href="#opt-fcaret-diagnostics"><span>-fcaret-diagnostics</span></a>].</li>
+<li>&#8220;FixIt&#8221; information, which is a concise explanation of how to fix the
+problem (when Clang is certain it knows)
+[<a class="reference internal" href="#opt-fdiagnostics-fixit-info"><span>-fdiagnostics-fixit-info</span></a>].</li>
+<li>A machine-parsable representation of the ranges involved (off by
+default)
+[<a class="reference internal" href="#opt-fdiagnostics-print-source-range-info"><span>-fdiagnostics-print-source-range-info</span></a>].</li>
+</ol>
+<p>For more information please see <a class="reference internal" href="#cl-diag-formatting"><span>Formatting of
+Diagnostics</span></a>.</p>
+</div>
+<div class="section" id="diagnostic-mappings">
+<h4><a class="toc-backref" href="#id21">Diagnostic Mappings</a><a class="headerlink" href="#diagnostic-mappings" title="Permalink to this headline">¶</a></h4>
+<p>All diagnostics are mapped into one of these 6 classes:</p>
+<ul class="simple">
+<li>Ignored</li>
+<li>Note</li>
+<li>Remark</li>
+<li>Warning</li>
+<li>Error</li>
+<li>Fatal</li>
+</ul>
+</div>
+<div class="section" id="diagnostic-categories">
+<span id="diagnostics-categories"></span><h4><a class="toc-backref" href="#id22">Diagnostic Categories</a><a class="headerlink" href="#diagnostic-categories" title="Permalink to this headline">¶</a></h4>
+<p>Though not shown by default, diagnostics may each be associated with a
+high-level category. This category is intended to make it possible to
+triage builds that produce a large number of errors or warnings in a
+grouped way.</p>
+<p>Categories are not shown by default, but they can be turned on with the
+<a class="reference internal" href="#opt-fdiagnostics-show-category"><span>-fdiagnostics-show-category</span></a> option.
+When set to &#8220;<code class="docutils literal"><span class="pre">name</span></code>&#8221;, the category is printed textually in the
+diagnostic output. When it is set to &#8220;<code class="docutils literal"><span class="pre">id</span></code>&#8221;, a category number is
+printed. The mapping of category names to category id&#8217;s can be obtained
+by running &#8216;<code class="docutils literal"><span class="pre">clang</span>&nbsp;&nbsp; <span class="pre">--print-diagnostic-categories</span></code>&#8216;.</p>
+</div>
+<div class="section" id="controlling-diagnostics-via-command-line-flags">
+<h4><a class="toc-backref" href="#id23">Controlling Diagnostics via Command Line Flags</a><a class="headerlink" href="#controlling-diagnostics-via-command-line-flags" title="Permalink to this headline">¶</a></h4>
+<p>TODO: -W flags, -pedantic, etc</p>
+</div>
+<div class="section" id="controlling-diagnostics-via-pragmas">
+<span id="pragma-gcc-diagnostic"></span><h4><a class="toc-backref" href="#id24">Controlling Diagnostics via Pragmas</a><a class="headerlink" href="#controlling-diagnostics-via-pragmas" title="Permalink to this headline">¶</a></h4>
+<p>Clang can also control what diagnostics are enabled through the use of
+pragmas in the source code. This is useful for turning off specific
+warnings in a section of source code. Clang supports GCC&#8217;s pragma for
+compatibility with existing source code, as well as several extensions.</p>
+<p>The pragma may control any warning that can be used from the command
+line. Warnings may be set to ignored, warning, error, or fatal. The
+following example code will tell Clang or GCC to ignore the -Wall
+warnings:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="cp">#pragma GCC diagnostic ignored &quot;-Wall&quot;</span>
+</pre></div>
+</div>
+<p>In addition to all of the functionality provided by GCC&#8217;s pragma, Clang
+also allows you to push and pop the current warning state. This is
+particularly useful when writing a header file that will be compiled by
+other people, because you don&#8217;t know what warning flags they build with.</p>
+<p>In the below example <code class="xref std std-option docutils literal"><span class="pre">-Wmultichar</span></code> is ignored for only a single line of
+code, after which the diagnostics return to whatever state had previously
+existed.</p>
+<div class="highlight-c"><div class="highlight"><pre>#pragma clang diagnostic push
+#pragma clang diagnostic ignored &quot;-Wmultichar&quot;
+
+char b = &#39;df&#39;; // no warning.
+
+#pragma clang diagnostic pop
+</pre></div>
+</div>
+<p>The push and pop pragmas will save and restore the full diagnostic state
+of the compiler, regardless of how it was set. That means that it is
+possible to use push and pop around GCC compatible diagnostics and Clang
+will push and pop them appropriately, while GCC will ignore the pushes
+and pops as unknown pragmas. It should be noted that while Clang
+supports the GCC pragma, Clang and GCC do not support the exact same set
+of warnings, so even when using GCC compatible #pragmas there is no
+guarantee that they will have identical behaviour on both compilers.</p>
+<p>In addition to controlling warnings and errors generated by the compiler, it is
+possible to generate custom warning and error messages through the following
+pragmas:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="c1">// The following will produce warning messages</span>
+<span class="cp">#pragma message &quot;some diagnostic message&quot;</span>
+<span class="cp">#pragma GCC warning &quot;TODO: replace deprecated feature&quot;</span>
+
+<span class="c1">// The following will produce an error message</span>
+<span class="cp">#pragma GCC error &quot;Not supported&quot;</span>
+</pre></div>
+</div>
+<p>These pragmas operate similarly to the <code class="docutils literal"><span class="pre">#warning</span></code> and <code class="docutils literal"><span class="pre">#error</span></code> preprocessor
+directives, except that they may also be embedded into preprocessor macros via
+the C99 <code class="docutils literal"><span class="pre">_Pragma</span></code> operator, for example:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="cp">#define STR(X) #X</span>
+<span class="cp">#define DEFER(M,...) M(__VA_ARGS__)</span>
+<span class="cp">#define CUSTOM_ERROR(X) _Pragma(STR(GCC error(X &quot; at line &quot; DEFER(STR,__LINE__))))</span>
+
+<span class="n">CUSTOM_ERROR</span><span class="p">(</span><span class="s">&quot;Feature not available&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="controlling-diagnostics-in-system-headers">
+<h4><a class="toc-backref" href="#id25">Controlling Diagnostics in System Headers</a><a class="headerlink" href="#controlling-diagnostics-in-system-headers" title="Permalink to this headline">¶</a></h4>
+<p>Warnings are suppressed when they occur in system headers. By default,
+an included file is treated as a system header if it is found in an
+include path specified by <code class="docutils literal"><span class="pre">-isystem</span></code>, but this can be overridden in
+several ways.</p>
+<p>The <code class="docutils literal"><span class="pre">system_header</span></code> pragma can be used to mark the current file as
+being a system header. No warnings will be produced from the location of
+the pragma onwards within the same file.</p>
+<div class="highlight-c"><div class="highlight"><pre>char a = &#39;xy&#39;; // warning
+
+#pragma clang system_header
+
+char b = &#39;ab&#39;; // no warning
+</pre></div>
+</div>
+<p>The <code class="xref std std-option docutils literal"><span class="pre">--system-header-prefix=</span></code> and <code class="xref std std-option docutils literal"><span class="pre">--no-system-header-prefix=</span></code>
+command-line arguments can be used to override whether subsets of an include
+path are treated as system headers. When the name in a <code class="docutils literal"><span class="pre">#include</span></code> directive
+is found within a header search path and starts with a system prefix, the
+header is treated as a system header. The last prefix on the
+command-line which matches the specified header name takes precedence.
+For instance:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang -Ifoo -isystem bar --system-header-prefix<span class="o">=</span>x/ <span class="se">\</span>
+<span class="go">    --no-system-header-prefix=x/y/</span>
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal"><span class="pre">#include</span> <span class="pre">&quot;x/a.h&quot;</span></code> is treated as including a system header, even
+if the header is found in <code class="docutils literal"><span class="pre">foo</span></code>, and <code class="docutils literal"><span class="pre">#include</span> <span class="pre">&quot;x/y/b.h&quot;</span></code> is treated
+as not including a system header, even if the header is found in
+<code class="docutils literal"><span class="pre">bar</span></code>.</p>
+<p>A <code class="docutils literal"><span class="pre">#include</span></code> directive which finds a file relative to the current
+directory is treated as including a system header if the including file
+is treated as a system header.</p>
+</div>
+<div class="section" id="enabling-all-diagnostics">
+<span id="diagnostics-enable-everything"></span><h4><a class="toc-backref" href="#id26">Enabling All Diagnostics</a><a class="headerlink" href="#enabling-all-diagnostics" title="Permalink to this headline">¶</a></h4>
+<p>In addition to the traditional <code class="docutils literal"><span class="pre">-W</span></code> flags, one can enable <strong>all</strong>
+diagnostics by passing <a class="reference internal" href="#cmdoption-Weverything"><code class="xref std std-option docutils literal"><span class="pre">-Weverything</span></code></a>. This works as expected
+with
+<a class="reference internal" href="#cmdoption-Werror"><code class="xref std std-option docutils literal"><span class="pre">-Werror</span></code></a>, and also includes the warnings from <a class="reference internal" href="#cmdoption-pedantic"><code class="xref std std-option docutils literal"><span class="pre">-pedantic</span></code></a>.</p>
+<p>Note that when combined with <a class="reference internal" href="#cmdoption-w"><code class="xref std std-option docutils literal"><span class="pre">-w</span></code></a> (which disables all warnings), that
+flag wins.</p>
+</div>
+<div class="section" id="controlling-static-analyzer-diagnostics">
+<h4><a class="toc-backref" href="#id27">Controlling Static Analyzer Diagnostics</a><a class="headerlink" href="#controlling-static-analyzer-diagnostics" title="Permalink to this headline">¶</a></h4>
+<p>While not strictly part of the compiler, the diagnostics from Clang&#8217;s
+<a class="reference external" href="http://clang-analyzer.llvm.org">static analyzer</a> can also be
+influenced by the user via changes to the source code. See the available
+<a class="reference external" href="http://clang-analyzer.llvm.org/annotations.html">annotations</a> and the
+analyzer&#8217;s <a class="reference external" href="http://clang-analyzer.llvm.org/faq.html#exclude_code">FAQ
+page</a> for more
+information.</p>
+</div>
+</div>
+<div class="section" id="precompiled-headers">
+<span id="usersmanual-precompiled-headers"></span><h3><a class="toc-backref" href="#id28">Precompiled Headers</a><a class="headerlink" href="#precompiled-headers" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://en.wikipedia.org/wiki/Precompiled_header">Precompiled headers</a>
+are a general approach employed by many compilers to reduce compilation
+time. The underlying motivation of the approach is that it is common for
+the same (and often large) header files to be included by multiple
+source files. Consequently, compile times can often be greatly improved
+by caching some of the (redundant) work done by a compiler to process
+headers. Precompiled header files, which represent one of many ways to
+implement this optimization, are literally files that represent an
+on-disk cache that contains the vital information necessary to reduce
+some of the work needed to process a corresponding header file. While
+details of precompiled headers vary between compilers, precompiled
+headers have been shown to be highly effective at speeding up program
+compilation on systems with very large system headers (e.g., Mac OS X).</p>
+<div class="section" id="generating-a-pch-file">
+<h4><a class="toc-backref" href="#id29">Generating a PCH File</a><a class="headerlink" href="#generating-a-pch-file" title="Permalink to this headline">¶</a></h4>
+<p>To generate a PCH file using Clang, one invokes Clang with the
+<code class="xref std std-option docutils literal"><span class="pre">-x</span> <span class="pre">&lt;language&gt;-header</span></code> option. This mirrors the interface in GCC
+for generating PCH files:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> gcc -x c-header test.h -o test.h.gch
+<span class="gp">$</span> clang -x c-header test.h -o test.h.pch
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-a-pch-file">
+<h4><a class="toc-backref" href="#id30">Using a PCH File</a><a class="headerlink" href="#using-a-pch-file" title="Permalink to this headline">¶</a></h4>
+<p>A PCH file can then be used as a prefix header when a <a class="reference internal" href="CommandGuide/clang.html#cmdoption-include"><code class="xref std std-option docutils literal"><span class="pre">-include</span></code></a>
+option is passed to <code class="docutils literal"><span class="pre">clang</span></code>:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang -include test.h test.c -o <span class="nb">test</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">clang</span></code> driver will first check if a PCH file for <code class="docutils literal"><span class="pre">test.h</span></code> is
+available; if so, the contents of <code class="docutils literal"><span class="pre">test.h</span></code> (and the files it includes)
+will be processed from the PCH file. Otherwise, Clang falls back to
+directly processing the content of <code class="docutils literal"><span class="pre">test.h</span></code>. This mirrors the behavior
+of GCC.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Clang does <em>not</em> automatically use PCH files for headers that are directly
+included within a source file. For example:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang -x c-header test.h -o test.h.pch
+<span class="gp">$</span> cat test.c
+<span class="gp">#</span>include <span class="s2">&quot;test.h&quot;</span>
+<span class="gp">$</span> clang test.c -o <span class="nb">test</span>
+</pre></div>
+</div>
+<p class="last">In this example, <code class="docutils literal"><span class="pre">clang</span></code> will not automatically use the PCH file for
+<code class="docutils literal"><span class="pre">test.h</span></code> since <code class="docutils literal"><span class="pre">test.h</span></code> was included directly in the source file and not
+specified on the command line using <a class="reference internal" href="CommandGuide/clang.html#cmdoption-include"><code class="xref std std-option docutils literal"><span class="pre">-include</span></code></a>.</p>
+</div>
+</div>
+<div class="section" id="relocatable-pch-files">
+<h4><a class="toc-backref" href="#id31">Relocatable PCH Files</a><a class="headerlink" href="#relocatable-pch-files" title="Permalink to this headline">¶</a></h4>
+<p>It is sometimes necessary to build a precompiled header from headers
+that are not yet in their final, installed locations. For example, one
+might build a precompiled header within the build tree that is then
+meant to be installed alongside the headers. Clang permits the creation
+of &#8220;relocatable&#8221; precompiled headers, which are built with a given path
+(into the build directory) and can later be used from an installed
+location.</p>
+<p>To build a relocatable precompiled header, place your headers into a
+subdirectory whose structure mimics the installed location. For example,
+if you want to build a precompiled header for the header <code class="docutils literal"><span class="pre">mylib.h</span></code>
+that will be installed into <code class="docutils literal"><span class="pre">/usr/include</span></code>, create a subdirectory
+<code class="docutils literal"><span class="pre">build/usr/include</span></code> and place the header <code class="docutils literal"><span class="pre">mylib.h</span></code> into that
+subdirectory. If <code class="docutils literal"><span class="pre">mylib.h</span></code> depends on other headers, then they can be
+stored within <code class="docutils literal"><span class="pre">build/usr/include</span></code> in a way that mimics the installed
+location.</p>
+<p>Building a relocatable precompiled header requires two additional
+arguments. First, pass the <code class="docutils literal"><span class="pre">--relocatable-pch</span></code> flag to indicate that
+the resulting PCH file should be relocatable. Second, pass
+<code class="xref std std-option docutils literal"><span class="pre">-isysroot</span> <span class="pre">/path/to/build</span></code>, which makes all includes for your library
+relative to the build directory. For example:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">#</span> clang -x c-header --relocatable-pch -isysroot /path/to/build /path/to/build/mylib.h mylib.h.pch
+</pre></div>
+</div>
+<p>When loading the relocatable PCH file, the various headers used in the
+PCH file are found from the system header root. For example, <code class="docutils literal"><span class="pre">mylib.h</span></code>
+can be found in <code class="docutils literal"><span class="pre">/usr/include/mylib.h</span></code>. If the headers are installed
+in some other system root, the <code class="xref std std-option docutils literal"><span class="pre">-isysroot</span></code> option can be used provide
+a different system root from which the headers will be based. For
+example, <code class="xref std std-option docutils literal"><span class="pre">-isysroot</span> <span class="pre">/Developer/SDKs/MacOSX10.4u.sdk</span></code> will look for
+<code class="docutils literal"><span class="pre">mylib.h</span></code> in <code class="docutils literal"><span class="pre">/Developer/SDKs/MacOSX10.4u.sdk/usr/include/mylib.h</span></code>.</p>
+<p>Relocatable precompiled headers are intended to be used in a limited
+number of cases where the compilation environment is tightly controlled
+and the precompiled header cannot be generated after headers have been
+installed.</p>
+</div>
+</div>
+<div class="section" id="controlling-code-generation">
+<span id="id2"></span><h3><a class="toc-backref" href="#id32">Controlling Code Generation</a><a class="headerlink" href="#controlling-code-generation" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides a number of ways to control code generation. The options
+are listed below.</p>
+<dl class="docutils">
+<dt><strong>-f[no-]sanitize=check1,check2,...</strong></dt>
+<dd><p class="first">Turn on runtime checks for various forms of undefined or suspicious
+behavior.</p>
+<p>This option controls whether Clang adds runtime checks for various
+forms of undefined or suspicious behavior, and is disabled by
+default. If a check fails, a diagnostic message is produced at
+runtime explaining the problem. The main checks are:</p>
+<ul class="simple">
+<li><p id="opt-fsanitize-address"><code class="docutils literal"><span class="pre">-fsanitize=address</span></code>:
+<a class="reference internal" href="AddressSanitizer.html"><em>AddressSanitizer</em></a>, a memory error
+detector.</p>
+</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=integer</span></code>: Enables checks for undefined or
+suspicious integer behavior.</li>
+<li><p id="opt-fsanitize-thread"><code class="docutils literal"><span class="pre">-fsanitize=thread</span></code>: <a class="reference internal" href="ThreadSanitizer.html"><em>ThreadSanitizer</em></a>, a data race detector.</p>
+</li>
+<li><p id="opt-fsanitize-memory"><code class="docutils literal"><span class="pre">-fsanitize=memory</span></code>: <a class="reference internal" href="MemorySanitizer.html"><em>MemorySanitizer</em></a>,
+an <em>experimental</em> detector of uninitialized reads. Not ready for
+widespread use.</p>
+</li>
+<li><p id="opt-fsanitize-undefined"><code class="docutils literal"><span class="pre">-fsanitize=undefined</span></code>: Fast and compatible undefined behavior
+checker. Enables the undefined behavior checks that have small
+runtime cost and no impact on address space layout or ABI. This
+includes all of the checks listed below other than
+<code class="docutils literal"><span class="pre">unsigned-integer-overflow</span></code>.</p>
+</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=undefined-trap</span></code>: This is a deprecated alias for
+<code class="docutils literal"><span class="pre">-fsanitize=undefined</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=dataflow</span></code>: <a class="reference internal" href="DataFlowSanitizer.html"><em>DataFlowSanitizer</em></a>, a general data
+flow analysis.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=cfi</span></code>: <a class="reference internal" href="ControlFlowIntegrity.html"><em>control flow integrity</em></a>
+checks. Requires <code class="docutils literal"><span class="pre">-flto</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=safe-stack</span></code>: <a class="reference internal" href="SafeStack.html"><em>safe stack</em></a>
+protection against stack-based memory corruption errors.</li>
+</ul>
+<p>The following more fine-grained checks are also available:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">-fsanitize=alignment</span></code>: Use of a misaligned pointer or creation
+of a misaligned reference.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=bool</span></code>: Load of a <code class="docutils literal"><span class="pre">bool</span></code> value which is neither
+<code class="docutils literal"><span class="pre">true</span></code> nor <code class="docutils literal"><span class="pre">false</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=bounds</span></code>: Out of bounds array indexing, in cases
+where the array bound can be statically determined.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=cfi-cast-strict</span></code>: Enables <a class="reference internal" href="ControlFlowIntegrity.html#cfi-strictness"><span>strict cast checks</span></a>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=cfi-derived-cast</span></code>: Base-to-derived cast to the wrong
+dynamic type. Requires <code class="docutils literal"><span class="pre">-flto</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=cfi-unrelated-cast</span></code>: Cast from <code class="docutils literal"><span class="pre">void*</span></code> or another
+unrelated type to the wrong dynamic type. Requires <code class="docutils literal"><span class="pre">-flto</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=cfi-nvcall</span></code>: Non-virtual call via an object whose vptr is of
+the wrong dynamic type. Requires <code class="docutils literal"><span class="pre">-flto</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=cfi-vcall</span></code>: Virtual call via an object whose vptr is of the
+wrong dynamic type. Requires <code class="docutils literal"><span class="pre">-flto</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=enum</span></code>: Load of a value of an enumerated type which
+is not in the range of representable values for that enumerated
+type.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=float-cast-overflow</span></code>: Conversion to, from, or
+between floating-point types which would overflow the
+destination.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=float-divide-by-zero</span></code>: Floating point division by
+zero.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=function</span></code>: Indirect call of a function through a
+function pointer of the wrong type (Linux, C++ and x86/x86_64 only).</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=integer-divide-by-zero</span></code>: Integer division by zero.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=nonnull-attribute</span></code>: Passing null pointer as a function
+parameter which is declared to never be null.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=null</span></code>: Use of a null pointer or creation of a null
+reference.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=object-size</span></code>: An attempt to use bytes which the
+optimizer can determine are not part of the object being
+accessed. The sizes of objects are determined using
+<code class="docutils literal"><span class="pre">__builtin_object_size</span></code>, and consequently may be able to detect
+more problems at higher optimization levels.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=return</span></code>: In C++, reaching the end of a
+value-returning function without returning a value.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=returns-nonnull-attribute</span></code>: Returning null pointer
+from a function which is declared to never return null.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=shift</span></code>: Shift operators where the amount shifted is
+greater or equal to the promoted bit-width of the left hand side
+or less than zero, or where the left hand side is negative. For a
+signed left shift, also checks for signed overflow in C, and for
+unsigned overflow in C++. You can use <code class="docutils literal"><span class="pre">-fsanitize=shift-base</span></code> or
+<code class="docutils literal"><span class="pre">-fsanitize=shift-exponent</span></code> to check only left-hand side or
+right-hand side of shift operation, respectively.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=signed-integer-overflow</span></code>: Signed integer overflow,
+including all the checks added by <code class="docutils literal"><span class="pre">-ftrapv</span></code>, and checking for
+overflow in signed division (<code class="docutils literal"><span class="pre">INT_MIN</span> <span class="pre">/</span> <span class="pre">-1</span></code>).</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=unreachable</span></code>: If control flow reaches
+<code class="docutils literal"><span class="pre">__builtin_unreachable</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=unsigned-integer-overflow</span></code>: Unsigned integer
+overflows.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=vla-bound</span></code>: A variable-length array whose bound
+does not evaluate to a positive value.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=vptr</span></code>: Use of an object whose vptr indicates that
+it is of the wrong dynamic type, or that its lifetime has not
+begun or has ended. Incompatible with <code class="docutils literal"><span class="pre">-fno-rtti</span></code>.</li>
+</ul>
+<p>You can turn off or modify checks for certain source files, functions
+or even variables by providing a special file:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">-fsanitize-blacklist=/path/to/blacklist/file</span></code>: disable or modify
+sanitizer checks for objects listed in the file. See
+<a class="reference internal" href="SanitizerSpecialCaseList.html"><em>Sanitizer special case list</em></a> for file format description.</li>
+<li><code class="docutils literal"><span class="pre">-fno-sanitize-blacklist</span></code>: don&#8217;t use blacklist file, if it was
+specified earlier in the command line.</li>
+</ul>
+<p>Extra features of MemorySanitizer (require explicit
+<code class="docutils literal"><span class="pre">-fsanitize=memory</span></code>):</p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">-fsanitize-memory-track-origins[=level]</span></code>: Enables origin tracking in
+MemorySanitizer. Adds a second section to MemorySanitizer
+reports pointing to the heap or stack allocation the
+uninitialized bits came from. Slows down execution by additional
+1.5x-2x.</p>
+<p>Possible values for level are 0 (off), 1, 2 (default). Level 2
+adds more sections to MemorySanitizer reports describing the
+order of memory stores the uninitialized value went
+through. This mode may use extra memory in programs that copy
+uninitialized memory a lot.</p>
+</li>
+</ul>
+<p>The <code class="docutils literal"><span class="pre">-fsanitize=</span></code> argument must also be provided when linking, in
+order to link to the appropriate runtime library. When using
+<code class="docutils literal"><span class="pre">-fsanitize=vptr</span></code> (or a group that includes it, such as
+<code class="docutils literal"><span class="pre">-fsanitize=undefined</span></code>) with a C++ program, the link must be
+performed by <code class="docutils literal"><span class="pre">clang++</span></code>, not <code class="docutils literal"><span class="pre">clang</span></code>, in order to link against the
+C++-specific parts of the runtime library.</p>
+<p class="last">It is not possible to combine more than one of the <code class="docutils literal"><span class="pre">-fsanitize=address</span></code>,
+<code class="docutils literal"><span class="pre">-fsanitize=thread</span></code>, and <code class="docutils literal"><span class="pre">-fsanitize=memory</span></code> checkers in the same
+program. The <code class="docutils literal"><span class="pre">-fsanitize=undefined</span></code> checks can only be combined with
+<code class="docutils literal"><span class="pre">-fsanitize=address</span></code>.</p>
+</dd>
+</dl>
+<p><strong>-f[no-]sanitize-recover=check1,check2,...</strong></p>
+<blockquote>
+<div><p>Controls which checks enabled by <code class="docutils literal"><span class="pre">-fsanitize=</span></code> flag are non-fatal.
+If the check is fatal, program will halt after the first error
+of this kind is detected and error report is printed.</p>
+<p>By default, non-fatal checks are those enabled by UndefinedBehaviorSanitizer,
+except for <code class="docutils literal"><span class="pre">-fsanitize=return</span></code> and <code class="docutils literal"><span class="pre">-fsanitize=unreachable</span></code>. Some
+sanitizers (e.g. <a class="reference internal" href="AddressSanitizer.html"><em>AddressSanitizer</em></a>) may not support recovery,
+and always crash the program after the issue is detected.</p>
+<p>Note that the <code class="docutils literal"><span class="pre">-fsanitize-trap</span></code> flag has precedence over this flag.
+This means that if a check has been configured to trap elsewhere on the
+command line, or if the check traps by default, this flag will not have
+any effect unless that sanitizer&#8217;s trapping behavior is disabled with
+<code class="docutils literal"><span class="pre">-fno-sanitize-trap</span></code>.</p>
+<p>For example, if a command line contains the flags <code class="docutils literal"><span class="pre">-fsanitize=undefined</span>
+<span class="pre">-fsanitize-trap=undefined</span></code>, the flag <code class="docutils literal"><span class="pre">-fsanitize-recover=alignment</span></code>
+will have no effect on its own; it will need to be accompanied by
+<code class="docutils literal"><span class="pre">-fno-sanitize-trap=alignment</span></code>.</p>
+</div></blockquote>
+<p><strong>-f[no-]sanitize-trap=check1,check2,...</strong></p>
+<blockquote>
+<div><p>Controls which checks enabled by the <code class="docutils literal"><span class="pre">-fsanitize=</span></code> flag trap. This
+option is intended for use in cases where the sanitizer runtime cannot
+be used (for instance, when building libc or a kernel module), or where
+the binary size increase caused by the sanitizer runtime is a concern.</p>
+<p>This flag is only compatible with <code class="docutils literal"><span class="pre">local-bounds</span></code>,
+<code class="docutils literal"><span class="pre">unsigned-integer-overflow</span></code>, sanitizers in the <code class="docutils literal"><span class="pre">cfi</span></code> group and
+sanitizers in the <code class="docutils literal"><span class="pre">undefined</span></code> group other than <code class="docutils literal"><span class="pre">vptr</span></code>. If this flag
+is supplied together with <code class="docutils literal"><span class="pre">-fsanitize=undefined</span></code>, the <code class="docutils literal"><span class="pre">vptr</span></code> sanitizer
+will be implicitly disabled.</p>
+<p>This flag is enabled by default for sanitizers in the <code class="docutils literal"><span class="pre">cfi</span></code> group.</p>
+</div></blockquote>
+<p><strong>-f[no-]sanitize-coverage=[type,features,...]</strong></p>
+<blockquote>
+<div>Enable simple code coverage in addition to certain sanitizers.
+See <a class="reference internal" href="SanitizerCoverage.html"><em>SanitizerCoverage</em></a> for more details.</div></blockquote>
+<dl class="option">
+<dt id="cmdoption-fsanitize-undefined-trap-on-error">
+<code class="descname">-fsanitize-undefined-trap-on-error</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fsanitize-undefined-trap-on-error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated alias for <code class="docutils literal"><span class="pre">-fsanitize-trap=undefined</span></code>.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-fno-assume-sane-operator-new">
+<code class="descname">-fno-assume-sane-operator-new</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fno-assume-sane-operator-new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Don&#8217;t assume that the C++&#8217;s new operator is sane.</p>
+<p>This option tells the compiler to do not assume that C++&#8217;s global
+new operator will always return a pointer that does not alias any
+other pointer when the function returns.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-ftrap-function">
+<code class="descname">-ftrap-function</code><code class="descclassname">=[name]</code><a class="headerlink" href="#cmdoption-ftrap-function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instruct code generator to emit a function call to the specified
+function name for <code class="docutils literal"><span class="pre">__builtin_trap()</span></code>.</p>
+<p>LLVM code generator translates <code class="docutils literal"><span class="pre">__builtin_trap()</span></code> to a trap
+instruction if it is supported by the target ISA. Otherwise, the
+builtin is translated into a call to <code class="docutils literal"><span class="pre">abort</span></code>. If this option is
+set, then the code generator will always lower the builtin to a call
+to the specified function regardless of whether the target ISA has a
+trap instruction. This option is useful for environments (e.g.
+deeply embedded) where a trap cannot be properly handled, or when
+some custom behavior is desired.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-ftls-model">
+<code class="descname">-ftls-model</code><code class="descclassname">=[model]</code><a class="headerlink" href="#cmdoption-ftls-model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select which TLS model to use.</p>
+<p>Valid values are: <code class="docutils literal"><span class="pre">global-dynamic</span></code>, <code class="docutils literal"><span class="pre">local-dynamic</span></code>,
+<code class="docutils literal"><span class="pre">initial-exec</span></code> and <code class="docutils literal"><span class="pre">local-exec</span></code>. The default value is
+<code class="docutils literal"><span class="pre">global-dynamic</span></code>. The compiler may use a different model if the
+selected model is not supported by the target, or if a more
+efficient model can be used. The TLS model can be overridden per
+variable using the <code class="docutils literal"><span class="pre">tls_model</span></code> attribute.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-mhwdiv">
+<code class="descname">-mhwdiv</code><code class="descclassname">=[values]</code><a class="headerlink" href="#cmdoption-mhwdiv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select the ARM modes (arm or thumb) that support hardware division
+instructions.</p>
+<p>Valid values are: <code class="docutils literal"><span class="pre">arm</span></code>, <code class="docutils literal"><span class="pre">thumb</span></code> and <code class="docutils literal"><span class="pre">arm,thumb</span></code>.
+This option is used to indicate which mode (arm or thumb) supports
+hardware division instructions. This only applies to the ARM
+architecture.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-m">
+<code class="descname">-m</code><code class="descclassname">[no-]crc</code><a class="headerlink" href="#cmdoption-m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable or disable CRC instructions.</p>
+<p>This option is used to indicate whether CRC instructions are to
+be generated. This only applies to the ARM architecture.</p>
+<p>CRC instructions are enabled by default on ARMv8.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-mgeneral-regs-only">
+<code class="descname">-mgeneral-regs-only</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-mgeneral-regs-only" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate code which only uses the general purpose registers.</p>
+<p>This option restricts the generated code to use general registers
+only. This only applies to the AArch64 architecture.</p>
+</dd></dl>
+
+<dl class="docutils">
+<dt><strong>-f[no-]max-unknown-pointer-align=[number]</strong></dt>
+<dd><p class="first">Instruct the code generator to not enforce a higher alignment than the given
+number (of bytes) when accessing memory via an opaque pointer or reference.
+This cap is ignored when directly accessing a variable or when the pointee
+type has an explicit “aligned” attribute.</p>
+<p>The value should usually be determined by the properties of the system allocator.
+Some builtin types, especially vector types, have very high natural alignments;
+when working with values of those types, Clang usually wants to use instructions
+that take advantage of that alignment.  However, many system allocators do
+not promise to return memory that is more than 8-byte or 16-byte-aligned.  Use
+this option to limit the alignment that the compiler can assume for an arbitrary
+pointer, which may point onto the heap.</p>
+<p>This option does not affect the ABI alignment of types; the layout of structs and
+unions and the value returned by the alignof operator remain the same.</p>
+<p>This option can be overridden on a case-by-case basis by putting an explicit
+“aligned” alignment on a struct, union, or typedef.  For example:</p>
+<div class="last highlight-console"><div class="highlight"><pre><span class="gp">#</span>include &lt;immintrin.h&gt;
+<span class="go">// Make an aligned typedef of the AVX-512 16-int vector type.</span>
+<span class="go">typedef __v16si __aligned_v16si __attribute__((aligned(64)));</span>
+
+<span class="go">void initialize_vector(__aligned_v16si *v) {</span>
+<span class="go">  // The compiler may assume that ‘v’ is 64-byte aligned, regardless of the</span>
+<span class="go">  // value of -fmax-unknown-pointer-align.</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="profile-guided-optimization">
+<h3><a class="toc-backref" href="#id33">Profile Guided Optimization</a><a class="headerlink" href="#profile-guided-optimization" title="Permalink to this headline">¶</a></h3>
+<p>Profile information enables better optimization. For example, knowing that a
+branch is taken very frequently helps the compiler make better decisions when
+ordering basic blocks. Knowing that a function <code class="docutils literal"><span class="pre">foo</span></code> is called more
+frequently than another function <code class="docutils literal"><span class="pre">bar</span></code> helps the inliner.</p>
+<p>Clang supports profile guided optimization with two different kinds of
+profiling. A sampling profiler can generate a profile with very low runtime
+overhead, or you can build an instrumented version of the code that collects
+more detailed profile information. Both kinds of profiles can provide execution
+counts for instructions in the code and information on branches taken and
+function invocation.</p>
+<p>Regardless of which kind of profiling you use, be careful to collect profiles
+by running your code with inputs that are representative of the typical
+behavior. Code that is not exercised in the profile will be optimized as if it
+is unimportant, and the compiler may make poor optimization choices for code
+that is disproportionately used while profiling.</p>
+<div class="section" id="differences-between-sampling-and-instrumentation">
+<h4><a class="toc-backref" href="#id34">Differences Between Sampling and Instrumentation</a><a class="headerlink" href="#differences-between-sampling-and-instrumentation" title="Permalink to this headline">¶</a></h4>
+<p>Although both techniques are used for similar purposes, there are important
+differences between the two:</p>
+<ol class="arabic simple">
+<li>Profile data generated with one cannot be used by the other, and there is no
+conversion tool that can convert one to the other. So, a profile generated
+via <code class="docutils literal"><span class="pre">-fprofile-instr-generate</span></code> must be used with <code class="docutils literal"><span class="pre">-fprofile-instr-use</span></code>.
+Similarly, sampling profiles generated by external profilers must be
+converted and used with <code class="docutils literal"><span class="pre">-fprofile-sample-use</span></code>.</li>
+<li>Instrumentation profile data can be used for code coverage analysis and
+optimization.</li>
+<li>Sampling profiles can only be used for optimization. They cannot be used for
+code coverage analysis. Although it would be technically possible to use
+sampling profiles for code coverage, sample-based profiles are too
+coarse-grained for code coverage purposes; it would yield poor results.</li>
+<li>Sampling profiles must be generated by an external tool. The profile
+generated by that tool must then be converted into a format that can be read
+by LLVM. The section on sampling profilers describes one of the supported
+sampling profile formats.</li>
+</ol>
+</div>
+<div class="section" id="using-sampling-profilers">
+<h4><a class="toc-backref" href="#id35">Using Sampling Profilers</a><a class="headerlink" href="#using-sampling-profilers" title="Permalink to this headline">¶</a></h4>
+<p>Sampling profilers are used to collect runtime information, such as
+hardware counters, while your application executes. They are typically
+very efficient and do not incur a large runtime overhead. The
+sample data collected by the profiler can be used during compilation
+to determine what the most executed areas of the code are.</p>
+<p>Using the data from a sample profiler requires some changes in the way
+a program is built. Before the compiler can use profiling information,
+the code needs to execute under the profiler. The following is the
+usual build cycle when using sample profilers for optimization:</p>
+<ol class="arabic">
+<li><p class="first">Build the code with source line table information. You can use all the
+usual build flags that you always build your application with. The only
+requirement is that you add <code class="docutils literal"><span class="pre">-gline-tables-only</span></code> or <code class="docutils literal"><span class="pre">-g</span></code> to the
+command line. This is important for the profiler to be able to map
+instructions back to source line locations.</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang++ -O2 -gline-tables-only code.cc -o code
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the executable under a sampling profiler. The specific profiler
+you use does not really matter, as long as its output can be converted
+into the format that the LLVM optimizer understands. Currently, there
+exists a conversion tool for the Linux Perf profiler
+(<a class="reference external" href="https://perf.wiki.kernel.org/">https://perf.wiki.kernel.org/</a>), so these examples assume that you
+are using Linux Perf to profile your code.</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> perf record -b ./code
+</pre></div>
+</div>
+<p>Note the use of the <code class="docutils literal"><span class="pre">-b</span></code> flag. This tells Perf to use the Last Branch
+Record (LBR) to record call chains. While this is not strictly required,
+it provides better call information, which improves the accuracy of
+the profile data.</p>
+</li>
+<li><p class="first">Convert the collected profile data to LLVM&#8217;s sample profile format.
+This is currently supported via the AutoFDO converter <code class="docutils literal"><span class="pre">create_llvm_prof</span></code>.
+It is available at <a class="reference external" href="http://github.com/google/autofdo">http://github.com/google/autofdo</a>. Once built and
+installed, you can convert the <code class="docutils literal"><span class="pre">perf.data</span></code> file to LLVM using
+the command:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> create_llvm_prof --binary<span class="o">=</span>./code --out<span class="o">=</span>code.prof
+</pre></div>
+</div>
+<p>This will read <code class="docutils literal"><span class="pre">perf.data</span></code> and the binary file <code class="docutils literal"><span class="pre">./code</span></code> and emit
+the profile data in <code class="docutils literal"><span class="pre">code.prof</span></code>. Note that if you ran <code class="docutils literal"><span class="pre">perf</span></code>
+without the <code class="docutils literal"><span class="pre">-b</span></code> flag, you need to use <code class="docutils literal"><span class="pre">--use_lbr=false</span></code> when
+calling <code class="docutils literal"><span class="pre">create_llvm_prof</span></code>.</p>
+</li>
+<li><p class="first">Build the code again using the collected profile. This step feeds
+the profile back to the optimizers. This should result in a binary
+that executes faster than the original one. Note that you are not
+required to build the code with the exact same arguments that you
+used in the first step. The only requirement is that you build the code
+with <code class="docutils literal"><span class="pre">-gline-tables-only</span></code> and <code class="docutils literal"><span class="pre">-fprofile-sample-use</span></code>.</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang++ -O2 -gline-tables-only -fprofile-sample-use<span class="o">=</span>code.prof code.cc -o code
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="sample-profile-formats">
+<h5><a class="toc-backref" href="#id36">Sample Profile Formats</a><a class="headerlink" href="#sample-profile-formats" title="Permalink to this headline">¶</a></h5>
+<p>Since external profilers generate profile data in a variety of custom formats,
+the data generated by the profiler must be converted into a format that can be
+read by the backend. LLVM supports three different sample profile formats:</p>
+<ol class="arabic simple">
+<li>ASCII text. This is the easiest one to generate. The file is divided into
+sections, which correspond to each of the functions with profile
+information. The format is described below.</li>
+<li>Binary encoding. This uses a more efficient encoding that yields smaller
+profile files, which may be useful when generating large profiles. It can be
+generated from the text format using the <code class="docutils literal"><span class="pre">llvm-profdata</span></code> tool.</li>
+<li>GCC encoding. This is based on the gcov format, which is accepted by GCC. It
+is only interesting in environments where GCC and Clang co-exist. Similarly
+to the binary encoding, it can be generated using the <code class="docutils literal"><span class="pre">llvm-profdata</span></code> tool.</li>
+</ol>
+<p>If you are using Linux Perf to generate sampling profiles, you can use the
+conversion tool <code class="docutils literal"><span class="pre">create_llvm_prof</span></code> described in the previous section.
+Otherwise, you will need to write a conversion tool that converts your
+profiler&#8217;s native format into one of these three.</p>
+</div>
+<div class="section" id="sample-profile-text-format">
+<h5><a class="toc-backref" href="#id37">Sample Profile Text Format</a><a class="headerlink" href="#sample-profile-text-format" title="Permalink to this headline">¶</a></h5>
+<p>This section describes the ASCII text format for sampling profiles. It is,
+arguably, the easiest one to generate. If you are interested in generating any
+of the other two, consult the <code class="docutils literal"><span class="pre">ProfileData</span></code> library in in LLVM&#8217;s source tree
+(specifically, <code class="docutils literal"><span class="pre">llvm/lib/ProfileData/SampleProfWriter.cpp</span></code>).</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">function1:total_samples:total_head_samples</span>
+<span class="go">offset1[.discriminator]: number_of_samples [fn1:num fn2:num ... ]</span>
+<span class="go">offset2[.discriminator]: number_of_samples [fn3:num fn4:num ... ]</span>
+<span class="go">...</span>
+<span class="go">offsetN[.discriminator]: number_of_samples [fn5:num fn6:num ... ]</span>
+</pre></div>
+</div>
+<p>The file may contain blank lines between sections and within a
+section. However, the spacing within a single line is fixed. Additional
+spaces will result in an error while reading the file.</p>
+<p>Function names must be mangled in order for the profile loader to
+match them in the current translation unit. The two numbers in the
+function header specify how many total samples were accumulated in the
+function (first number), and the total number of samples accumulated
+in the prologue of the function (second number). This head sample
+count provides an indicator of how frequently the function is invoked.</p>
+<p>Each sampled line may contain several items. Some are optional (marked
+below):</p>
+<ol class="loweralpha">
+<li><p class="first">Source line offset. This number represents the line number
+in the function where the sample was collected. The line number is
+always relative to the line where symbol of the function is
+defined. So, if the function has its header at line 280, the offset
+13 is at line 293 in the file.</p>
+<p>Note that this offset should never be a negative number. This could
+happen in cases like macros. The debug machinery will register the
+line number at the point of macro expansion. So, if the macro was
+expanded in a line before the start of the function, the profile
+converter should emit a 0 as the offset (this means that the optimizers
+will not be able to associate a meaningful weight to the instructions
+in the macro).</p>
+</li>
+<li><p class="first">[OPTIONAL] Discriminator. This is used if the sampled program
+was compiled with DWARF discriminator support
+(<a class="reference external" href="http://wiki.dwarfstd.org/index.php?title=Path_Discriminators">http://wiki.dwarfstd.org/index.php?title=Path_Discriminators</a>).
+DWARF discriminators are unsigned integer values that allow the
+compiler to distinguish between multiple execution paths on the
+same source line location.</p>
+<p>For example, consider the line of code <code class="docutils literal"><span class="pre">if</span> <span class="pre">(cond)</span> <span class="pre">foo();</span> <span class="pre">else</span> <span class="pre">bar();</span></code>.
+If the predicate <code class="docutils literal"><span class="pre">cond</span></code> is true 80% of the time, then the edge
+into function <code class="docutils literal"><span class="pre">foo</span></code> should be considered to be taken most of the
+time. But both calls to <code class="docutils literal"><span class="pre">foo</span></code> and <code class="docutils literal"><span class="pre">bar</span></code> are at the same source
+line, so a sample count at that line is not sufficient. The
+compiler needs to know which part of that line is taken more
+frequently.</p>
+<p>This is what discriminators provide. In this case, the calls to
+<code class="docutils literal"><span class="pre">foo</span></code> and <code class="docutils literal"><span class="pre">bar</span></code> will be at the same line, but will have
+different discriminator values. This allows the compiler to correctly
+set edge weights into <code class="docutils literal"><span class="pre">foo</span></code> and <code class="docutils literal"><span class="pre">bar</span></code>.</p>
+</li>
+<li><p class="first">Number of samples. This is an integer quantity representing the
+number of samples collected by the profiler at this source
+location.</p>
+</li>
+<li><p class="first">[OPTIONAL] Potential call targets and samples. If present, this
+line contains a call instruction. This models both direct and
+number of samples. For example,</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">130: 7  foo:3  bar:2  baz:7</span>
+</pre></div>
+</div>
+<p>The above means that at relative line offset 130 there is a call
+instruction that calls one of <code class="docutils literal"><span class="pre">foo()</span></code>, <code class="docutils literal"><span class="pre">bar()</span></code> and <code class="docutils literal"><span class="pre">baz()</span></code>,
+with <code class="docutils literal"><span class="pre">baz()</span></code> being the relatively more frequently called target.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="profiling-with-instrumentation">
+<h4><a class="toc-backref" href="#id38">Profiling with Instrumentation</a><a class="headerlink" href="#profiling-with-instrumentation" title="Permalink to this headline">¶</a></h4>
+<p>Clang also supports profiling via instrumentation. This requires building a
+special instrumented version of the code and has some runtime
+overhead during the profiling, but it provides more detailed results than a
+sampling profiler. It also provides reproducible results, at least to the
+extent that the code behaves consistently across runs.</p>
+<p>Here are the steps for using profile guided optimization with
+instrumentation:</p>
+<ol class="arabic">
+<li><p class="first">Build an instrumented version of the code by compiling and linking with the
+<code class="docutils literal"><span class="pre">-fprofile-instr-generate</span></code> option.</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang++ -O2 -fprofile-instr-generate code.cc -o code
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the instrumented executable with inputs that reflect the typical usage.
+By default, the profile data will be written to a <code class="docutils literal"><span class="pre">default.profraw</span></code> file
+in the current directory. You can override that default by setting the
+<code class="docutils literal"><span class="pre">LLVM_PROFILE_FILE</span></code> environment variable to specify an alternate file.
+Any instance of <code class="docutils literal"><span class="pre">%p</span></code> in that file name will be replaced by the process
+ID, so that you can easily distinguish the profile output from multiple
+runs.</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> <span class="nv">LLVM_PROFILE_FILE</span><span class="o">=</span><span class="s2">&quot;code-%p.profraw&quot;</span> ./code
+</pre></div>
+</div>
+</li>
+<li><p class="first">Combine profiles from multiple runs and convert the &#8220;raw&#8221; profile format to
+the input expected by clang. Use the <code class="docutils literal"><span class="pre">merge</span></code> command of the
+<code class="docutils literal"><span class="pre">llvm-profdata</span></code> tool to do this.</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> llvm-profdata merge -output<span class="o">=</span>code.profdata code-*.profraw
+</pre></div>
+</div>
+<p>Note that this step is necessary even when there is only one &#8220;raw&#8221; profile,
+since the merge operation also changes the file format.</p>
+</li>
+<li><p class="first">Build the code again using the <code class="docutils literal"><span class="pre">-fprofile-instr-use</span></code> option to specify the
+collected profile data.</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang++ -O2 -fprofile-instr-use<span class="o">=</span>code.profdata code.cc -o code
+</pre></div>
+</div>
+<p>You can repeat step 4 as often as you like without regenerating the
+profile. As you make changes to your code, clang may no longer be able to
+use the profile data. It will warn you when this happens.</p>
+</li>
+</ol>
+<p>Profile generation and use can also be controlled by the GCC-compatible flags
+<code class="docutils literal"><span class="pre">-fprofile-generate</span></code> and <code class="docutils literal"><span class="pre">-fprofile-use</span></code>. Although these flags are
+semantically equivalent to their GCC counterparts, they <em>do not</em> handle
+GCC-compatible profiles. They are only meant to implement GCC&#8217;s semantics
+with respect to profile creation and use.</p>
+<dl class="option">
+<dt id="cmdoption-fprofile-generate">
+<code class="descname">-fprofile-generate</code><code class="descclassname">[=&lt;dirname&gt;]</code><a class="headerlink" href="#cmdoption-fprofile-generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Without any other arguments, <code class="docutils literal"><span class="pre">-fprofile-generate</span></code> behaves identically to
+<code class="docutils literal"><span class="pre">-fprofile-instr-generate</span></code>. When given a directory name, it generates the
+profile file <code class="docutils literal"><span class="pre">default.profraw</span></code> in the directory named <code class="docutils literal"><span class="pre">dirname</span></code>. If
+<code class="docutils literal"><span class="pre">dirname</span></code> does not exist, it will be created at runtime. The environment
+variable <code class="docutils literal"><span class="pre">LLVM_PROFILE_FILE</span></code> can be used to override the directory and
+filename for the profile file at runtime. For example,</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang++ -O2 -fprofile-generate<span class="o">=</span>yyy/zzz code.cc -o code
+</pre></div>
+</div>
+<p>When <code class="docutils literal"><span class="pre">code</span></code> is executed, the profile will be written to the file
+<code class="docutils literal"><span class="pre">yyy/zzz/default.profraw</span></code>. This can be altered at runtime via the
+<code class="docutils literal"><span class="pre">LLVM_PROFILE_FILE</span></code> environment variable:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> <span class="nv">LLVM_PROFILE_FILE</span><span class="o">=</span>/tmp/myprofile/code.profraw ./code
+</pre></div>
+</div>
+<p>The above invocation will produce the profile file
+<code class="docutils literal"><span class="pre">/tmp/myprofile/code.profraw</span></code> instead of <code class="docutils literal"><span class="pre">yyy/zzz/default.profraw</span></code>.
+Notice that <code class="docutils literal"><span class="pre">LLVM_PROFILE_FILE</span></code> overrides the directory <em>and</em> the file
+name for the profile file.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-fprofile-use">
+<code class="descname">-fprofile-use</code><code class="descclassname">[=&lt;pathname&gt;]</code><a class="headerlink" href="#cmdoption-fprofile-use" title="Permalink to this definition">¶</a></dt>
+<dd><p>Without any other arguments, <code class="docutils literal"><span class="pre">-fprofile-use</span></code> behaves identically to
+<code class="docutils literal"><span class="pre">-fprofile-instr-use</span></code>. Otherwise, if <code class="docutils literal"><span class="pre">pathname</span></code> is the full path to a
+profile file, it reads from that file. If <code class="docutils literal"><span class="pre">pathname</span></code> is a directory name,
+it reads from <code class="docutils literal"><span class="pre">pathname/default.profdata</span></code>.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="controlling-size-of-debug-information">
+<h3><a class="toc-backref" href="#id39">Controlling Size of Debug Information</a><a class="headerlink" href="#controlling-size-of-debug-information" title="Permalink to this headline">¶</a></h3>
+<p>Debug info kind generated by Clang can be set by one of the flags listed
+below. If multiple flags are present, the last one is used.</p>
+<dl class="option">
+<dt id="cmdoption-g0">
+<code class="descname">-g0</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-g0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Don&#8217;t generate any debug info (default).</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-gline-tables-only">
+<code class="descname">-gline-tables-only</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-gline-tables-only" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate line number tables only.</p>
+<p>This kind of debug info allows to obtain stack traces with function names,
+file names and line numbers (by such tools as <code class="docutils literal"><span class="pre">gdb</span></code> or <code class="docutils literal"><span class="pre">addr2line</span></code>).  It
+doesn&#8217;t contain any other data (e.g. description of local variables or
+function parameters).</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-fstandalone-debug">
+<code class="descname">-fstandalone-debug</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fstandalone-debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clang supports a number of optimizations to reduce the size of debug
+information in the binary. They work based on the assumption that
+the debug type information can be spread out over multiple
+compilation units.  For instance, Clang will not emit type
+definitions for types that are not needed by a module and could be
+replaced with a forward declaration.  Further, Clang will only emit
+type info for a dynamic C++ class in the module that contains the
+vtable for the class.</p>
+<p>The <strong>-fstandalone-debug</strong> option turns off these optimizations.
+This is useful when working with 3rd-party libraries that don&#8217;t come
+with debug information.  Note that Clang will never emit type
+information for types that are not referenced at all by the program.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-fno-standalone-debug">
+<code class="descname">-fno-standalone-debug</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fno-standalone-debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>On Darwin <strong>-fstandalone-debug</strong> is enabled by default. The
+<strong>-fno-standalone-debug</strong> option can be used to get to turn on the
+vtable-based optimization described above.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-g">
+<code class="descname">-g</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate complete debug info.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="comment-parsing-options">
+<h3><a class="toc-backref" href="#id40">Comment Parsing Options</a><a class="headerlink" href="#comment-parsing-options" title="Permalink to this headline">¶</a></h3>
+<p>Clang parses Doxygen and non-Doxygen style documentation comments and attaches
+them to the appropriate declaration nodes.  By default, it only parses
+Doxygen-style comments and ignores ordinary comments starting with <code class="docutils literal"><span class="pre">//</span></code> and
+<code class="docutils literal"><span class="pre">/*</span></code>.</p>
+<dl class="option">
+<dt id="cmdoption-Wdocumentation">
+<code class="descname">-Wdocumentation</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Wdocumentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emit warnings about use of documentation comments.  This warning group is off
+by default.</p>
+<p>This includes checking that <code class="docutils literal"><span class="pre">\param</span></code> commands name parameters that actually
+present in the function signature, checking that <code class="docutils literal"><span class="pre">\returns</span></code> is used only on
+functions that actually return a value etc.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-Wno-documentation-unknown-command">
+<code class="descname">-Wno-documentation-unknown-command</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Wno-documentation-unknown-command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Don&#8217;t warn when encountering an unknown Doxygen command.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-fparse-all-comments">
+<code class="descname">-fparse-all-comments</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fparse-all-comments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse all comments as documentation comments (including ordinary comments
+starting with <code class="docutils literal"><span class="pre">//</span></code> and <code class="docutils literal"><span class="pre">/*</span></code>).</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-fcomment-block-commands">
+<code class="descname">-fcomment-block-commands</code><code class="descclassname">=[commands]</code><a class="headerlink" href="#cmdoption-fcomment-block-commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define custom documentation commands as block commands.  This allows Clang to
+construct the correct AST for these custom commands, and silences warnings
+about unknown commands.  Several commands must be separated by a comma
+<em>without trailing space</em>; e.g. <code class="docutils literal"><span class="pre">-fcomment-block-commands=foo,bar</span></code> defines
+custom commands <code class="docutils literal"><span class="pre">\foo</span></code> and <code class="docutils literal"><span class="pre">\bar</span></code>.</p>
+<p>It is also possible to use <code class="docutils literal"><span class="pre">-fcomment-block-commands</span></code> several times; e.g.
+<code class="docutils literal"><span class="pre">-fcomment-block-commands=foo</span> <span class="pre">-fcomment-block-commands=bar</span></code> does the same
+as above.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="c-language-features">
+<span id="c"></span><h2><a class="toc-backref" href="#id41">C Language Features</a><a class="headerlink" href="#c-language-features" title="Permalink to this headline">¶</a></h2>
+<p>The support for standard C in clang is feature-complete except for the
+C99 floating-point pragmas.</p>
+<div class="section" id="extensions-supported-by-clang">
+<h3><a class="toc-backref" href="#id42">Extensions supported by clang</a><a class="headerlink" href="#extensions-supported-by-clang" title="Permalink to this headline">¶</a></h3>
+<p>See <a class="reference internal" href="LanguageExtensions.html"><em>Clang Language Extensions</em></a>.</p>
+</div>
+<div class="section" id="differences-between-various-standard-modes">
+<h3><a class="toc-backref" href="#id43">Differences between various standard modes</a><a class="headerlink" href="#differences-between-various-standard-modes" title="Permalink to this headline">¶</a></h3>
+<p>clang supports the -std option, which changes what language mode clang
+uses. The supported modes for C are c89, gnu89, c94, c99, gnu99, c11,
+gnu11, and various aliases for those modes. If no -std option is
+specified, clang defaults to gnu11 mode. Many C99 and C11 features are
+supported in earlier modes as a conforming extension, with a warning. Use
+<code class="docutils literal"><span class="pre">-pedantic-errors</span></code> to request an error if a feature from a later standard
+revision is used in an earlier mode.</p>
+<p>Differences between all <code class="docutils literal"><span class="pre">c*</span></code> and <code class="docutils literal"><span class="pre">gnu*</span></code> modes:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">c*</span></code> modes define &#8220;<code class="docutils literal"><span class="pre">__STRICT_ANSI__</span></code>&#8221;.</li>
+<li>Target-specific defines not prefixed by underscores, like &#8220;linux&#8221;,
+are defined in <code class="docutils literal"><span class="pre">gnu*</span></code> modes.</li>
+<li>Trigraphs default to being off in <code class="docutils literal"><span class="pre">gnu*</span></code> modes; they can be enabled by
+the -trigraphs option.</li>
+<li>The parser recognizes &#8220;asm&#8221; and &#8220;typeof&#8221; as keywords in <code class="docutils literal"><span class="pre">gnu*</span></code> modes;
+the variants &#8220;<code class="docutils literal"><span class="pre">__asm__</span></code>&#8221; and &#8220;<code class="docutils literal"><span class="pre">__typeof__</span></code>&#8221; are recognized in all
+modes.</li>
+<li>The Apple &#8220;blocks&#8221; extension is recognized by default in <code class="docutils literal"><span class="pre">gnu*</span></code> modes
+on some platforms; it can be enabled in any mode with the &#8220;-fblocks&#8221;
+option.</li>
+<li>Arrays that are VLA&#8217;s according to the standard, but which can be
+constant folded by the frontend are treated as fixed size arrays.
+This occurs for things like &#8220;int X[(1, 2)];&#8221;, which is technically a
+VLA. <code class="docutils literal"><span class="pre">c*</span></code> modes are strictly compliant and treat these as VLAs.</li>
+</ul>
+<p>Differences between <code class="docutils literal"><span class="pre">*89</span></code> and <code class="docutils literal"><span class="pre">*99</span></code> modes:</p>
+<ul class="simple">
+<li>The <code class="docutils literal"><span class="pre">*99</span></code> modes default to implementing &#8220;inline&#8221; as specified in C99,
+while the <code class="docutils literal"><span class="pre">*89</span></code> modes implement the GNU version. This can be
+overridden for individual functions with the <code class="docutils literal"><span class="pre">__gnu_inline__</span></code>
+attribute.</li>
+<li>Digraphs are not recognized in c89 mode.</li>
+<li>The scope of names defined inside a &#8220;for&#8221;, &#8220;if&#8221;, &#8220;switch&#8221;, &#8220;while&#8221;,
+or &#8220;do&#8221; statement is different. (example: &#8220;<code class="docutils literal"><span class="pre">if</span> <span class="pre">((struct</span> <span class="pre">x</span> <span class="pre">{int</span>
+<span class="pre">x;}*)0)</span> <span class="pre">{}</span></code>&#8221;.)</li>
+<li><code class="docutils literal"><span class="pre">__STDC_VERSION__</span></code> is not defined in <code class="docutils literal"><span class="pre">*89</span></code> modes.</li>
+<li>&#8220;inline&#8221; is not recognized as a keyword in c89 mode.</li>
+<li>&#8220;restrict&#8221; is not recognized as a keyword in <code class="docutils literal"><span class="pre">*89</span></code> modes.</li>
+<li>Commas are allowed in integer constant expressions in <code class="docutils literal"><span class="pre">*99</span></code> modes.</li>
+<li>Arrays which are not lvalues are not implicitly promoted to pointers
+in <code class="docutils literal"><span class="pre">*89</span></code> modes.</li>
+<li>Some warnings are different.</li>
+</ul>
+<p>Differences between <code class="docutils literal"><span class="pre">*99</span></code> and <code class="docutils literal"><span class="pre">*11</span></code> modes:</p>
+<ul class="simple">
+<li>Warnings for use of C11 features are disabled.</li>
+<li><code class="docutils literal"><span class="pre">__STDC_VERSION__</span></code> is defined to <code class="docutils literal"><span class="pre">201112L</span></code> rather than <code class="docutils literal"><span class="pre">199901L</span></code>.</li>
+</ul>
+<p>c94 mode is identical to c89 mode except that digraphs are enabled in
+c94 mode (FIXME: And <code class="docutils literal"><span class="pre">__STDC_VERSION__</span></code> should be defined!).</p>
+</div>
+<div class="section" id="gcc-extensions-not-implemented-yet">
+<h3><a class="toc-backref" href="#id44">GCC extensions not implemented yet</a><a class="headerlink" href="#gcc-extensions-not-implemented-yet" title="Permalink to this headline">¶</a></h3>
+<p>clang tries to be compatible with gcc as much as possible, but some gcc
+extensions are not implemented yet:</p>
+<ul>
+<li><p class="first">clang does not support #pragma weak (<a class="reference external" href="http://llvm.org/bugs/show_bug.cgi?id=3679">bug
+3679</a>). Due to the uses
+described in the bug, this is likely to be implemented at some point,
+at least partially.</p>
+</li>
+<li><p class="first">clang does not support decimal floating point types (<code class="docutils literal"><span class="pre">_Decimal32</span></code> and
+friends) or fixed-point types (<code class="docutils literal"><span class="pre">_Fract</span></code> and friends); nobody has
+expressed interest in these features yet, so it&#8217;s hard to say when
+they will be implemented.</p>
+</li>
+<li><p class="first">clang does not support nested functions; this is a complex feature
+which is infrequently used, so it is unlikely to be implemented
+anytime soon. In C++11 it can be emulated by assigning lambda
+functions to local variables, e.g:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="k">auto</span> <span class="k">const</span> <span class="n">local_function</span> <span class="o">=</span> <span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="kt">int</span> <span class="n">parameter</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Do something</span>
+<span class="p">};</span>
+<span class="p">...</span>
+<span class="n">local_function</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">clang does not support global register variables; this is unlikely to
+be implemented soon because it requires additional LLVM backend
+support.</p>
+</li>
+<li><p class="first">clang does not support static initialization of flexible array
+members. This appears to be a rarely used extension, but could be
+implemented pending user demand.</p>
+</li>
+<li><p class="first">clang does not support
+<code class="docutils literal"><span class="pre">__builtin_va_arg_pack</span></code>/<code class="docutils literal"><span class="pre">__builtin_va_arg_pack_len</span></code>. This is
+used rarely, but in some potentially interesting places, like the
+glibc headers, so it may be implemented pending user demand. Note
+that because clang pretends to be like GCC 4.2, and this extension
+was introduced in 4.3, the glibc headers will not try to use this
+extension with clang at the moment.</p>
+</li>
+<li><p class="first">clang does not support the gcc extension for forward-declaring
+function parameters; this has not shown up in any real-world code
+yet, though, so it might never be implemented.</p>
+</li>
+</ul>
+<p>This is not a complete list; if you find an unsupported extension
+missing from this list, please send an e-mail to cfe-dev. This list
+currently excludes C++; see <a class="reference internal" href="#cxx"><span>C++ Language Features</span></a>. Also, this
+list does not include bugs in mostly-implemented features; please see
+the <a class="reference external" href="http://llvm.org/bugs/buglist.cgi?quicksearch=product%3Aclang+component%3A-New%2BBugs%2CAST%2CBasic%2CDriver%2CHeaders%2CLLVM%2BCodeGen%2Cparser%2Cpreprocessor%2CSemantic%2BAnalyzer">bug
+tracker</a>
+for known existing bugs (FIXME: Is there a section for bug-reporting
+guidelines somewhere?).</p>
+</div>
+<div class="section" id="intentionally-unsupported-gcc-extensions">
+<h3><a class="toc-backref" href="#id45">Intentionally unsupported GCC extensions</a><a class="headerlink" href="#intentionally-unsupported-gcc-extensions" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>clang does not support the gcc extension that allows variable-length
+arrays in structures. This is for a few reasons: one, it is tricky to
+implement, two, the extension is completely undocumented, and three,
+the extension appears to be rarely used. Note that clang <em>does</em>
+support flexible array members (arrays with a zero or unspecified
+size at the end of a structure).</li>
+<li>clang does not have an equivalent to gcc&#8217;s &#8220;fold&#8221;; this means that
+clang doesn&#8217;t accept some constructs gcc might accept in contexts
+where a constant expression is required, like &#8220;x-x&#8221; where x is a
+variable.</li>
+<li>clang does not support <code class="docutils literal"><span class="pre">__builtin_apply</span></code> and friends; this extension
+is extremely obscure and difficult to implement reliably.</li>
+</ul>
+</div>
+<div class="section" id="microsoft-extensions">
+<span id="c-ms"></span><h3><a class="toc-backref" href="#id46">Microsoft extensions</a><a class="headerlink" href="#microsoft-extensions" title="Permalink to this headline">¶</a></h3>
+<p>clang has some experimental support for extensions from Microsoft Visual
+C++; to enable it, use the <code class="docutils literal"><span class="pre">-fms-extensions</span></code> command-line option. This is
+the default for Windows targets. Note that the support is incomplete.
+Some constructs such as <code class="docutils literal"><span class="pre">dllexport</span></code> on classes are ignored with a warning,
+and others such as <a class="reference external" href="http://msdn.microsoft.com/en-us/library/8tesw2eh.aspx">Microsoft IDL annotations</a> are silently
+ignored.</p>
+<p>clang has a <code class="docutils literal"><span class="pre">-fms-compatibility</span></code> flag that makes clang accept enough
+invalid C++ to be able to parse most Microsoft headers. For example, it
+allows <a class="reference external" href="http://clang.llvm.org/compatibility.html#dep_lookup_bases">unqualified lookup of dependent base class members</a>, which is
+a common compatibility issue with clang. This flag is enabled by default
+for Windows targets.</p>
+<p><code class="docutils literal"><span class="pre">-fdelayed-template-parsing</span></code> lets clang delay parsing of function template
+definitions until the end of a translation unit. This flag is enabled by
+default for Windows targets.</p>
+<ul class="simple">
+<li>clang allows setting <code class="docutils literal"><span class="pre">_MSC_VER</span></code> with <code class="docutils literal"><span class="pre">-fmsc-version=</span></code>. It defaults to
+1700 which is the same as Visual C/C++ 2012. Any number is supported
+and can greatly affect what Windows SDK and c++stdlib headers clang
+can compile.</li>
+<li>clang does not support the Microsoft extension where anonymous record
+members can be declared using user defined typedefs.</li>
+<li>clang supports the Microsoft <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">pack</span></code> feature for controlling
+record layout. GCC also contains support for this feature, however
+where MSVC and GCC are incompatible clang follows the MSVC
+definition.</li>
+<li>clang supports the Microsoft <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">comment(lib,</span> <span class="pre">&quot;foo.lib&quot;)</span></code> feature for
+automatically linking against the specified library.  Currently this feature
+only works with the Visual C++ linker.</li>
+<li>clang supports the Microsoft <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">comment(linker,</span> <span class="pre">&quot;/flag:foo&quot;)</span></code> feature
+for adding linker flags to COFF object files.  The user is responsible for
+ensuring that the linker understands the flags.</li>
+<li>clang defaults to C++11 for Windows targets.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="cxx">
+<span id="id3"></span><h2><a class="toc-backref" href="#id47">C++ Language Features</a><a class="headerlink" href="#cxx" title="Permalink to this headline">¶</a></h2>
+<p>clang fully implements all of standard C++98 except for exported
+templates (which were removed in C++11), and all of standard C++11
+and the current draft standard for C++1y.</p>
+<div class="section" id="controlling-implementation-limits">
+<h3><a class="toc-backref" href="#id48">Controlling implementation limits</a><a class="headerlink" href="#controlling-implementation-limits" title="Permalink to this headline">¶</a></h3>
+<dl class="option">
+<dt id="cmdoption-fbracket-depth">
+<code class="descname">-fbracket-depth</code><code class="descclassname">=N</code><a class="headerlink" href="#cmdoption-fbracket-depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the limit for nested parentheses, brackets, and braces to N.  The
+default is 256.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-fconstexpr-depth">
+<code class="descname">-fconstexpr-depth</code><code class="descclassname">=N</code><a class="headerlink" href="#cmdoption-fconstexpr-depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the limit for recursive constexpr function invocations to N.  The
+default is 512.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-ftemplate-depth">
+<code class="descname">-ftemplate-depth</code><code class="descclassname">=N</code><a class="headerlink" href="#cmdoption-ftemplate-depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the limit for recursively nested template instantiations to N.  The
+default is 256.</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-foperator-arrow-depth">
+<code class="descname">-foperator-arrow-depth</code><code class="descclassname">=N</code><a class="headerlink" href="#cmdoption-foperator-arrow-depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the limit for iterative calls to &#8216;operator-&gt;&#8217; functions to N.  The
+default is 256.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="objective-c-language-features">
+<span id="objc"></span><h2><a class="toc-backref" href="#id49">Objective-C Language Features</a><a class="headerlink" href="#objective-c-language-features" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="objcxx">
+<span id="id4"></span><h2><a class="toc-backref" href="#id50">Objective-C++ Language Features</a><a class="headerlink" href="#objcxx" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="target-specific-features-and-limitations">
+<span id="target-features"></span><h2><a class="toc-backref" href="#id51">Target-Specific Features and Limitations</a><a class="headerlink" href="#target-specific-features-and-limitations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cpu-architectures-features-and-limitations">
+<h3><a class="toc-backref" href="#id52">CPU Architectures Features and Limitations</a><a class="headerlink" href="#cpu-architectures-features-and-limitations" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="x86">
+<h4><a class="toc-backref" href="#id53">X86</a><a class="headerlink" href="#x86" title="Permalink to this headline">¶</a></h4>
+<p>The support for X86 (both 32-bit and 64-bit) is considered stable on
+Darwin (Mac OS X), Linux, FreeBSD, and Dragonfly BSD: it has been tested
+to correctly compile many large C, C++, Objective-C, and Objective-C++
+codebases.</p>
+<p>On <code class="docutils literal"><span class="pre">x86_64-mingw32</span></code>, passing i128(by value) is incompatible with the
+Microsoft x64 calling convention. You might need to tweak
+<code class="docutils literal"><span class="pre">WinX86_64ABIInfo::classify()</span></code> in lib/CodeGen/TargetInfo.cpp.</p>
+<p>For the X86 target, clang supports the <code class="xref std std-option docutils literal"><span class="pre">-m16</span></code> command line
+argument which enables 16-bit code output. This is broadly similar to
+using <code class="docutils literal"><span class="pre">asm(&quot;.code16gcc&quot;)</span></code> with the GNU toolchain. The generated code
+and the ABI remains 32-bit but the assembler emits instructions
+appropriate for a CPU running in 16-bit mode, with address-size and
+operand-size prefixes to enable 32-bit addressing and operations.</p>
+</div>
+<div class="section" id="arm">
+<h4><a class="toc-backref" href="#id54">ARM</a><a class="headerlink" href="#arm" title="Permalink to this headline">¶</a></h4>
+<p>The support for ARM (specifically ARMv6 and ARMv7) is considered stable
+on Darwin (iOS): it has been tested to correctly compile many large C,
+C++, Objective-C, and Objective-C++ codebases. Clang only supports a
+limited number of ARM architectures. It does not yet fully support
+ARMv5, for example.</p>
+</div>
+<div class="section" id="powerpc">
+<h4><a class="toc-backref" href="#id55">PowerPC</a><a class="headerlink" href="#powerpc" title="Permalink to this headline">¶</a></h4>
+<p>The support for PowerPC (especially PowerPC64) is considered stable
+on Linux and FreeBSD: it has been tested to correctly compile many
+large C and C++ codebases. PowerPC (32bit) is still missing certain
+features (e.g. PIC code on ELF platforms).</p>
+</div>
+<div class="section" id="other-platforms">
+<h4><a class="toc-backref" href="#id56">Other platforms</a><a class="headerlink" href="#other-platforms" title="Permalink to this headline">¶</a></h4>
+<p>clang currently contains some support for other architectures (e.g. Sparc);
+however, significant pieces of code generation are still missing, and they
+haven&#8217;t undergone significant testing.</p>
+<p>clang contains limited support for the MSP430 embedded processor, but
+both the clang support and the LLVM backend support are highly
+experimental.</p>
+<p>Other platforms are completely unsupported at the moment. Adding the
+minimal support needed for parsing and semantic analysis on a new
+platform is quite easy; see <code class="docutils literal"><span class="pre">lib/Basic/Targets.cpp</span></code> in the clang source
+tree. This level of support is also sufficient for conversion to LLVM IR
+for simple programs. Proper support for conversion to LLVM IR requires
+adding code to <code class="docutils literal"><span class="pre">lib/CodeGen/CGCall.cpp</span></code> at the moment; this is likely to
+change soon, though. Generating assembly requires a suitable LLVM
+backend.</p>
+</div>
+</div>
+<div class="section" id="operating-system-features-and-limitations">
+<h3><a class="toc-backref" href="#id57">Operating System Features and Limitations</a><a class="headerlink" href="#operating-system-features-and-limitations" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="darwin-mac-os-x">
+<h4><a class="toc-backref" href="#id58">Darwin (Mac OS X)</a><a class="headerlink" href="#darwin-mac-os-x" title="Permalink to this headline">¶</a></h4>
+<p>Thread Sanitizer is not supported.</p>
+</div>
+<div class="section" id="windows">
+<h4><a class="toc-backref" href="#id59">Windows</a><a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h4>
+<p>Clang has experimental support for targeting &#8220;Cygming&#8221; (Cygwin / MinGW)
+platforms.</p>
+<p>See also <a class="reference internal" href="#c-ms"><span>Microsoft Extensions</span></a>.</p>
+<div class="section" id="cygwin">
+<h5><a class="toc-backref" href="#id60">Cygwin</a><a class="headerlink" href="#cygwin" title="Permalink to this headline">¶</a></h5>
+<p>Clang works on Cygwin-1.7.</p>
+</div>
+<div class="section" id="mingw32">
+<h5><a class="toc-backref" href="#id61">MinGW32</a><a class="headerlink" href="#mingw32" title="Permalink to this headline">¶</a></h5>
+<p>Clang works on some mingw32 distributions. Clang assumes directories as
+below;</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">C:/mingw/include</span></code></li>
+<li><code class="docutils literal"><span class="pre">C:/mingw/lib</span></code></li>
+<li><code class="docutils literal"><span class="pre">C:/mingw/lib/gcc/mingw32/4.[3-5].0/include/c++</span></code></li>
+</ul>
+<p>On MSYS, a few tests might fail.</p>
+</div>
+<div class="section" id="mingw-w64">
+<h5><a class="toc-backref" href="#id62">MinGW-w64</a><a class="headerlink" href="#mingw-w64" title="Permalink to this headline">¶</a></h5>
+<p>For 32-bit (i686-w64-mingw32), and 64-bit (x86_64-w64-mingw32), Clang
+assumes as below;</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">GCC</span> <span class="pre">versions</span> <span class="pre">4.5.0</span> <span class="pre">to</span> <span class="pre">4.5.3,</span> <span class="pre">4.6.0</span> <span class="pre">to</span> <span class="pre">4.6.2,</span> <span class="pre">or</span> <span class="pre">4.7.0</span> <span class="pre">(for</span> <span class="pre">the</span> <span class="pre">C++</span> <span class="pre">header</span> <span class="pre">search</span> <span class="pre">path)</span></code></li>
+<li><code class="docutils literal"><span class="pre">some_directory/bin/gcc.exe</span></code></li>
+<li><code class="docutils literal"><span class="pre">some_directory/bin/clang.exe</span></code></li>
+<li><code class="docutils literal"><span class="pre">some_directory/bin/clang++.exe</span></code></li>
+<li><code class="docutils literal"><span class="pre">some_directory/bin/../include/c++/GCC_version</span></code></li>
+<li><code class="docutils literal"><span class="pre">some_directory/bin/../include/c++/GCC_version/x86_64-w64-mingw32</span></code></li>
+<li><code class="docutils literal"><span class="pre">some_directory/bin/../include/c++/GCC_version/i686-w64-mingw32</span></code></li>
+<li><code class="docutils literal"><span class="pre">some_directory/bin/../include/c++/GCC_version/backward</span></code></li>
+<li><code class="docutils literal"><span class="pre">some_directory/bin/../x86_64-w64-mingw32/include</span></code></li>
+<li><code class="docutils literal"><span class="pre">some_directory/bin/../i686-w64-mingw32/include</span></code></li>
+<li><code class="docutils literal"><span class="pre">some_directory/bin/../include</span></code></li>
+</ul>
+<p>This directory layout is standard for any toolchain you will find on the
+official <a class="reference external" href="http://mingw-w64.sourceforge.net">MinGW-w64 website</a>.</p>
+<p>Clang expects the GCC executable &#8220;gcc.exe&#8221; compiled for
+<code class="docutils literal"><span class="pre">i686-w64-mingw32</span></code> (or <code class="docutils literal"><span class="pre">x86_64-w64-mingw32</span></code>) to be present on PATH.</p>
+<p><a class="reference external" href="http://llvm.org/bugs/show_bug.cgi?id=9072">Some tests might fail</a> on
+<code class="docutils literal"><span class="pre">x86_64-w64-mingw32</span></code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="clang-cl">
+<span id="id5"></span><h2><a class="toc-backref" href="#id63">clang-cl</a><a class="headerlink" href="#clang-cl" title="Permalink to this headline">¶</a></h2>
+<p>clang-cl is an alternative command-line interface to Clang driver, designed for
+compatibility with the Visual C++ compiler, cl.exe.</p>
+<p>To enable clang-cl to find system headers, libraries, and the linker when run
+from the command-line, it should be executed inside a Visual Studio Native Tools
+Command Prompt or a regular Command Prompt where the environment has been set
+up using e.g. <a class="reference external" href="http://msdn.microsoft.com/en-us/library/f2ccy3wt.aspx">vcvars32.bat</a>.</p>
+<p>clang-cl can also be used from inside Visual Studio  by using an LLVM Platform
+Toolset.</p>
+<div class="section" id="id6">
+<h3><a class="toc-backref" href="#id64">Command-Line Options</a><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>To be compatible with cl.exe, clang-cl supports most of the same command-line
+options. Those options can start with either <code class="docutils literal"><span class="pre">/</span></code> or <code class="docutils literal"><span class="pre">-</span></code>. It also supports
+some of Clang&#8217;s core options, such as the <code class="docutils literal"><span class="pre">-W</span></code> options.</p>
+<p>Options that are known to clang-cl, but not currently supported, are ignored
+with a warning. For example:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>clang-cl.exe: warning: argument unused during compilation: &#39;/AI&#39;
+</pre></div>
+</div>
+</div></blockquote>
+<p>To suppress warnings about unused arguments, use the <code class="docutils literal"><span class="pre">-Qunused-arguments</span></code> option.</p>
+<p>Options that are not known to clang-cl will cause errors. If they are spelled with a
+leading <code class="docutils literal"><span class="pre">/</span></code>, they will be mistaken for a filename:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>clang-cl.exe: error: no such file or directory: &#39;/foobar&#39;
+</pre></div>
+</div>
+</div></blockquote>
+<p>Please <a class="reference external" href="http://llvm.org/bugs/enter_bug.cgi?product=clang&amp;component=Driver">file a bug</a>
+for any valid cl.exe flags that clang-cl does not understand.</p>
+<p>Execute <code class="docutils literal"><span class="pre">clang-cl</span> <span class="pre">/?</span></code> to see a list of supported options:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>CL.EXE COMPATIBILITY OPTIONS:
+  /?                     Display available options
+  /arch:&lt;value&gt;          Set architecture for code generation
+  /C                     Don&#39;t discard comments when preprocessing
+  /c                     Compile only
+  /D &lt;macro[=value]&gt;     Define macro
+  /EH&lt;value&gt;             Exception handling model
+  /EP                    Disable linemarker output and preprocess to stdout
+  /E                     Preprocess to stdout
+  /fallback              Fall back to cl.exe if clang-cl fails to compile
+  /FA                    Output assembly code file during compilation
+  /Fa&lt;file or directory&gt; Output assembly code to this file during compilation (with /FA)
+  /Fe&lt;file or directory&gt; Set output executable file or directory (ends in / or \)
+  /FI &lt;value&gt;            Include file before parsing
+  /Fi&lt;file&gt;              Set preprocess output file name (with /P)
+  /Fo&lt;file or directory&gt; Set output object file, or directory (ends in / or \) (with /c)
+  /fp:except-
+  /fp:except
+  /fp:fast
+  /fp:precise
+  /fp:strict
+  /GA                    Assume thread-local variables are defined in the executable
+  /GF-                   Disable string pooling
+  /GR-                   Disable emission of RTTI data
+  /GR                    Enable emission of RTTI data
+  /Gs&lt;value&gt;             Set stack probe size
+  /Gw-                   Don&#39;t put each data item in its own section
+  /Gw                    Put each data item in its own section
+  /Gy-                   Don&#39;t put each function in its own section
+  /Gy                    Put each function in its own section
+  /help                  Display available options
+  /I &lt;dir&gt;               Add directory to include search path
+  /J                     Make char type unsigned
+  /LDd                   Create debug DLL
+  /LD                    Create DLL
+  /link &lt;options&gt;        Forward options to the linker
+  /MDd                   Use DLL debug run-time
+  /MD                    Use DLL run-time
+  /MTd                   Use static debug run-time
+  /MT                    Use static run-time
+  /Ob0                   Disable inlining
+  /Od                    Disable optimization
+  /Oi-                   Disable use of builtin functions
+  /Oi                    Enable use of builtin functions
+  /Os                    Optimize for size
+  /Ot                    Optimize for speed
+  /Ox                    Maximum optimization
+  /Oy-                   Disable frame pointer omission
+  /Oy                    Enable frame pointer omission
+  /O&lt;n&gt;                  Optimization level
+  /o &lt;file or directory&gt; Set output file or directory (ends in / or \)
+  /P                     Preprocess to file
+  /Qvec-                 Disable the loop vectorization passes
+  /Qvec                  Enable the loop vectorization passes
+  /showIncludes          Print info about included files to stderr
+  /TC                    Treat all source files as C
+  /Tc &lt;filename&gt;         Specify a C source file
+  /TP                    Treat all source files as C++
+  /Tp &lt;filename&gt;         Specify a C++ source file
+  /U &lt;macro&gt;             Undefine macro
+  /vd&lt;value&gt;             Control vtordisp placement
+  /vmb                   Use a best-case representation method for member pointers
+  /vmg                   Use a most-general representation for member pointers
+  /vmm                   Set the default most-general representation to multiple inheritance
+  /vms                   Set the default most-general representation to single inheritance
+  /vmv                   Set the default most-general representation to virtual inheritance
+  /volatile:iso          Volatile loads and stores have standard semantics
+  /volatile:ms           Volatile loads and stores have acquire and release semantics
+  /W0                    Disable all warnings
+  /W1                    Enable -Wall
+  /W2                    Enable -Wall
+  /W3                    Enable -Wall
+  /W4                    Enable -Wall
+  /Wall                  Enable -Wall
+  /WX-                   Do not treat warnings as errors
+  /WX                    Treat warnings as errors
+  /w                     Disable all warnings
+  /Zc:sizedDealloc-      Disable C++14 sized global deallocation functions
+  /Zc:sizedDealloc       Enable C++14 sized global deallocation functions
+  /Zc:strictStrings      Treat string literals as const
+  /Zc:threadSafeInit-    Disable thread-safe initialization of static variables
+  /Zc:threadSafeInit     Enable thread-safe initialization of static variables
+  /Zc:trigraphs-         Disable trigraphs (default)
+  /Zc:trigraphs          Enable trigraphs
+  /Zi                    Enable debug information
+  /Zp                    Set the default maximum struct packing alignment to 1
+  /Zp&lt;value&gt;             Specify the default maximum struct packing alignment
+  /Zs                    Syntax-check only
+
+OPTIONS:
+  -###                    Print (but do not run) the commands to run for this compilation
+  --analyze               Run the static analyzer
+  -fansi-escape-codes     Use ANSI escape codes for diagnostics
+  -fcolor-diagnostics     Use colors in diagnostics
+  -fdiagnostics-parseable-fixits
+                          Print fix-its in machine parseable form
+  -fms-compatibility-version=&lt;value&gt;
+                          Dot-separated value representing the Microsoft compiler version
+                          number to report in _MSC_VER (0 = don&#39;t define it (default))
+  -fmsc-version=&lt;value&gt;   Microsoft compiler version number to report in _MSC_VER (0 = don&#39;t
+                          define it (default))
+  -fno-sanitize-coverage=&lt;value&gt;
+                          Disable specified features of coverage instrumentation for Sanitizers
+  -fno-sanitize-recover=&lt;value&gt;
+                          Disable recovery for specified sanitizers
+  -fno-sanitize-trap=&lt;value&gt;
+                          Disable trapping for specified sanitizers
+  -fsanitize-blacklist=&lt;value&gt;
+                          Path to blacklist file for sanitizers
+  -fsanitize-coverage=&lt;value&gt;
+                          Specify the type of coverage instrumentation for Sanitizers
+  -fsanitize-recover=&lt;value&gt;
+                          Enable recovery for specified sanitizers
+  -fsanitize-trap=&lt;value&gt; Enable trapping for specified sanitizers
+  -fsanitize=&lt;check&gt;      Turn on runtime checks for various forms of undefined or suspicious
+                          behavior. See user manual for available checks
+  -mllvm &lt;value&gt;          Additional arguments to forward to LLVM&#39;s option processing
+  -Qunused-arguments      Don&#39;t emit warning for unused driver arguments
+  -R&lt;remark&gt;              Enable the specified remark
+  --target=&lt;value&gt;        Generate code for the given target
+  -v                      Show commands to run and use verbose output
+  -W&lt;warning&gt;             Enable the specified warning
+  -Xclang &lt;arg&gt;           Pass &lt;arg&gt; to the clang compiler
+</pre></div>
+</div>
+</div></blockquote>
+<div class="section" id="the-fallback-option">
+<h4><a class="toc-backref" href="#id65">The /fallback Option</a><a class="headerlink" href="#the-fallback-option" title="Permalink to this headline">¶</a></h4>
+<p>When clang-cl is run with the <code class="docutils literal"><span class="pre">/fallback</span></code> option, it will first try to
+compile files itself. For any file that it fails to compile, it will fall back
+and try to compile the file by invoking cl.exe.</p>
+<p>This option is intended to be used as a temporary means to build projects where
+clang-cl cannot successfully compile all the files. clang-cl may fail to compile
+a file either because it cannot generate code for some C++ feature, or because
+it cannot parse some Microsoft language extension.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="ReleaseNotes.html">Clang 3.7 Release Notes</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="LanguageExtensions.html">Clang Language Extensions</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2007-2015, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

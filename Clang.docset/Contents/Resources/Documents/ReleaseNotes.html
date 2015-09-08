@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Clang 3.7 Release Notes &mdash; Clang 3.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="next" title="Clang Compiler User’s Manual" href="UsersManual.html" />
+    <link rel="prev" title="Using Clang as a Compiler" href="index.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Clang 3.7 documentation</span></a></h1>
+        <h2 class="heading"><span>Clang 3.7 Release Notes</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Using Clang as a Compiler</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="UsersManual.html">Clang Compiler User&#8217;s Manual</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="clang-3-7-release-notes">
+<h1>Clang 3.7 Release Notes<a class="headerlink" href="#clang-3-7-release-notes" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
+<li><a class="reference internal" href="#what-s-new-in-clang-3-7" id="id2">What&#8217;s New in Clang 3.7?</a><ul>
+<li><a class="reference internal" href="#major-new-features" id="id3">Major New Features</a></li>
+<li><a class="reference internal" href="#improvements-to-clang-s-diagnostics" id="id4">Improvements to Clang&#8217;s diagnostics</a></li>
+<li><a class="reference internal" href="#new-compiler-flags" id="id5">New Compiler Flags</a></li>
+<li><a class="reference internal" href="#objective-c-language-changes-in-clang" id="id6">Objective-C Language Changes in Clang</a></li>
+<li><a class="reference internal" href="#profile-guided-optimization" id="id7">Profile Guided Optimization</a></li>
+<li><a class="reference internal" href="#openmp-support" id="id8">OpenMP Support</a></li>
+<li><a class="reference internal" href="#internal-api-changes" id="id9">Internal API Changes</a></li>
+<li><a class="reference internal" href="#static-analyzer" id="id10">Static Analyzer</a></li>
+<li><a class="reference internal" href="#clang-tidy" id="id11">clang-tidy</a></li>
+<li><a class="reference internal" href="#systemz" id="id12">SystemZ</a></li>
+<li><a class="reference internal" href="#last-release-which-will-run-on-windows-xp-and-windows-vista" id="id13">Last release which will run on Windows XP and Windows Vista</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#additional-information" id="id14">Additional Information</a></li>
+</ul>
+</div>
+<p>Written by the <a class="reference external" href="http://llvm.org/">LLVM Team</a></p>
+<div class="section" id="introduction">
+<h2><a class="toc-backref" href="#id1">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This document contains the release notes for the Clang C/C++/Objective-C
+frontend, part of the LLVM Compiler Infrastructure, release 3.7. Here we
+describe the status of Clang in some detail, including major
+improvements from the previous release and new feature work. For the
+general LLVM release notes, see <a class="reference external" href="http://llvm.org/docs/ReleaseNotes.html">the LLVM
+documentation</a>. All LLVM
+releases may be downloaded from the <a class="reference external" href="http://llvm.org/releases/">LLVM releases web
+site</a>.</p>
+<p>For more information about Clang or LLVM, including information about
+the latest release, please check out the main please see the <a class="reference external" href="http://clang.llvm.org">Clang Web
+Site</a> or the <a class="reference external" href="http://llvm.org">LLVM Web
+Site</a>.</p>
+</div>
+<div class="section" id="what-s-new-in-clang-3-7">
+<h2><a class="toc-backref" href="#id2">What&#8217;s New in Clang 3.7?</a><a class="headerlink" href="#what-s-new-in-clang-3-7" title="Permalink to this headline">¶</a></h2>
+<p>Some of the major new features and improvements to Clang are listed
+here. Generic improvements to Clang as a whole or to its underlying
+infrastructure are described first, followed by language-specific
+sections with improvements to Clang&#8217;s support for those languages.</p>
+<div class="section" id="major-new-features">
+<h3><a class="toc-backref" href="#id3">Major New Features</a><a class="headerlink" href="#major-new-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Use of the <code class="docutils literal"><span class="pre">__declspec</span></code> language extension for declaration attributes now
+requires passing the -fms-extensions or -fborland compiler flag. This language
+extension is also enabled when compiling CUDA code, but its use should be
+viewed as an implementation detail that is subject to change.</li>
+<li>On Windows targets, some uses of the <code class="docutils literal"><span class="pre">__try</span></code>, <code class="docutils literal"><span class="pre">__except</span></code>, and
+<code class="docutils literal"><span class="pre">__finally</span></code> language constructs are supported in Clang 3.7. MSVC-compatible
+C++ exceptions are not yet supported, however.</li>
+<li>Clang 3.7 fully supports OpenMP 3.1 and reported to work on many platforms,
+including x86, x86-64 and Power. Also, pragma <code class="docutils literal"><span class="pre">omp</span> <span class="pre">simd</span></code> from OpenMP 4.0 is
+supported as well. See below for details.</li>
+<li>Clang 3.7 includes an implementation of <a class="reference internal" href="ControlFlowIntegrity.html"><em>control flow integrity</em></a>, a security hardening mechanism.</li>
+</ul>
+</div>
+<div class="section" id="improvements-to-clang-s-diagnostics">
+<h3><a class="toc-backref" href="#id4">Improvements to Clang&#8217;s diagnostics</a><a class="headerlink" href="#improvements-to-clang-s-diagnostics" title="Permalink to this headline">¶</a></h3>
+<p>Clang&#8217;s diagnostics are constantly being improved to catch more issues,
+explain them more clearly, and provide more accurate source information
+about them. The improvements since the 3.6 release include:</p>
+<ul class="simple">
+<li>-Wrange-loop-analysis analyzes the loop variable type and the container type
+to determine whether copies are made of the container elements.  If possible,
+suggest a const reference type to prevent copies, or a non-reference type
+to indicate a copy is made.</li>
+<li>-Wredundant-move warns when a parameter variable is moved on return and the
+return type is the same as the variable.  Returning the variable directly
+will already make a move, so the call is not needed.</li>
+<li>-Wpessimizing-move warns when a local variable is moved on return and the
+return type is the same as the variable.  Copy elision cannot take place with
+a move, but can take place if the variable is returned directly.</li>
+<li>-Wmove is a new warning group which has the previous two warnings,
+-Wredundant-move and -Wpessimizing-move, as well as previous warning
+-Wself-move.  In addition, this group is part of -Wmost and -Wall now.</li>
+<li>-Winfinite-recursion, a warning for functions that only call themselves,
+is now part of -Wmost and -Wall.</li>
+<li>-Wobjc-circular-container prevents creation of circular containers,
+it covers <code class="docutils literal"><span class="pre">NSMutableArray</span></code>, <code class="docutils literal"><span class="pre">NSMutableSet</span></code>, <code class="docutils literal"><span class="pre">NSMutableDictionary</span></code>,
+<code class="docutils literal"><span class="pre">NSMutableOrderedSet</span></code> and all their subclasses.</li>
+</ul>
+</div>
+<div class="section" id="new-compiler-flags">
+<h3><a class="toc-backref" href="#id5">New Compiler Flags</a><a class="headerlink" href="#new-compiler-flags" title="Permalink to this headline">¶</a></h3>
+<p>The sized deallocation feature of C++14 is now controlled by the
+<code class="docutils literal"><span class="pre">-fsized-deallocation</span></code> flag. This feature relies on library support that
+isn&#8217;t yet widely deployed, so the user must supply an extra flag to get the
+extra functionality.</p>
+</div>
+<div class="section" id="objective-c-language-changes-in-clang">
+<h3><a class="toc-backref" href="#id6">Objective-C Language Changes in Clang</a><a class="headerlink" href="#objective-c-language-changes-in-clang" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">objc_boxable</span></code> attribute was added. Structs and unions marked with this attribute can be
+used with boxed expressions (<code class="docutils literal"><span class="pre">&#64;(...)</span></code>) to create <code class="docutils literal"><span class="pre">NSValue</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="profile-guided-optimization">
+<h3><a class="toc-backref" href="#id7">Profile Guided Optimization</a><a class="headerlink" href="#profile-guided-optimization" title="Permalink to this headline">¶</a></h3>
+<p>Clang now accepts GCC-compatible flags for profile guided optimization (PGO).
+You can now use <code class="docutils literal"><span class="pre">-fprofile-generate=&lt;dir&gt;</span></code>, <code class="docutils literal"><span class="pre">-fprofile-use=&lt;dir&gt;</span></code>,
+<code class="docutils literal"><span class="pre">-fno-profile-generate</span></code> and <code class="docutils literal"><span class="pre">-fno-profile-use</span></code>. These flags have the
+same semantics as their GCC counterparts. However, the generated profile
+is still LLVM-specific. PGO profiles generated with Clang cannot be used
+by GCC and vice-versa.</p>
+<p>Clang now emits function entry counts in profile-instrumented binaries.
+This has improved the computation of weights and frequencies in
+profile analysis.</p>
+</div>
+<div class="section" id="openmp-support">
+<h3><a class="toc-backref" href="#id8">OpenMP Support</a><a class="headerlink" href="#openmp-support" title="Permalink to this headline">¶</a></h3>
+<p>OpenMP 3.1 is fully supported, but disabled by default. To enable it, please use
+the <code class="docutils literal"><span class="pre">-fopenmp=libomp</span></code> command line option. Your feedback (positive or negative) on
+using OpenMP-enabled clang would be much appreciated; please share it either on
+<a class="reference external" href="http://lists.llvm.org/mailman/listinfo/cfe-dev">cfe-dev</a> or <a class="reference external" href="http://lists.llvm.org/mailman/listinfo/openmp-dev">openmp-dev</a> mailing lists.</p>
+<p>In addition to OpenMP 3.1, several important elements of the 4.0 version of the
+standard are supported as well:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">omp</span> <span class="pre">simd</span></code>, <code class="docutils literal"><span class="pre">omp</span> <span class="pre">for</span> <span class="pre">simd</span></code> and <code class="docutils literal"><span class="pre">omp</span> <span class="pre">parallel</span> <span class="pre">for</span> <span class="pre">simd</span></code> pragmas</li>
+<li>atomic constructs</li>
+<li><code class="docutils literal"><span class="pre">proc_bind</span></code> clause of <code class="docutils literal"><span class="pre">omp</span> <span class="pre">parallel</span></code> pragma</li>
+<li><code class="docutils literal"><span class="pre">depend</span></code> clause of <code class="docutils literal"><span class="pre">omp</span> <span class="pre">task</span></code> pragma (except for array sections)</li>
+<li><code class="docutils literal"><span class="pre">omp</span> <span class="pre">cancel</span></code> and <code class="docutils literal"><span class="pre">omp</span> <span class="pre">cancellation</span> <span class="pre">point</span></code> pragmas</li>
+<li><code class="docutils literal"><span class="pre">omp</span> <span class="pre">taskgroup</span></code> pragma</li>
+</ul>
+</div>
+<div class="section" id="internal-api-changes">
+<h3><a class="toc-backref" href="#id9">Internal API Changes</a><a class="headerlink" href="#internal-api-changes" title="Permalink to this headline">¶</a></h3>
+<p>These are major API changes that have happened since the 3.6 release of
+Clang. If upgrading an external codebase that uses Clang as a library,
+this section should help get you past the largest hurdles of upgrading.</p>
+<ul class="simple">
+<li>Some of the <code class="docutils literal"><span class="pre">PPCallbacks</span></code> interface now deals in <code class="docutils literal"><span class="pre">MacroDefinition</span></code>
+objects instead of <code class="docutils literal"><span class="pre">MacroDirective</span></code> objects. This allows preserving
+full information on macros imported from modules.</li>
+<li><code class="docutils literal"><span class="pre">clang-c/Index.h</span></code> no longer <code class="docutils literal"><span class="pre">#include</span></code>s <code class="docutils literal"><span class="pre">clang-c/Documentation.h</span></code>.
+You now need to explicitly <code class="docutils literal"><span class="pre">#include</span> <span class="pre">&quot;clang-c/Documentation.h&quot;</span></code> if
+you use the libclang documentation API.</li>
+</ul>
+</div>
+<div class="section" id="static-analyzer">
+<h3><a class="toc-backref" href="#id10">Static Analyzer</a><a class="headerlink" href="#static-analyzer" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>The generated plists now contain the name of the check that generated it.</li>
+<li>Configuration options can now be passed to the checkers (not just the static
+analyzer core).</li>
+<li>New check for dereferencing object that the result of a zero-length
+allocation.</li>
+<li>Also check functions in precompiled headers.</li>
+<li>Properly handle alloca() in some checkers.</li>
+<li>Various improvements to the retain count checker.</li>
+</ul>
+</div>
+<div class="section" id="clang-tidy">
+<h3><a class="toc-backref" href="#id11">clang-tidy</a><a class="headerlink" href="#clang-tidy" title="Permalink to this headline">¶</a></h3>
+<p>Added new checks:</p>
+<ul class="simple">
+<li>google-global-names-in-headers: flag global namespace pollution in header
+files.</li>
+<li>misc-assert-side-effect: detects <code class="docutils literal"><span class="pre">assert()</span></code> conditions with side effects
+which can cause different behavior in debug / release builds.</li>
+<li>misc-assign-operator-signature: finds declarations of assign operators with
+the wrong return and/or argument types.</li>
+<li>misc-inaccurate-erase: warns when some elements of a container are not
+removed due to using the <code class="docutils literal"><span class="pre">erase()</span></code> algorithm incorrectly.</li>
+<li>misc-inefficient-algorithm: warns on inefficient use of STL algorithms on
+associative containers.</li>
+<li>misc-macro-parentheses: finds macros that can have unexpected behavior due
+to missing parentheses.</li>
+<li>misc-macro-repeated-side-effects: checks for repeated argument with side
+effects in macros.</li>
+<li>misc-noexcept-move-constructor: flags user-defined move constructors and
+assignment operators not marked with <code class="docutils literal"><span class="pre">noexcept</span></code> or marked with
+<code class="docutils literal"><span class="pre">noexcept(expr)</span></code> where <code class="docutils literal"><span class="pre">expr</span></code> evaluates to <code class="docutils literal"><span class="pre">false</span></code> (but is not a
+<code class="docutils literal"><span class="pre">false</span></code> literal itself).</li>
+<li>misc-static-assert: replaces <code class="docutils literal"><span class="pre">assert()</span></code> with <code class="docutils literal"><span class="pre">static_assert()</span></code> if the
+condition is evaluable at compile time.</li>
+<li>readability-container-size-empty: checks whether a call to the <code class="docutils literal"><span class="pre">size()</span></code>
+method can be replaced with a call to <code class="docutils literal"><span class="pre">empty()</span></code>.</li>
+<li>readability-else-after-return: flags conditional statements having the
+<code class="docutils literal"><span class="pre">else</span></code> branch, when the <code class="docutils literal"><span class="pre">true</span></code> branch has a <code class="docutils literal"><span class="pre">return</span></code> as the last statement.</li>
+<li>readability-redundant-string-cstr: finds unnecessary calls to
+<code class="docutils literal"><span class="pre">std::string::c_str()</span></code>.</li>
+<li>readability-shrink-to-fit: replaces copy and swap tricks on shrinkable
+containers with the <code class="docutils literal"><span class="pre">shrink_to_fit()</span></code> method call.</li>
+<li>readability-simplify-boolean-expr: looks for boolean expressions involving
+boolean constants and simplifies them to use the appropriate boolean
+expression directly (<code class="docutils literal"><span class="pre">if</span> <span class="pre">(x</span> <span class="pre">==</span> <span class="pre">true)</span> <span class="pre">...</span> <span class="pre">-&gt;</span> <span class="pre">if</span> <span class="pre">(x)</span></code>, etc.)</li>
+</ul>
+</div>
+<div class="section" id="systemz">
+<h3><a class="toc-backref" href="#id12">SystemZ</a><a class="headerlink" href="#systemz" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Clang will now always default to the z10 processor when compiling
+without any <code class="docutils literal"><span class="pre">-march=</span></code> option. Previous releases used to automatically
+detect the current host CPU when compiling natively. If you wish to
+still have clang detect the current host CPU, you now need to use the
+<code class="docutils literal"><span class="pre">-march=native</span></code> option.</li>
+<li>Clang now provides the <code class="docutils literal"><span class="pre">&lt;s390intrin.h&gt;</span></code> header file.</li>
+<li>Clang now supports the transactional-execution facility and
+provides associated builtins and the <code class="docutils literal"><span class="pre">&lt;htmintrin.h&gt;</span></code> and
+<code class="docutils literal"><span class="pre">&lt;htmxlintrin.h&gt;</span></code> header files. Support is enabled by default
+on zEC12 and above, and can additionally be enabled or disabled
+via the <code class="docutils literal"><span class="pre">-mhtm</span></code> / <code class="docutils literal"><span class="pre">-mno-htm</span></code> command line options.</li>
+<li>Clang now supports the vector facility. This includes a
+change in the ABI to pass arguments and return values of
+vector types in vector registers, as well as a change in
+the default alignment of vector types. Support is enabled
+by default on z13 and above, and can additionally be enabled
+or disabled via the <code class="docutils literal"><span class="pre">-mvx</span></code> / <code class="docutils literal"><span class="pre">-mno-vx</span></code> command line options.</li>
+<li>Clang now supports the System z vector language extension,
+providing a &#8220;vector&#8221; keyword to define vector types, and a
+set of builtins defined in the <code class="docutils literal"><span class="pre">&lt;vecintrin.h&gt;</span></code> header file.
+This can be enabled via the <code class="docutils literal"><span class="pre">-fzvector</span></code> command line option.
+For compatibility with GCC, Clang also supports the
+<code class="docutils literal"><span class="pre">-mzvector</span></code> option as an alias.</li>
+<li>Several cases of ABI incompatibility with GCC have been fixed.</li>
+</ul>
+</div>
+<div class="section" id="last-release-which-will-run-on-windows-xp-and-windows-vista">
+<h3><a class="toc-backref" href="#id13">Last release which will run on Windows XP and Windows Vista</a><a class="headerlink" href="#last-release-which-will-run-on-windows-xp-and-windows-vista" title="Permalink to this headline">¶</a></h3>
+<p>This is expected to the be the last major release of Clang that will support
+running on Windows XP and Windows Vista.  For the next major release the
+minimum Windows version requirement will be Windows 7.</p>
+</div>
+</div>
+<div class="section" id="additional-information">
+<h2><a class="toc-backref" href="#id14">Additional Information</a><a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h2>
+<p>A wide variety of additional information is available on the <a class="reference external" href="http://clang.llvm.org/">Clang web
+page</a>. The web page contains versions of the
+API documentation which are up-to-date with the Subversion version of
+the source code. You can access versions of these documents specific to
+this release by going into the &#8220;<code class="docutils literal"><span class="pre">clang/docs/</span></code>&#8221; directory in the Clang
+tree.</p>
+<p>If you have any questions or comments about Clang, please feel free to
+contact us via the <a class="reference external" href="http://lists.llvm.org/mailman/listinfo/cfe-dev">mailing
+list</a>.</p>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Using Clang as a Compiler</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="UsersManual.html">Clang Compiler User&#8217;s Manual</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2007-2015, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

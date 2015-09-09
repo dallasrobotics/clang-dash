@@ -1,13 +1,13 @@
-llvm-dash
+clang-dash
 =========
 
-[LLVM](http://llvm.org/) Compiler Infrastructure docset for dash.
+[Clang](http://clang.llvm.org/) Compiler Infrastructure docset for dash.
 
 __How to generate the docset:__
 
 - It is as easy as:
 ``
-	python llvm-to-dash.py	
+	python clang-to-dash.py	
 ``
 
 __Requirements:__

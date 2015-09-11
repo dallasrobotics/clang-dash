@@ -64,7 +64,8 @@ def update_db(db, cur, name, typ, path):
       cur.execute('INSERT OR IGNORE INTO searchIndex(name, type, path) VALUES (?,?,?)', (name, typ, path))
       print('DB add >> name: %s, path: %s' % (name, path))
     else:
-      print('record exists')
+      pass
+      #print('record exists')
 
   except:
     pass
@@ -93,10 +94,10 @@ def add_urls(db, cur):
       path = a.get('href')
 
       name = name.replace('\n', '')
-      filtered = ('index.html', 'http')
+      filtered = ('index.html', 'http', '//', '../', '/doxygen')
 
       if path is not None and len(name) > 2 and not path.startswith(filtered):
-        dirpath = ['CommandGuide']
+        dirpath = ['Command']
         if p in dirpath:
             path = pages[p].split('/')[-2] + '/' + path
         if path.startswith('#'):

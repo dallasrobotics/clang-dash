@@ -55,3 +55,7 @@ docs/_build/
 #
 cfe-*.src.tar.xz
 cfe-*.src
+
+#
+*.tgz
+

@@ -8,7 +8,8 @@ clang_version = '4.0.0'
 clang_tarball_md5sum = '756e17349fdc708c62974b883bf72d37'
 tarball_name = 'cfe-%s.src.tar.xz' % clang_version
 docset_name = 'Clang.docset'
-output = docset_name + '/Contents/Resources/Documents/'
+online_docpath = 'releases.llvm.org/%s/tools/clang/docs' % clang_version
+output = '%s/Contents/Resources/Documents' % (docset_name)
 
 def md5(fname):
     hash = hashlib.md5()
@@ -81,7 +82,7 @@ def add_urls(db, cur):
           'Service'	: 'InternalsManual.html'
           }
 
-  base_path = './'
+  base_path = ''
 
   # loop through index pages:
   for p in pages:
@@ -130,8 +131,7 @@ def add_infoplist():
           '    <string>{4}</string>' \
           '</dict>' \
           '</plist>'.format(name, name, name, 'index.html',
-                  'http://llvm.org/releases/%s/tools/clang/docs/' %
-                  clang_version)
+                  'http://%s/' % online_docpath)
   open(docset_name + '/Contents/Info.plist', 'wb').write(info)
 
 if __name__ == '__main__':

@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup as bs
 from shutil import rmtree
 
 # CONFIGURATION
-clang_version = '3.7.0'
-clang_tarball_md5sum = '8f9d27335e7331cf0a4711e952f21f01'
+clang_version = '4.0.0'
+clang_tarball_md5sum = '756e17349fdc708c62974b883bf72d37'
 tarball_name = 'cfe-%s.src.tar.xz' % clang_version
 docset_name = 'Clang.docset'
 output = docset_name + '/Contents/Resources/Documents/'
@@ -129,7 +129,9 @@ def add_infoplist():
           '    <key>DashDocSetFallbackURL</key>' \
           '    <string>{4}</string>' \
           '</dict>' \
-          '</plist>'.format(name, name, name, 'index.html', 'http://llvm.org/releases/3.7.0/tools/clang/docs/')
+          '</plist>'.format(name, name, name, 'index.html',
+                  'http://llvm.org/releases/%s/tools/clang/docs/' %
+                  clang_version)
   open(docset_name + '/Contents/Info.plist', 'wb').write(info)
 
 if __name__ == '__main__':
@@ -140,8 +142,8 @@ if __name__ == '__main__':
   extract_clang_tarball()
 
   # add icon
-  icon = 'http://d2wwfe3odivqm9.cloudfront.net/wp-content/uploads/2013/12/llvm-logo-100x100.png'
-  urllib.urlretrieve(icon, docset_name + '/icon.png')
+  from shutil import copyfile
+  copyfile('icon.png', docset_name + '/icon.png')
 
   # create and open SQLite db
   db = sqlite3.connect(docset_name + '/Contents/Resources/docSet.dsidx')

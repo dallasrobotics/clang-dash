@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>LibTooling &mdash; Clang 3.7 documentation</title>
+    <title>LibTooling &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="LibFormat" href="LibFormat.html" />
     <link rel="prev" title="Introduction to the Clang AST" href="IntroductionToTheClangAST.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>LibTooling</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -66,7 +66,7 @@ code.</p>
 <p>If you ever wanted to run a <code class="docutils literal"><span class="pre">FrontendAction</span></code> over some sample code, for
 example to unit test parts of the Clang AST, <code class="docutils literal"><span class="pre">runToolOnCode</span></code> is what you
 looked for.  Let me give you an example:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &quot;clang/Tooling/Tooling.h&quot;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;clang/Tooling/Tooling.h&quot;</span><span class="cp"></span>
 
 <span class="n">TEST</span><span class="p">(</span><span class="n">runToolOnCode</span><span class="p">,</span> <span class="n">CanSyntaxCheckCode</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// runToolOnCode returns whether the action was correctly run over the</span>
@@ -92,8 +92,8 @@ compilation databases and inputs, so that all tools share the implementation.</p
 Using <code class="docutils literal"><span class="pre">CommonOptionsParser</span></code> allows for explicit specification of a compile
 command line, specification of build path using the <code class="docutils literal"><span class="pre">-p</span></code> command-line option,
 and automatic location of the compilation database using source files paths.</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &quot;clang/Tooling/CommonOptionsParser.h&quot;</span>
-<span class="cp">#include &quot;llvm/Support/CommandLine.h&quot;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;clang/Tooling/CommonOptionsParser.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;llvm/Support/CommandLine.h&quot;</span><span class="cp"></span>
 
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">clang</span><span class="o">::</span><span class="n">tooling</span><span class="p">;</span>
 
@@ -140,11 +140,11 @@ our <code class="docutils literal"><span class="pre">FrontendAction</span></code
 version of this example tool is also checked into the clang tree at
 <code class="docutils literal"><span class="pre">tools/clang-check/ClangCheck.cpp</span></code>.</p>
 <div class="highlight-c++"><div class="highlight"><pre><span class="c1">// Declares clang::SyntaxOnlyAction.</span>
-<span class="cp">#include &quot;clang/Frontend/FrontendActions.h&quot;</span>
-<span class="cp">#include &quot;clang/Tooling/CommonOptionsParser.h&quot;</span>
-<span class="cp">#include &quot;clang/Tooling/Tooling.h&quot;</span>
+<span class="cp">#include</span> <span class="cpf">&quot;clang/Frontend/FrontendActions.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;clang/Tooling/CommonOptionsParser.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;clang/Tooling/Tooling.h&quot;</span><span class="cp"></span>
 <span class="c1">// Declares llvm::cl::extrahelp.</span>
-<span class="cp">#include &quot;llvm/Support/CommandLine.h&quot;</span>
+<span class="cp">#include</span> <span class="cpf">&quot;llvm/Support/CommandLine.h&quot;</span><span class="cp"></span>
 
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">clang</span><span class="o">::</span><span class="n">tooling</span><span class="p">;</span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">llvm</span><span class="p">;</span>
@@ -176,9 +176,9 @@ version of this example tool is also checked into the clang tree at
 to you in bin/clang-check inside your build directory.</p>
 <p>You can run clang-check on a file in the llvm repository by specifying all the
 needed parameters after a &#8220;<code class="docutils literal"><span class="pre">--</span></code>&#8221; separator:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /path/to/source/llvm
-<span class="nv">$ </span><span class="nb">export </span><span class="nv">BD</span><span class="o">=</span>/path/to/build/llvm
-<span class="nv">$ $BD</span>/bin/clang-check tools/clang/tools/clang-check/ClangCheck.cpp -- <span class="se">\</span>
+<div class="highlight-bash"><div class="highlight"><pre>$ <span class="nb">cd</span> /path/to/source/llvm
+$ <span class="nb">export</span> <span class="nv">BD</span><span class="o">=</span>/path/to/build/llvm
+$ <span class="nv">$BD</span>/bin/clang-check tools/clang/tools/clang-check/ClangCheck.cpp -- <span class="se">\</span>
       clang++ -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS <span class="se">\</span>
       -Itools/clang/include -I<span class="nv">$BD</span>/include -Iinclude <span class="se">\</span>
       -Itools/clang/lib/Headers -c
@@ -186,18 +186,18 @@ needed parameters after a &#8220;<code class="docutils literal"><span class="pre
 </div>
 <p>As an alternative, you can also configure cmake to output a compile command
 database into its build directory:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Alternatively to calling cmake, use ccmake, toggle to advanced mode and</span>
-<span class="c"># set the parameter CMAKE_EXPORT_COMPILE_COMMANDS from the UI.</span>
-<span class="nv">$ </span>cmake -DCMAKE_EXPORT_COMPILE_COMMANDS<span class="o">=</span>ON .
+<div class="highlight-bash"><div class="highlight"><pre><span class="c1"># Alternatively to calling cmake, use ccmake, toggle to advanced mode and</span>
+<span class="c1"># set the parameter CMAKE_EXPORT_COMPILE_COMMANDS from the UI.</span>
+$ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS<span class="o">=</span>ON .
 </pre></div>
 </div>
 <p>This creates a file called <code class="docutils literal"><span class="pre">compile_commands.json</span></code> in the build directory.
 Now you can run <strong class="program">clang-check</strong> over files in the project by specifying
 the build path as first argument and some source files as further positional
 arguments:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /path/to/source/llvm
-<span class="nv">$ </span><span class="nb">export </span><span class="nv">BD</span><span class="o">=</span>/path/to/build/llvm
-<span class="nv">$ $BD</span>/bin/clang-check -p <span class="nv">$BD</span> tools/clang/tools/clang-check/ClangCheck.cpp
+<div class="highlight-bash"><div class="highlight"><pre>$ <span class="nb">cd</span> /path/to/source/llvm
+$ <span class="nb">export</span> <span class="nv">BD</span><span class="o">=</span>/path/to/build/llvm
+$ <span class="nv">$BD</span>/bin/clang-check -p <span class="nv">$BD</span> tools/clang/tools/clang-check/ClangCheck.cpp
 </pre></div>
 </div>
 </div>
@@ -235,8 +235,8 @@ example <a class="reference external" href="http://llvm.org/viewvc/llvm-project/
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

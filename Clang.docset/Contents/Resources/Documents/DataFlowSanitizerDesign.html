@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>DataFlowSanitizer Design Document &mdash; Clang 3.7 documentation</title>
+    <title>DataFlowSanitizer Design Document &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,14 +24,14 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="up" title="DataFlowSanitizer" href="DataFlowSanitizer.html" />
     <link rel="next" title="LeakSanitizer" href="LeakSanitizer.html" />
     <link rel="prev" title="DataFlowSanitizer" href="DataFlowSanitizer.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>DataFlowSanitizer Design Document</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -223,30 +223,30 @@ function with a reference to a function which uses the instrumented ABI.
 Such functions are automatically-generated wrappers for the native functions.
 For example, given the ABI list example provided in the user manual, the
 following wrappers will be generated under the args ABI:</p>
-<div class="highlight-llvm"><div class="highlight"><pre><span class="k">define</span> <span class="k">linkonce_odr</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="vg">@&quot;dfsw$malloc&quot;</span><span class="p">(</span><span class="k">i64</span> <span class="nv-Anonymous">%0</span><span class="p">,</span> <span class="k">i16</span> <span class="nv-Anonymous">%1</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-llvm"><div class="highlight"><pre><span class="k">define</span> <span class="k">linkonce_odr</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="vg">@&quot;dfsw$malloc&quot;</span><span class="p">(</span><span class="k">i64</span> <span class="nv nv-Anonymous">%0</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%1</span><span class="p">)</span> <span class="p">{</span>
 <span class="nl">entry:</span>
-  <span class="nv-Anonymous">%2</span> <span class="p">=</span> <span class="k">call</span> <span class="k">i8</span><span class="p">*</span> <span class="vg">@malloc</span><span class="p">(</span><span class="k">i64</span> <span class="nv-Anonymous">%0</span><span class="p">)</span>
-  <span class="nv-Anonymous">%3</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="k">undef</span><span class="p">,</span> <span class="k">i8</span><span class="p">*</span> <span class="nv-Anonymous">%2</span><span class="p">,</span> <span class="m">0</span>
-  <span class="nv-Anonymous">%4</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv-Anonymous">%3</span><span class="p">,</span> <span class="k">i16</span> <span class="m">0</span><span class="p">,</span> <span class="m">1</span>
-  <span class="k">ret</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv-Anonymous">%4</span>
+  <span class="nv nv-Anonymous">%2</span> <span class="p">=</span> <span class="k">call</span> <span class="k">i8</span><span class="p">*</span> <span class="vg">@malloc</span><span class="p">(</span><span class="k">i64</span> <span class="nv nv-Anonymous">%0</span><span class="p">)</span>
+  <span class="nv nv-Anonymous">%3</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="k">undef</span><span class="p">,</span> <span class="k">i8</span><span class="p">*</span> <span class="nv nv-Anonymous">%2</span><span class="p">,</span> <span class="m">0</span>
+  <span class="nv nv-Anonymous">%4</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv nv-Anonymous">%3</span><span class="p">,</span> <span class="k">i16</span> <span class="m">0</span><span class="p">,</span> <span class="m">1</span>
+  <span class="k">ret</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv nv-Anonymous">%4</span>
 <span class="p">}</span>
 
-<span class="k">define</span> <span class="k">linkonce_odr</span> <span class="p">{</span> <span class="k">i32</span><span class="p">,</span> <span class="k">i16</span> <span class="p">}</span> <span class="vg">@&quot;dfsw$tolower&quot;</span><span class="p">(</span><span class="k">i32</span> <span class="nv-Anonymous">%0</span><span class="p">,</span> <span class="k">i16</span> <span class="nv-Anonymous">%1</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">define</span> <span class="k">linkonce_odr</span> <span class="p">{</span> <span class="k">i32</span><span class="p">,</span> <span class="k">i16</span> <span class="p">}</span> <span class="vg">@&quot;dfsw$tolower&quot;</span><span class="p">(</span><span class="k">i32</span> <span class="nv nv-Anonymous">%0</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%1</span><span class="p">)</span> <span class="p">{</span>
 <span class="nl">entry:</span>
-  <span class="nv-Anonymous">%2</span> <span class="p">=</span> <span class="k">call</span> <span class="k">i32</span> <span class="vg">@tolower</span><span class="p">(</span><span class="k">i32</span> <span class="nv-Anonymous">%0</span><span class="p">)</span>
-  <span class="nv-Anonymous">%3</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i32</span><span class="p">,</span> <span class="k">i16</span> <span class="p">}</span> <span class="k">undef</span><span class="p">,</span> <span class="k">i32</span> <span class="nv-Anonymous">%2</span><span class="p">,</span> <span class="m">0</span>
-  <span class="nv-Anonymous">%4</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i32</span><span class="p">,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv-Anonymous">%3</span><span class="p">,</span> <span class="k">i16</span> <span class="nv-Anonymous">%1</span><span class="p">,</span> <span class="m">1</span>
-  <span class="k">ret</span> <span class="p">{</span> <span class="k">i32</span><span class="p">,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv-Anonymous">%4</span>
+  <span class="nv nv-Anonymous">%2</span> <span class="p">=</span> <span class="k">call</span> <span class="k">i32</span> <span class="vg">@tolower</span><span class="p">(</span><span class="k">i32</span> <span class="nv nv-Anonymous">%0</span><span class="p">)</span>
+  <span class="nv nv-Anonymous">%3</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i32</span><span class="p">,</span> <span class="k">i16</span> <span class="p">}</span> <span class="k">undef</span><span class="p">,</span> <span class="k">i32</span> <span class="nv nv-Anonymous">%2</span><span class="p">,</span> <span class="m">0</span>
+  <span class="nv nv-Anonymous">%4</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i32</span><span class="p">,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv nv-Anonymous">%3</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%1</span><span class="p">,</span> <span class="m">1</span>
+  <span class="k">ret</span> <span class="p">{</span> <span class="k">i32</span><span class="p">,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv nv-Anonymous">%4</span>
 <span class="p">}</span>
 
-<span class="k">define</span> <span class="k">linkonce_odr</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="vg">@&quot;dfsw$memcpy&quot;</span><span class="p">(</span><span class="k">i8</span><span class="p">*</span> <span class="nv-Anonymous">%0</span><span class="p">,</span> <span class="k">i8</span><span class="p">*</span> <span class="nv-Anonymous">%1</span><span class="p">,</span> <span class="k">i64</span> <span class="nv-Anonymous">%2</span><span class="p">,</span> <span class="k">i16</span> <span class="nv-Anonymous">%3</span><span class="p">,</span> <span class="k">i16</span> <span class="nv-Anonymous">%4</span><span class="p">,</span> <span class="k">i16</span> <span class="nv-Anonymous">%5</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">define</span> <span class="k">linkonce_odr</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="vg">@&quot;dfsw$memcpy&quot;</span><span class="p">(</span><span class="k">i8</span><span class="p">*</span> <span class="nv nv-Anonymous">%0</span><span class="p">,</span> <span class="k">i8</span><span class="p">*</span> <span class="nv nv-Anonymous">%1</span><span class="p">,</span> <span class="k">i64</span> <span class="nv nv-Anonymous">%2</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%3</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%4</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%5</span><span class="p">)</span> <span class="p">{</span>
 <span class="nl">entry:</span>
   <span class="nv">%labelreturn</span> <span class="p">=</span> <span class="k">alloca</span> <span class="k">i16</span>
-  <span class="nv-Anonymous">%6</span> <span class="p">=</span> <span class="k">call</span> <span class="k">i8</span><span class="p">*</span> <span class="vg">@__dfsw_memcpy</span><span class="p">(</span><span class="k">i8</span><span class="p">*</span> <span class="nv-Anonymous">%0</span><span class="p">,</span> <span class="k">i8</span><span class="p">*</span> <span class="nv-Anonymous">%1</span><span class="p">,</span> <span class="k">i64</span> <span class="nv-Anonymous">%2</span><span class="p">,</span> <span class="k">i16</span> <span class="nv-Anonymous">%3</span><span class="p">,</span> <span class="k">i16</span> <span class="nv-Anonymous">%4</span><span class="p">,</span> <span class="k">i16</span> <span class="nv-Anonymous">%5</span><span class="p">,</span> <span class="k">i16</span><span class="p">*</span> <span class="nv">%labelreturn</span><span class="p">)</span>
-  <span class="nv-Anonymous">%7</span> <span class="p">=</span> <span class="k">load</span> <span class="k">i16</span><span class="p">*</span> <span class="nv">%labelreturn</span>
-  <span class="nv-Anonymous">%8</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="k">undef</span><span class="p">,</span> <span class="k">i8</span><span class="p">*</span> <span class="nv-Anonymous">%6</span><span class="p">,</span> <span class="m">0</span>
-  <span class="nv-Anonymous">%9</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv-Anonymous">%8</span><span class="p">,</span> <span class="k">i16</span> <span class="nv-Anonymous">%7</span><span class="p">,</span> <span class="m">1</span>
-  <span class="k">ret</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv-Anonymous">%9</span>
+  <span class="nv nv-Anonymous">%6</span> <span class="p">=</span> <span class="k">call</span> <span class="k">i8</span><span class="p">*</span> <span class="vg">@__dfsw_memcpy</span><span class="p">(</span><span class="k">i8</span><span class="p">*</span> <span class="nv nv-Anonymous">%0</span><span class="p">,</span> <span class="k">i8</span><span class="p">*</span> <span class="nv nv-Anonymous">%1</span><span class="p">,</span> <span class="k">i64</span> <span class="nv nv-Anonymous">%2</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%3</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%4</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%5</span><span class="p">,</span> <span class="k">i16</span><span class="p">*</span> <span class="nv">%labelreturn</span><span class="p">)</span>
+  <span class="nv nv-Anonymous">%7</span> <span class="p">=</span> <span class="k">load</span> <span class="k">i16</span><span class="p">*</span> <span class="nv">%labelreturn</span>
+  <span class="nv nv-Anonymous">%8</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="k">undef</span><span class="p">,</span> <span class="k">i8</span><span class="p">*</span> <span class="nv nv-Anonymous">%6</span><span class="p">,</span> <span class="m">0</span>
+  <span class="nv nv-Anonymous">%9</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv nv-Anonymous">%8</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%7</span><span class="p">,</span> <span class="m">1</span>
+  <span class="k">ret</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="nv nv-Anonymous">%9</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -284,8 +284,8 @@ These problems could potentially be caught dynamically.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

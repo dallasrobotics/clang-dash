@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Clang Plugins &mdash; Clang 3.7 documentation</title>
+    <title>Clang Plugins &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="How to write RecursiveASTVisitor based ASTFrontendActions." href="RAVFrontendAction.html" />
     <link rel="prev" title="LibFormat" href="LibFormat.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>Clang Plugins</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -84,6 +84,24 @@ register a plugin in a library, use <code class="docutils literal"><span class="
 </pre></div>
 </div>
 </div>
+<div class="section" id="defining-pragmas">
+<h2>Defining pragmas<a class="headerlink" href="#defining-pragmas" title="Permalink to this headline">¶</a></h2>
+<p>Plugins can also define pragmas by declaring a <code class="docutils literal"><span class="pre">PragmaHandler</span></code> and
+registering it using <code class="docutils literal"><span class="pre">PragmaHandlerRegistry::Add&lt;&gt;</span></code>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// Define a pragma handler for #pragma example_pragma</span>
+<span class="k">class</span> <span class="nc">ExamplePragmaHandler</span> <span class="o">:</span> <span class="k">public</span> <span class="n">PragmaHandler</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+  <span class="n">ExamplePragmaHandler</span><span class="p">()</span> <span class="o">:</span> <span class="n">PragmaHandler</span><span class="p">(</span><span class="s">&quot;example_pragma&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+  <span class="kt">void</span> <span class="n">HandlePragma</span><span class="p">(</span><span class="n">Preprocessor</span> <span class="o">&amp;</span><span class="n">PP</span><span class="p">,</span> <span class="n">PragmaIntroducerKind</span> <span class="n">Introducer</span><span class="p">,</span>
+                    <span class="n">Token</span> <span class="o">&amp;</span><span class="n">PragmaTok</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Handle the pragma</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">static</span> <span class="n">PragmaHandlerRegistry</span><span class="o">::</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">ExamplePragmaHandler</span><span class="o">&gt;</span> <span class="n">Y</span><span class="p">(</span><span class="s">&quot;example_pragma&quot;</span><span class="p">,</span><span class="s">&quot;example pragma description&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="putting-it-all-together">
 <h2>Putting it all together<a class="headerlink" href="#putting-it-all-together" title="Permalink to this headline">¶</a></h2>
 <p>Let&#8217;s look at an example plugin that prints top-level function names.  This
@@ -92,25 +110,27 @@ the <a class="reference external" href="http://llvm.org/viewvc/llvm-project/cfe/
 </div>
 <div class="section" id="running-the-plugin">
 <h2>Running the plugin<a class="headerlink" href="#running-the-plugin" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="using-the-cc1-command-line">
+<h3>Using the cc1 command line<a class="headerlink" href="#using-the-cc1-command-line" title="Permalink to this headline">¶</a></h3>
 <p>To run a plugin, the dynamic library containing the plugin registry must be
-loaded via the <code class="xref std std-option docutils literal"><span class="pre">-load</span></code> command line option. This will load all plugins
+loaded via the <cite>-load</cite> command line option. This will load all plugins
 that are registered, and you can select the plugins to run by specifying the
-<code class="xref std std-option docutils literal"><span class="pre">-plugin</span></code> option. Additional parameters for the plugins can be passed with
-<code class="xref std std-option docutils literal"><span class="pre">-plugin-arg-</span></code>.</p>
+<cite>-plugin</cite> option. Additional parameters for the plugins can be passed with
+<cite>-plugin-arg-&lt;plugin-name&gt;</cite>.</p>
 <p>Note that those options must reach clang&#8217;s cc1 process. There are two
 ways to do so:</p>
 <ul class="simple">
-<li>Directly call the parsing process by using the <code class="xref std std-option docutils literal"><span class="pre">-cc1</span></code> option; this
+<li>Directly call the parsing process by using the <cite>-cc1</cite> option; this
 has the downside of not configuring the default header search paths, so
 you&#8217;ll need to specify the full system path configuration on the command
 line.</li>
 <li>Use clang as usual, but prefix all arguments to the cc1 process with
-<code class="xref std std-option docutils literal"><span class="pre">-Xclang</span></code>.</li>
+<cite>-Xclang</cite>.</li>
 </ul>
 <p>For example, to run the <code class="docutils literal"><span class="pre">print-function-names</span></code> plugin over a source file in
 clang, first build the plugin, and then call clang with the plugin from the
 source tree:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> <span class="nb">export </span><span class="nv">BD</span><span class="o">=</span>/path/to/build/directory
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> <span class="nb">export</span> <span class="nv">BD</span><span class="o">=</span>/path/to/build/directory
 <span class="gp">$</span> <span class="o">(</span><span class="nb">cd</span> <span class="nv">$BD</span> <span class="o">&amp;&amp;</span> make PrintFunctionNames <span class="o">)</span>
 <span class="gp">$</span> clang++ -D_GNU_SOURCE -D_DEBUG -D__STDC_CONSTANT_MACROS <span class="se">\</span>
 <span class="go">          -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D_GNU_SOURCE \</span>
@@ -122,6 +142,21 @@ source tree:</p>
 </div>
 <p>Also see the print-function-name plugin example&#8217;s
 <a class="reference external" href="http://llvm.org/viewvc/llvm-project/cfe/trunk/examples/PrintFunctionNames/README.txt?view=markup">README</a></p>
+</div>
+<div class="section" id="using-the-clang-command-line">
+<h3>Using the clang command line<a class="headerlink" href="#using-the-clang-command-line" title="Permalink to this headline">¶</a></h3>
+<p>Using <cite>-fplugin=plugin</cite> on the clang command line passes the plugin
+through as an argument to <cite>-load</cite> on the cc1 command line. If the plugin
+class implements the <code class="docutils literal"><span class="pre">getActionType</span></code> method then the plugin is run
+automatically. For example, to run the plugin automatically after the main AST
+action (i.e. the same as using <cite>-add-plugin</cite>):</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// Automatically run the plugin after the main AST action</span>
+<span class="n">PluginASTAction</span><span class="o">::</span><span class="n">ActionType</span> <span class="n">getActionType</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">AddAfterMainAction</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -140,8 +175,8 @@ source tree:</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

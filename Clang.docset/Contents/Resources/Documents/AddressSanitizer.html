@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>AddressSanitizer &mdash; Clang 3.7 documentation</title>
+    <title>AddressSanitizer &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="ThreadSanitizer" href="ThreadSanitizer.html" />
     <link rel="prev" title="Thread Safety Analysis" href="ThreadSafetyAnalysis.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>AddressSanitizer</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -65,12 +65,13 @@
 <li><a class="reference internal" href="#conditional-compilation-with-has-feature-address-sanitizer" id="id10">Conditional Compilation with <code class="docutils literal"><span class="pre">__has_feature(address_sanitizer)</span></code></a></li>
 <li><a class="reference internal" href="#disabling-instrumentation-with-attribute-no-sanitize-address" id="id11">Disabling Instrumentation with <code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;address&quot;)))</span></code></a></li>
 <li><a class="reference internal" href="#suppressing-errors-in-recompiled-code-blacklist" id="id12">Suppressing Errors in Recompiled Code (Blacklist)</a></li>
+<li><a class="reference internal" href="#suppressing-memory-leaks" id="id13">Suppressing memory leaks</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#limitations" id="id13">Limitations</a></li>
-<li><a class="reference internal" href="#supported-platforms" id="id14">Supported Platforms</a></li>
-<li><a class="reference internal" href="#current-status" id="id15">Current Status</a></li>
-<li><a class="reference internal" href="#more-information" id="id16">More Information</a></li>
+<li><a class="reference internal" href="#limitations" id="id14">Limitations</a></li>
+<li><a class="reference internal" href="#supported-platforms" id="id15">Supported Platforms</a></li>
+<li><a class="reference internal" href="#current-status" id="id16">Current Status</a></li>
+<li><a class="reference internal" href="#more-information" id="id17">More Information</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
@@ -81,7 +82,8 @@ following types of bugs:</p>
 <ul class="simple">
 <li>Out-of-bounds accesses to heap, stack and globals</li>
 <li>Use-after-free</li>
-<li>Use-after-return (to some extent)</li>
+<li>Use-after-return (runtime flag <cite>ASAN_OPTIONS=detect_stack_use_after_return=1</cite>)</li>
+<li>Use-after-scope (clang flag <cite>-fsanitize-address-use-after-scope</cite>)</li>
 <li>Double-free, invalid free</li>
 <li>Memory leaks (experimental)</li>
 </ul>
@@ -110,14 +112,14 @@ you may need to disable inlining (just use <code class="docutils literal"><span 
 <span class="go">}</span>
 
 <span class="gp">#</span> Compile and link
-<span class="gp">%</span> clang -O1 -g -fsanitize<span class="o">=</span>address -fno-omit-frame-pointer example_UseAfterFree.cc
+<span class="gp">%</span> clang++ -O1 -g -fsanitize<span class="o">=</span>address -fno-omit-frame-pointer example_UseAfterFree.cc
 </pre></div>
 </div>
 <p>or:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">#</span> Compile
-<span class="gp">%</span> clang -O1 -g -fsanitize<span class="o">=</span>address -fno-omit-frame-pointer -c example_UseAfterFree.cc
+<span class="gp">%</span> clang++ -O1 -g -fsanitize<span class="o">=</span>address -fno-omit-frame-pointer -c example_UseAfterFree.cc
 <span class="gp">#</span> Link
-<span class="gp">%</span> clang -g -fsanitize<span class="o">=</span>address example_UseAfterFree.o
+<span class="gp">%</span> clang++ -g -fsanitize<span class="o">=</span>address example_UseAfterFree.o
 </pre></div>
 </div>
 <p>If a bug is detected, the program will print an error message to stderr and
@@ -148,17 +150,17 @@ the <code class="docutils literal"><span class="pre">llvm-symbolizer</span></cod
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> <span class="nv">ASAN_SYMBOLIZER_PATH</span><span class="o">=</span>/usr/local/bin/llvm-symbolizer ./a.out
 <span class="go">==9442== ERROR: AddressSanitizer heap-use-after-free on address 0x7f7ddab8c084 at pc 0x403c8c bp 0x7fff87fb82d0 sp 0x7fff87fb82c8</span>
 <span class="go">READ of size 4 at 0x7f7ddab8c084 thread T0</span>
-<span class="go">    #0 0x403c8c in main example_UseAfterFree.cc:4</span>
-<span class="go">    #1 0x7f7ddabcac4d in __libc_start_main ??:0</span>
+<span class="gp">    #</span><span class="m">0</span> 0x403c8c in main example_UseAfterFree.cc:4
+<span class="gp">    #</span><span class="m">1</span> 0x7f7ddabcac4d in __libc_start_main ??:0
 <span class="go">0x7f7ddab8c084 is located 4 bytes inside of 400-byte region [0x7f7ddab8c080,0x7f7ddab8c210)</span>
 <span class="go">freed by thread T0 here:</span>
-<span class="go">    #0 0x404704 in operator delete[](void*) ??:0</span>
-<span class="go">    #1 0x403c53 in main example_UseAfterFree.cc:4</span>
-<span class="go">    #2 0x7f7ddabcac4d in __libc_start_main ??:0</span>
+<span class="gp">    #</span><span class="m">0</span> 0x404704 in operator delete<span class="o">[](</span>void*<span class="o">)</span> ??:0
+<span class="gp">    #</span><span class="m">1</span> 0x403c53 in main example_UseAfterFree.cc:4
+<span class="gp">    #</span><span class="m">2</span> 0x7f7ddabcac4d in __libc_start_main ??:0
 <span class="go">previously allocated by thread T0 here:</span>
-<span class="go">    #0 0x404544 in operator new[](unsigned long) ??:0</span>
-<span class="go">    #1 0x403c43 in main example_UseAfterFree.cc:2</span>
-<span class="go">    #2 0x7f7ddabcac4d in __libc_start_main ??:0</span>
+<span class="gp">    #</span><span class="m">0</span> 0x404544 in operator new<span class="o">[](</span>unsigned long<span class="o">)</span> ??:0
+<span class="gp">    #</span><span class="m">1</span> 0x403c43 in main example_UseAfterFree.cc:2
+<span class="gp">    #</span><span class="m">2</span> 0x7f7ddabcac4d in __libc_start_main ??:0
 <span class="go">==9442== ABORTING</span>
 </pre></div>
 </div>
@@ -169,8 +171,8 @@ force disabled by setting <code class="docutils literal"><span class="pre">ASAN_
 <span class="gp">%</span> projects/compiler-rt/lib/asan/scripts/asan_symbolize.py / &lt; log <span class="p">|</span> c++filt
 <span class="go">==9442== ERROR: AddressSanitizer heap-use-after-free on address 0x7f7ddab8c084 at pc 0x403c8c bp 0x7fff87fb82d0 sp 0x7fff87fb82c8</span>
 <span class="go">READ of size 4 at 0x7f7ddab8c084 thread T0</span>
-<span class="go">    #0 0x403c8c in main example_UseAfterFree.cc:4</span>
-<span class="go">    #1 0x7f7ddabcac4d in __libc_start_main ??:0</span>
+<span class="gp">    #</span><span class="m">0</span> 0x403c8c in main example_UseAfterFree.cc:4
+<span class="gp">    #</span><span class="m">1</span> 0x7f7ddabcac4d in __libc_start_main ??:0
 <span class="go">...</span>
 </pre></div>
 </div>
@@ -241,12 +243,11 @@ this purpose.</p>
 <div class="section" id="disabling-instrumentation-with-attribute-no-sanitize-address">
 <h3><a class="toc-backref" href="#id11">Disabling Instrumentation with <code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;address&quot;)))</span></code></a><a class="headerlink" href="#disabling-instrumentation-with-attribute-no-sanitize-address" title="Permalink to this headline">¶</a></h3>
 <p>Some code should not be instrumented by AddressSanitizer. One may use the
-function attribute <code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;address&quot;)))</span></code>
-(which has deprecated synonyms
-<a class="reference internal" href="AttributeReference.html#langext-address-sanitizer"><span>no_sanitize_address</span></a> and
-<cite>no_address_safety_analysis</cite>) to disable instrumentation of a particular
-function. This attribute may not be supported by other compilers, so we suggest
-to use it together with <code class="docutils literal"><span class="pre">__has_feature(address_sanitizer)</span></code>.</p>
+function attribute <code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;address&quot;)))</span></code> (which has
+deprecated synonyms <cite>no_sanitize_address</cite> and <cite>no_address_safety_analysis</cite>) to
+disable instrumentation of a particular function. This attribute may not be
+supported by other compilers, so we suggest to use it together with
+<code class="docutils literal"><span class="pre">__has_feature(address_sanitizer)</span></code>.</p>
 </div>
 <div class="section" id="suppressing-errors-in-recompiled-code-blacklist">
 <h3><a class="toc-backref" href="#id12">Suppressing Errors in Recompiled Code (Blacklist)</a><a class="headerlink" href="#suppressing-errors-in-recompiled-code-blacklist" title="Permalink to this headline">¶</a></h3>
@@ -258,26 +259,39 @@ suppress error reports for out-of-bound access to globals with certain
 names and types (you may only specify class or struct types).</p>
 <p>You may use an <code class="docutils literal"><span class="pre">init</span></code> category to suppress reports about initialization-order
 problems happening in certain source files or with certain global variables.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Suppress error reports for code in a file or in a function:</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c1"># Suppress error reports for code in a file or in a function:</span>
 src:bad_file.cpp
-<span class="c"># Ignore all functions with names containing MyFooBar:</span>
+<span class="c1"># Ignore all functions with names containing MyFooBar:</span>
 fun:*MyFooBar*
-<span class="c"># Disable out-of-bound checks for global:</span>
+<span class="c1"># Disable out-of-bound checks for global:</span>
 global:bad_array
-<span class="c"># Disable out-of-bound checks for global instances of a given class ...</span>
-<span class="nb">type</span>:Namespace::BadClassName
-<span class="c"># ... or a given struct. Use wildcard to deal with anonymous namespace.</span>
-<span class="nb">type</span>:Namespace2::*::BadStructName
-<span class="c"># Disable initialization-order checks for globals:</span>
+<span class="c1"># Disable out-of-bound checks for global instances of a given class ...</span>
+type:Namespace::BadClassName
+<span class="c1"># ... or a given struct. Use wildcard to deal with anonymous namespace.</span>
+type:Namespace2::*::BadStructName
+<span class="c1"># Disable initialization-order checks for globals:</span>
 global:bad_init_global<span class="o">=</span>init
-<span class="nb">type</span>:*BadInitClassSubstring*<span class="o">=</span>init
+type:*BadInitClassSubstring*<span class="o">=</span>init
 src:bad/init/files/*<span class="o">=</span>init
 </pre></div>
 </div>
 </div>
+<div class="section" id="suppressing-memory-leaks">
+<h3><a class="toc-backref" href="#id13">Suppressing memory leaks</a><a class="headerlink" href="#suppressing-memory-leaks" title="Permalink to this headline">¶</a></h3>
+<p>Memory leak reports produced by <a class="reference internal" href="LeakSanitizer.html"><em>LeakSanitizer</em></a> (if it is run as a part
+of AddressSanitizer) can be suppressed by a separate file passed as</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">LSAN_OPTIONS</span><span class="o">=</span><span class="nv">suppressions</span><span class="o">=</span>MyLSan.supp
+</pre></div>
+</div>
+<p>which contains lines of the form <cite>leak:&lt;pattern&gt;</cite>. Memory leak will be
+suppressed if pattern matches any function name, source file name, or
+library name in the symbolized stack trace of the leak report. See
+<a class="reference external" href="https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer#suppressions">full documentation</a>
+for more details.</p>
+</div>
 </div>
 <div class="section" id="limitations">
-<h2><a class="toc-backref" href="#id13">Limitations</a><a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14">Limitations</a><a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>AddressSanitizer uses more real memory than a native run. Exact overhead
 depends on the allocations sizes. The smaller the allocations you make the
@@ -290,7 +304,7 @@ usually expected.</li>
 </ul>
 </div>
 <div class="section" id="supported-platforms">
-<h2><a class="toc-backref" href="#id14">Supported Platforms</a><a class="headerlink" href="#supported-platforms" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id15">Supported Platforms</a><a class="headerlink" href="#supported-platforms" title="Permalink to this headline">¶</a></h2>
 <p>AddressSanitizer is supported on:</p>
 <ul class="simple">
 <li>Linux i386/x86_64 (tested on Ubuntu 12.04)</li>
@@ -302,14 +316,14 @@ usually expected.</li>
 <p>Ports to various other platforms are in progress.</p>
 </div>
 <div class="section" id="current-status">
-<h2><a class="toc-backref" href="#id15">Current Status</a><a class="headerlink" href="#current-status" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id16">Current Status</a><a class="headerlink" href="#current-status" title="Permalink to this headline">¶</a></h2>
 <p>AddressSanitizer is fully functional on supported platforms starting from LLVM
 3.1. The test suite is integrated into CMake build and can be run with <code class="docutils literal"><span class="pre">make</span>
 <span class="pre">check-asan</span></code> command.</p>
 </div>
 <div class="section" id="more-information">
-<h2><a class="toc-backref" href="#id16">More Information</a><a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="http://code.google.com/p/address-sanitizer/">http://code.google.com/p/address-sanitizer</a></p>
+<h2><a class="toc-backref" href="#id17">More Information</a><a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/google/sanitizers/wiki/AddressSanitizer">https://github.com/google/sanitizers/wiki/AddressSanitizer</a></p>
 </div>
 </div>
 
@@ -328,8 +342,8 @@ usually expected.</li>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Precompiled Header and Modules Internals &mdash; Clang 3.7 documentation</title>
+    <title>Precompiled Header and Modules Internals &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,12 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <link rel="next" title="ABI tags" href="ItaniumMangleAbiTags.html" />
     <link rel="prev" title="Pretokenized Headers (PTH)" href="PTHInternals.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>Precompiled Header and Modules Internals</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -38,6 +39,8 @@
         «&#160;&#160;<a href="PTHInternals.html">Pretokenized Headers (PTH)</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="ItaniumMangleAbiTags.html">ABI tags</a>&#160;&#160;»
         </p>
 
       </div>
@@ -73,16 +76,16 @@ see the <a class="reference internal" href="UsersManual.html#usersmanual-precomp
 <h2><a class="toc-backref" href="#id1">Using Precompiled Headers with <code class="docutils literal"><span class="pre">clang</span></code></a><a class="headerlink" href="#using-precompiled-headers-with-clang" title="Permalink to this headline">¶</a></h2>
 <p>The Clang compiler frontend, <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-cc1</span></code>, supports two command line options
 for generating and using PCH files.</p>
-<p>To generate PCH files using <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-cc1</span></code>, use the option <code class="xref std std-option docutils literal"><span class="pre">-emit-pch</span></code>:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>clang -cc1 test.h -emit-pch -o test.h.pch
+<p>To generate PCH files using <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-cc1</span></code>, use the option <cite>-emit-pch</cite>:</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ clang -cc1 test.h -emit-pch -o test.h.pch
 </pre></div>
 </div>
 <p>This option is transparently used by <code class="docutils literal"><span class="pre">clang</span></code> when generating PCH files.  The
 resulting PCH file contains the serialized form of the compiler&#8217;s internal
 representation after it has completed parsing and semantic analysis.  The PCH
-file can then be used as a prefix header with the <code class="xref std std-option docutils literal"><span class="pre">-include-pch</span></code>
+file can then be used as a prefix header with the <cite>-include-pch</cite>
 option:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>clang -cc1 -include-pch test.h.pch test.c -o test.s
+<div class="highlight-bash"><div class="highlight"><pre>$ clang -cc1 -include-pch test.h.pch test.c -o test.s
 </pre></div>
 </div>
 </div>
@@ -132,7 +135,7 @@ entity (and those entities it depends on) are deserialized from the AST file.
 With this approach, the cost of using an AST file for a translation unit is
 proportional to the amount of code actually used from the AST file, rather than
 being proportional to the size of the AST file itself.</p>
-<p>When given the <code class="xref std std-option docutils literal"><span class="pre">-print-stats</span></code> option, Clang produces statistics
+<p>When given the <cite>-print-stats</cite> option, Clang produces statistics
 describing how much of the AST file was actually loaded from disk.  For a
 simple &#8220;Hello, World!&#8221; program that includes the Apple <code class="docutils literal"><span class="pre">Cocoa.h</span></code> header
 (which is built as a precompiled header), this option illustrates how little of
@@ -573,13 +576,15 @@ is notified of the import.</dd>
         «&#160;&#160;<a href="PTHInternals.html">Pretokenized Headers (PTH)</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="ItaniumMangleAbiTags.html">ABI tags</a>&#160;&#160;»
         </p>
 
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

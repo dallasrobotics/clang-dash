@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Overview &mdash; Clang 3.7 documentation</title>
+    <title>Overview &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="ClangCheck" href="ClangCheck.html" />
     <link rel="prev" title="JSON Compilation Database Format Specification" href="JSONCompilationDatabase.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>Overview</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -119,8 +119,9 @@ diagnostics in different formats with different flags, suitable for use driving
 an IDE or editor. Furthermore, it can be used in fixit-mode to directly apply
 fixit-hints offered by clang. See <a class="reference internal" href="HowToSetupToolingForLLVM.html"><em>How To Setup Clang Tooling For LLVM</em></a> for
 instructions on how to setup and used <cite>clang-check</cite>.</p>
+</div>
 <div class="section" id="clang-format">
-<h4><code class="docutils literal"><span class="pre">clang-format</span></code><a class="headerlink" href="#clang-format" title="Permalink to this headline">¶</a></h4>
+<h3><code class="docutils literal"><span class="pre">clang-format</span></code><a class="headerlink" href="#clang-format" title="Permalink to this headline">¶</a></h3>
 <p>Clang-format is both a <a class="reference internal" href="LibFormat.html"><em>library</em></a> and a <a class="reference internal" href="ClangFormat.html"><em>stand-alone tool</em></a> with the goal of automatically reformatting C++ sources files
 according to configurable style guides.  To do so, clang-format uses Clang&#8217;s
 <code class="docutils literal"><span class="pre">Lexer</span></code> to transform an input file into a token stream and then changes all
@@ -129,18 +130,6 @@ as a user tool (ideally with powerful IDE integrations) and as part of other
 refactoring tools, e.g. to do a reformatting of all the lines changed during a
 renaming.</p>
 </div>
-<div class="section" id="clang-modernize">
-<h4><code class="docutils literal"><span class="pre">clang-modernize</span></code><a class="headerlink" href="#clang-modernize" title="Permalink to this headline">¶</a></h4>
-<p><code class="docutils literal"><span class="pre">clang-modernize</span></code> migrates C++ code to use C++11 features where appropriate.
-Currently it can:</p>
-<ul class="simple">
-<li>convert loops to range-based for loops;</li>
-<li>convert null pointer constants (like <code class="docutils literal"><span class="pre">NULL</span></code> or <code class="docutils literal"><span class="pre">0</span></code>) to C++11 <code class="docutils literal"><span class="pre">nullptr</span></code>;</li>
-<li>replace the type specifier in variable declarations with the <code class="docutils literal"><span class="pre">auto</span></code> type specifier;</li>
-<li>add the <code class="docutils literal"><span class="pre">override</span></code> specifier to applicable member functions.</li>
-</ul>
-</div>
-</div>
 </div>
 <div class="section" id="extra-clang-tools">
 <h2>Extra Clang Tools<a class="headerlink" href="#extra-clang-tools" title="Permalink to this headline">¶</a></h2>
@@ -148,6 +137,13 @@ Currently it can:</p>
 they&#8217;ll be tracked here. The focus of this documentation is on the scope
 and features of the tools for other tool developers; each tool should
 provide its own user-focused documentation.</p>
+<div class="section" id="clang-tidy">
+<h3><code class="docutils literal"><span class="pre">clang-tidy</span></code><a class="headerlink" href="#clang-tidy" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="http://clang.llvm.org/extra/clang-tidy/">clang-tidy</a> is a clang-based C++
+linter tool. It provides an extensible framework for building compiler-based
+static analyses detecting and fixing bug-prone patterns, performance,
+portability and maintainability issues.</p>
+</div>
 </div>
 <div class="section" id="ideas-for-new-tools">
 <h2>Ideas for new Tools<a class="headerlink" href="#ideas-for-new-tools" title="Permalink to this headline">¶</a></h2>
@@ -161,27 +157,9 @@ appropriate C++ cast (<code class="docutils literal"><span class="pre">static_ca
 <code class="docutils literal"><span class="pre">foo</span></code> is a standard container.  We could also detect similar patterns for
 arrays.</p>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">make_shared</span></code> / <code class="docutils literal"><span class="pre">make_unique</span></code> conversion.  Part of this transformation
-can be incorporated into the <code class="docutils literal"><span class="pre">auto</span></code> transformation.  Will convert</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">sp</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
-<span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">up</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">);</span>
-
-<span class="n">func</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span> <span class="n">Foo</span><span class="p">),</span> <span class="n">bar</span><span class="p">());</span>
-</pre></div>
-</div>
-<p>into:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">auto</span> <span class="n">sp</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="k">auto</span> <span class="n">up</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span><span class="p">();</span> <span class="c1">// In C++14 mode.</span>
-
-<span class="c1">// This also affects correctness.  For the cases where bar() throws,</span>
-<span class="c1">// make_shared() is safe and the original code may leak.</span>
-<span class="n">func</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span><span class="p">(),</span> <span class="n">bar</span><span class="p">());</span>
-</pre></div>
-</div>
-</li>
 <li><p class="first"><code class="docutils literal"><span class="pre">tr1</span></code> removal tool.  Will migrate source code from using TR1 library
 features to C++11 library.  For example:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &lt;tr1/unordered_map&gt;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;tr1/unordered_map&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="n">std</span><span class="o">::</span><span class="n">tr1</span><span class="o">::</span><span class="n">unordered_map</span> <span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">ma</span><span class="p">;</span>
@@ -191,7 +169,7 @@ features to C++11 library.  For example:</p>
 </pre></div>
 </div>
 <p>should be rewritten to:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &lt;unordered_map&gt;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;unordered_map&gt;</span><span class="cp"></span>
 <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
     <span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span> <span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span> <span class="n">ma</span><span class="p">;</span>
@@ -235,8 +213,8 @@ For example:</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

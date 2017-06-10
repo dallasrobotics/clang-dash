@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ClangFormat &mdash; Clang 3.7 documentation</title>
+    <title>ClangFormat &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="Clang-Format Style Options" href="ClangFormatStyleOptions.html" />
     <link rel="prev" title="ClangCheck" href="ClangCheck.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>ClangFormat</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -57,7 +57,7 @@ standalone tool and editor integrations.</p>
 <p><strong class="program">clang-format</strong> is located in <cite>clang/tools/clang-format</cite> and can be used
 to format C/C++/Obj-C code.</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang-format -help
-<span class="go">OVERVIEW: A tool to format C/C++/Obj-C code.</span>
+<span class="go">OVERVIEW: A tool to format C/C++/Java/JavaScript/Objective-C/Protobuf code.</span>
 
 <span class="go">If no arguments are specified, it formats the code from standard input</span>
 <span class="go">and writes the result to the standard output.</span>
@@ -71,44 +71,53 @@ to format C/C++/Obj-C code.</p>
 
 <span class="go">Clang-format options:</span>
 
-<span class="go">  -cursor=&lt;uint&gt;           - The position of the cursor when invoking</span>
-<span class="go">                             clang-format from an editor integration</span>
-<span class="go">  -dump-config             - Dump configuration options to stdout and exit.</span>
-<span class="go">                             Can be used with -style option.</span>
-<span class="go">  -i                       - Inplace edit &lt;file&gt;s, if specified.</span>
-<span class="go">  -length=&lt;uint&gt;           - Format a range of this length (in bytes).</span>
-<span class="go">                             Multiple ranges can be formatted by specifying</span>
-<span class="go">                             several -offset and -length pairs.</span>
-<span class="go">                             When only a single -offset is specified without</span>
-<span class="go">                             -length, clang-format will format up to the end</span>
-<span class="go">                             of the file.</span>
-<span class="go">                             Can only be used with one input file.</span>
-<span class="go">  -lines=&lt;string&gt;          - &lt;start line&gt;:&lt;end line&gt; - format a range of</span>
-<span class="go">                             lines (both 1-based).</span>
-<span class="go">                             Multiple ranges can be formatted by specifying</span>
-<span class="go">                             several -lines arguments.</span>
-<span class="go">                             Can&#39;t be used with -offset and -length.</span>
-<span class="go">                             Can only be used with one input file.</span>
-<span class="go">  -offset=&lt;uint&gt;           - Format a range starting at this byte offset.</span>
-<span class="go">                             Multiple ranges can be formatted by specifying</span>
-<span class="go">                             several -offset and -length pairs.</span>
-<span class="go">                             Can only be used with one input file.</span>
-<span class="go">  -output-replacements-xml - Output replacements as XML.</span>
-<span class="go">  -style=&lt;string&gt;          - Coding style, currently supports:</span>
-<span class="go">                               LLVM, Google, Chromium, Mozilla, WebKit.</span>
-<span class="go">                             Use -style=file to load style configuration from</span>
-<span class="go">                             .clang-format file located in one of the parent</span>
-<span class="go">                             directories of the source file (or current</span>
-<span class="go">                             directory for stdin).</span>
-<span class="go">                             Use -style=&quot;{key: value, ...}&quot; to set specific</span>
-<span class="go">                             parameters, e.g.:</span>
-<span class="go">                               -style=&quot;{BasedOnStyle: llvm, IndentWidth: 8}&quot;</span>
+<span class="go">  -assume-filename=&lt;string&gt; - When reading from stdin, clang-format assumes this</span>
+<span class="go">                              filename to look for a style config file (with</span>
+<span class="go">                              -style=file) and to determine the language.</span>
+<span class="go">  -cursor=&lt;uint&gt;            - The position of the cursor when invoking</span>
+<span class="go">                              clang-format from an editor integration</span>
+<span class="go">  -dump-config              - Dump configuration options to stdout and exit.</span>
+<span class="go">                              Can be used with -style option.</span>
+<span class="go">  -fallback-style=&lt;string&gt;  - The name of the predefined style used as a</span>
+<span class="go">                              fallback in case clang-format is invoked with</span>
+<span class="go">                              -style=file, but can not find the .clang-format</span>
+<span class="go">                              file to use.</span>
+<span class="go">                              Use -fallback-style=none to skip formatting.</span>
+<span class="go">  -i                        - Inplace edit &lt;file&gt;s, if specified.</span>
+<span class="go">  -length=&lt;uint&gt;            - Format a range of this length (in bytes).</span>
+<span class="go">                              Multiple ranges can be formatted by specifying</span>
+<span class="go">                              several -offset and -length pairs.</span>
+<span class="go">                              When only a single -offset is specified without</span>
+<span class="go">                              -length, clang-format will format up to the end</span>
+<span class="go">                              of the file.</span>
+<span class="go">                              Can only be used with one input file.</span>
+<span class="go">  -lines=&lt;string&gt;           - &lt;start line&gt;:&lt;end line&gt; - format a range of</span>
+<span class="go">                              lines (both 1-based).</span>
+<span class="go">                              Multiple ranges can be formatted by specifying</span>
+<span class="go">                              several -lines arguments.</span>
+<span class="go">                              Can&#39;t be used with -offset and -length.</span>
+<span class="go">                              Can only be used with one input file.</span>
+<span class="go">  -offset=&lt;uint&gt;            - Format a range starting at this byte offset.</span>
+<span class="go">                              Multiple ranges can be formatted by specifying</span>
+<span class="go">                              several -offset and -length pairs.</span>
+<span class="go">                              Can only be used with one input file.</span>
+<span class="go">  -output-replacements-xml  - Output replacements as XML.</span>
+<span class="go">  -sort-includes            - Sort touched include lines</span>
+<span class="go">  -style=&lt;string&gt;           - Coding style, currently supports:</span>
+<span class="go">                                LLVM, Google, Chromium, Mozilla, WebKit.</span>
+<span class="go">                              Use -style=file to load style configuration from</span>
+<span class="go">                              .clang-format file located in one of the parent</span>
+<span class="go">                              directories of the source file (or current</span>
+<span class="go">                              directory for stdin).</span>
+<span class="go">                              Use -style=&quot;{key: value, ...}&quot; to set specific</span>
+<span class="go">                              parameters, e.g.:</span>
+<span class="go">                                -style=&quot;{BasedOnStyle: llvm, IndentWidth: 8}&quot;</span>
 
-<span class="go">General options:</span>
+<span class="go">Generic Options:</span>
 
-<span class="go">  -help                    - Display available options (-help-hidden for more)</span>
-<span class="go">  -help-list               - Display list of available options (-help-list-hidden for more)</span>
-<span class="go">  -version                 - Display the version of this program</span>
+<span class="go">  -help                     - Display available options (-help-hidden for more)</span>
+<span class="go">  -help-list                - Display list of available options (-help-list-hidden for more)</span>
+<span class="go">  -version                  - Display the version of this program</span>
 </pre></div>
 </div>
 <p>When the desired code formatting style is different from the available options,
@@ -189,14 +198,14 @@ a unified diff and reformats all contained lines with <strong class="program">cl
 </pre></div>
 </div>
 <p>So to reformat all the lines in the latest <strong class="program">git</strong> commit, just do:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">git diff -U0 HEAD^ | clang-format-diff.py -i -p1</span>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">git diff -U0 --no-color HEAD^ | clang-format-diff.py -i -p1</span>
 </pre></div>
 </div>
 <p>In an SVN client, you can do:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">svn diff --diff-cmd=diff -x-U0 | clang-format-diff.py -i</span>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">svn diff --diff-cmd=diff -x -U0 | clang-format-diff.py -i</span>
 </pre></div>
 </div>
-<p>The <code class="xref std std-option docutils literal"><span class="pre">-U0</span></code> will create a diff without context lines (the script would format
+<p>The option <cite>-U0</cite> will create a diff without context lines (the script would format
 those as well).</p>
 </div>
 </div>
@@ -216,8 +225,8 @@ those as well).</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Tutorial for building tools using LibTooling and LibASTMatchers &mdash; Clang 3.7 documentation</title>
+    <title>Tutorial for building tools using LibTooling and LibASTMatchers &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="Matching the Clang AST" href="LibASTMatchers.html" />
     <link rel="prev" title="How to write RecursiveASTVisitor based ASTFrontendActions." href="RAVFrontendAction.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>Tutorial for building tools using LibTooling and LibASTMatchers</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -134,7 +134,6 @@ live in the <code class="docutils literal"><span class="pre">tools/extra</span><
 </div>
 <p>CMakeLists.txt should have the following contents:</p>
 <div class="highlight-python"><div class="highlight"><pre>set(LLVM_LINK_COMPONENTS support)
-set(LLVM_USED_LIBS clangTooling clangBasic clangAST)
 
 add_clang_executable(loop-convert
   LoopConvert.cpp
@@ -152,11 +151,11 @@ something to compile! Put the following into
 why the different parts are needed can be found in the <a class="reference external" href="LibTooling.html">LibTooling
 documentation</a>.</p>
 <div class="highlight-c++"><div class="highlight"><pre><span class="c1">// Declares clang::SyntaxOnlyAction.</span>
-<span class="cp">#include &quot;clang/Frontend/FrontendActions.h&quot;</span>
-<span class="cp">#include &quot;clang/Tooling/CommonOptionsParser.h&quot;</span>
-<span class="cp">#include &quot;clang/Tooling/Tooling.h&quot;</span>
+<span class="cp">#include</span> <span class="cpf">&quot;clang/Frontend/FrontendActions.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;clang/Tooling/CommonOptionsParser.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;clang/Tooling/Tooling.h&quot;</span><span class="cp"></span>
 <span class="c1">// Declares llvm::cl::extrahelp.</span>
-<span class="cp">#include &quot;llvm/Support/CommandLine.h&quot;</span>
+<span class="cp">#include</span> <span class="cpf">&quot;llvm/Support/CommandLine.h&quot;</span><span class="cp"></span>
 
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">clang</span><span class="o">::</span><span class="n">tooling</span><span class="p">;</span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">llvm</span><span class="p">;</span>
@@ -268,8 +267,8 @@ scaffolding in order to run them. Matchers are paired with a
 <code class="docutils literal"><span class="pre">MatchCallback</span></code> and registered with a <code class="docutils literal"><span class="pre">MatchFinder</span></code> object, then run
 from a <code class="docutils literal"><span class="pre">ClangTool</span></code>. More code!</p>
 <p>Add the following to <code class="docutils literal"><span class="pre">LoopConvert.cpp</span></code>:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &quot;clang/ASTMatchers/ASTMatchers.h&quot;</span>
-<span class="cp">#include &quot;clang/ASTMatchers/ASTMatchFinder.h&quot;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;clang/ASTMatchers/ASTMatchers.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;clang/ASTMatchers/ASTMatchFinder.h&quot;</span><span class="cp"></span>
 
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">clang</span><span class="p">;</span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">clang</span><span class="o">::</span><span class="n">ast_matchers</span><span class="p">;</span>
@@ -441,7 +440,7 @@ is the set of matched nodes, and how we retrieve them.</p>
 InitVarName, and IncrementVarName), we can obtain the matched nodes by
 using the <code class="docutils literal"><span class="pre">getNodeAs()</span></code> member function.</p>
 <p>In <code class="docutils literal"><span class="pre">LoopConvert.cpp</span></code> add</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &quot;clang/AST/ASTContext.h&quot;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;clang/AST/ASTContext.h&quot;</span><span class="cp"></span>
 </pre></div>
 </div>
 <p>Change <code class="docutils literal"><span class="pre">LoopMatcher</span></code> to</p>
@@ -463,9 +462,9 @@ using the <code class="docutils literal"><span class="pre">getNodeAs()</span></c
 <p>And change <code class="docutils literal"><span class="pre">LoopPrinter::run</span></code> to</p>
 <div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="n">LoopPrinter</span><span class="o">::</span><span class="n">run</span><span class="p">(</span><span class="k">const</span> <span class="n">MatchFinder</span><span class="o">::</span><span class="n">MatchResult</span> <span class="o">&amp;</span><span class="n">Result</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">ASTContext</span> <span class="o">*</span><span class="n">Context</span> <span class="o">=</span> <span class="n">Result</span><span class="p">.</span><span class="n">Context</span><span class="p">;</span>
-  <span class="k">const</span> <span class="n">ForStmt</span> <span class="o">*</span><span class="n">FS</span> <span class="o">=</span> <span class="n">Result</span><span class="p">.</span><span class="n">Nodes</span><span class="p">.</span><span class="n">getStmtAs</span><span class="o">&lt;</span><span class="n">ForStmt</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;forLoop&quot;</span><span class="p">);</span>
+  <span class="k">const</span> <span class="n">ForStmt</span> <span class="o">*</span><span class="n">FS</span> <span class="o">=</span> <span class="n">Result</span><span class="p">.</span><span class="n">Nodes</span><span class="p">.</span><span class="n">getNodeAs</span><span class="o">&lt;</span><span class="n">ForStmt</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;forLoop&quot;</span><span class="p">);</span>
   <span class="c1">// We do not want to convert header files!</span>
-  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">FS</span> <span class="o">||</span> <span class="o">!</span><span class="n">Context</span><span class="o">-&gt;</span><span class="n">getSourceManager</span><span class="p">().</span><span class="n">isFromMainFile</span><span class="p">(</span><span class="n">FS</span><span class="o">-&gt;</span><span class="n">getForLoc</span><span class="p">()))</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">FS</span> <span class="o">||</span> <span class="o">!</span><span class="n">Context</span><span class="o">-&gt;</span><span class="n">getSourceManager</span><span class="p">().</span><span class="n">isWrittenInMainFile</span><span class="p">(</span><span class="n">FS</span><span class="o">-&gt;</span><span class="n">getForLoc</span><span class="p">()))</span>
     <span class="k">return</span><span class="p">;</span>
   <span class="k">const</span> <span class="n">VarDecl</span> <span class="o">*</span><span class="n">IncVar</span> <span class="o">=</span> <span class="n">Result</span><span class="p">.</span><span class="n">Nodes</span><span class="p">.</span><span class="n">getNodeAs</span><span class="o">&lt;</span><span class="n">VarDecl</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;incVarName&quot;</span><span class="p">);</span>
   <span class="k">const</span> <span class="n">VarDecl</span> <span class="o">*</span><span class="n">CondVar</span> <span class="o">=</span> <span class="n">Result</span><span class="p">.</span><span class="n">Nodes</span><span class="p">.</span><span class="n">getNodeAs</span><span class="o">&lt;</span><span class="n">VarDecl</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;condVarName&quot;</span><span class="p">);</span>
@@ -536,8 +535,8 @@ potentially convertible.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

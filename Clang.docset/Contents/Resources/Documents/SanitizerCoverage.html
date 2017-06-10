@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>SanitizerCoverage &mdash; Clang 3.7 documentation</title>
+    <title>SanitizerCoverage &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
-    <link rel="next" title="Sanitizer special case list" href="SanitizerSpecialCaseList.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <link rel="next" title="SanitizerStats" href="SanitizerStats.html" />
     <link rel="prev" title="LeakSanitizer" href="LeakSanitizer.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>SanitizerCoverage</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -40,7 +40,7 @@
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="SanitizerSpecialCaseList.html">Sanitizer special case list</a>&#160;&#160;»
+        <a href="SanitizerStats.html">SanitizerStats</a>&#160;&#160;»
         </p>
 
       </div>
@@ -54,16 +54,22 @@
 <li><a class="reference internal" href="#introduction" id="id1">Introduction</a></li>
 <li><a class="reference internal" href="#how-to-build-and-run" id="id2">How to build and run</a></li>
 <li><a class="reference internal" href="#postprocessing" id="id3">Postprocessing</a></li>
-<li><a class="reference internal" href="#how-good-is-the-coverage" id="id4">How good is the coverage?</a></li>
-<li><a class="reference internal" href="#edge-coverage" id="id5">Edge coverage</a></li>
-<li><a class="reference internal" href="#bitset" id="id6">Bitset</a></li>
-<li><a class="reference internal" href="#caller-callee-coverage" id="id7">Caller-callee coverage</a></li>
-<li><a class="reference internal" href="#coverage-counters" id="id8">Coverage counters</a></li>
-<li><a class="reference internal" href="#output-directory" id="id9">Output directory</a></li>
-<li><a class="reference internal" href="#sudden-death" id="id10">Sudden death</a></li>
-<li><a class="reference internal" href="#in-process-fuzzing" id="id11">In-process fuzzing</a></li>
-<li><a class="reference internal" href="#performance" id="id12">Performance</a></li>
-<li><a class="reference internal" href="#why-another-coverage" id="id13">Why another coverage?</a></li>
+<li><a class="reference internal" href="#sancov-tool" id="id4">Sancov Tool</a></li>
+<li><a class="reference internal" href="#coverage-reports-experimental" id="id5">Coverage Reports (Experimental)</a></li>
+<li><a class="reference internal" href="#how-good-is-the-coverage" id="id6">How good is the coverage?</a></li>
+<li><a class="reference internal" href="#edge-coverage" id="id7">Edge coverage</a></li>
+<li><a class="reference internal" href="#bitset" id="id8">Bitset</a></li>
+<li><a class="reference internal" href="#caller-callee-coverage" id="id9">Caller-callee coverage</a></li>
+<li><a class="reference internal" href="#coverage-counters" id="id10">Coverage counters</a></li>
+<li><a class="reference internal" href="#tracing-basic-blocks" id="id11">Tracing basic blocks</a></li>
+<li><a class="reference internal" href="#tracing-pcs" id="id12">Tracing PCs</a></li>
+<li><a class="reference internal" href="#tracing-pcs-with-guards" id="id13">Tracing PCs with guards</a></li>
+<li><a class="reference internal" href="#tracing-data-flow" id="id14">Tracing data flow</a></li>
+<li><a class="reference internal" href="#output-directory" id="id15">Output directory</a></li>
+<li><a class="reference internal" href="#sudden-death" id="id16">Sudden death</a></li>
+<li><a class="reference internal" href="#in-process-fuzzing" id="id17">In-process fuzzing</a></li>
+<li><a class="reference internal" href="#performance" id="id18">Performance</a></li>
+<li><a class="reference internal" href="#why-another-coverage" id="id19">Why another coverage?</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
@@ -75,8 +81,9 @@ cost.</p>
 <div class="section" id="how-to-build-and-run">
 <h2><a class="toc-backref" href="#id2">How to build and run</a><a class="headerlink" href="#how-to-build-and-run" title="Permalink to this headline">¶</a></h2>
 <p>SanitizerCoverage can be used with <a class="reference internal" href="AddressSanitizer.html"><em>AddressSanitizer</em></a>,
-<a class="reference internal" href="LeakSanitizer.html"><em>LeakSanitizer</em></a>, <a class="reference internal" href="MemorySanitizer.html"><em>MemorySanitizer</em></a>, and UndefinedBehaviorSanitizer.
-In addition to <code class="docutils literal"><span class="pre">-fsanitize=</span></code>, pass one of the following compile-time flags:</p>
+<a class="reference internal" href="LeakSanitizer.html"><em>LeakSanitizer</em></a>, <a class="reference internal" href="MemorySanitizer.html"><em>MemorySanitizer</em></a>,
+UndefinedBehaviorSanitizer, or without any sanitizer.  Pass one of the
+following compile-time flags:</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">-fsanitize-coverage=func</span></code> for function-level coverage (very fast).</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize-coverage=bb</span></code> for basic-block-level coverage (may add up to 30%
@@ -85,8 +92,9 @@ In addition to <code class="docutils literal"><span class="pre">-fsanitize=</spa
 </ul>
 <p>You may also specify <code class="docutils literal"><span class="pre">-fsanitize-coverage=indirect-calls</span></code> for
 additional <a class="reference internal" href="#caller-callee-coverage">caller-callee coverage</a>.</p>
-<p>At run time, pass <code class="docutils literal"><span class="pre">coverage=1</span></code> in <code class="docutils literal"><span class="pre">ASAN_OPTIONS</span></code>, <code class="docutils literal"><span class="pre">LSAN_OPTIONS</span></code>,
-<code class="docutils literal"><span class="pre">MSAN_OPTIONS</span></code> or <code class="docutils literal"><span class="pre">UBSAN_OPTIONS</span></code>, as appropriate.</p>
+<p>At run time, pass <code class="docutils literal"><span class="pre">coverage=1</span></code> in <code class="docutils literal"><span class="pre">ASAN_OPTIONS</span></code>,
+<code class="docutils literal"><span class="pre">LSAN_OPTIONS</span></code>, <code class="docutils literal"><span class="pre">MSAN_OPTIONS</span></code> or <code class="docutils literal"><span class="pre">UBSAN_OPTIONS</span></code>, as
+appropriate. For the standalone coverage mode, use <code class="docutils literal"><span class="pre">UBSAN_OPTIONS</span></code>.</p>
 <p>To get <a class="reference internal" href="#coverage-counters">Coverage counters</a>, add <code class="docutils literal"><span class="pre">-fsanitize-coverage=8bit-counters</span></code>
 to one of the above compile-time flags. At runtime, use
 <code class="docutils literal"><span class="pre">*SAN_OPTIONS=coverage=1:coverage_counters=1</span></code>.</p>
@@ -143,8 +151,44 @@ numbers:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="sancov-tool">
+<h2><a class="toc-backref" href="#id4">Sancov Tool</a><a class="headerlink" href="#sancov-tool" title="Permalink to this headline">¶</a></h2>
+<p>A new experimental <code class="docutils literal"><span class="pre">sancov</span></code> tool is developed to process coverage files.
+The tool is part of LLVM project and is currently supported only on Linux.
+It can handle symbolization tasks autonomously without any extra support
+from the environment. You need to pass .sancov files (named
+<code class="docutils literal"><span class="pre">&lt;module_name&gt;.&lt;pid&gt;.sancov</span></code> and paths to all corresponding binary elf files.
+Sancov matches these files using module names and binaries file names.</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">USAGE: sancov [options] &lt;action&gt; (&lt;binary file&gt;|&lt;.sancov file&gt;)...</span>
+
+<span class="go">Action (required)</span>
+<span class="go">  -print                    - Print coverage addresses</span>
+<span class="go">  -covered-functions        - Print all covered functions.</span>
+<span class="go">  -not-covered-functions    - Print all not covered functions.</span>
+<span class="go">  -symbolize                - Symbolizes the report.</span>
+
+<span class="go">Options</span>
+<span class="go">  -blacklist=&lt;string&gt;         - Blacklist file (sanitizer blacklist format).</span>
+<span class="go">  -demangle                   - Print demangled function name.</span>
+<span class="go">  -strip_path_prefix=&lt;string&gt; - Strip this prefix from file paths in reports</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="coverage-reports-experimental">
+<h2><a class="toc-backref" href="#id5">Coverage Reports (Experimental)</a><a class="headerlink" href="#coverage-reports-experimental" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">.sancov</span></code> files do not contain enough information to generate a source-level
+coverage report. The missing information is contained
+in debug info of the binary. Thus the <code class="docutils literal"><span class="pre">.sancov</span></code> has to be symbolized
+to produce a <code class="docutils literal"><span class="pre">.symcov</span></code> file first:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">sancov -symbolize my_program.123.sancov my_program &gt; my_program.123.symcov</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">.symcov</span></code> file can be browsed overlayed over the source code by
+running <code class="docutils literal"><span class="pre">tools/sancov/coverage-report-server.py</span></code> script that will start
+an HTTP server.</p>
+</div>
 <div class="section" id="how-good-is-the-coverage">
-<h2><a class="toc-backref" href="#id4">How good is the coverage?</a><a class="headerlink" href="#how-good-is-the-coverage" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">How good is the coverage?</a><a class="headerlink" href="#how-good-is-the-coverage" title="Permalink to this headline">¶</a></h2>
 <p>It is possible to find out which PCs are not covered, by subtracting the covered
 set from the set of all instrumented PCs. The latter can be obtained by listing
 all callsites of <code class="docutils literal"><span class="pre">__sanitizer_cov()</span></code> in the binary. On Linux, <code class="docutils literal"><span class="pre">sancov.py</span></code>
@@ -161,7 +205,7 @@ can do this for you. Just supply the path to binary and a list of covered PCs:</
 </div>
 </div>
 <div class="section" id="edge-coverage">
-<h2><a class="toc-backref" href="#id5">Edge coverage</a><a class="headerlink" href="#edge-coverage" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7">Edge coverage</a><a class="headerlink" href="#edge-coverage" title="Permalink to this headline">¶</a></h2>
 <p>Consider this code:</p>
 <div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">a</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">)</span>
@@ -196,7 +240,7 @@ C
 </div>
 </div>
 <div class="section" id="bitset">
-<h2><a class="toc-backref" href="#id6">Bitset</a><a class="headerlink" href="#bitset" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8">Bitset</a><a class="headerlink" href="#bitset" title="Permalink to this headline">¶</a></h2>
 <p>When <code class="docutils literal"><span class="pre">coverage_bitset=1</span></code> run-time flag is given, the coverage will also be
 dumped as a bitset (text file with 1 for blocks that have been executed and 0
 for blocks that were not).</p>
@@ -218,7 +262,7 @@ unless dlopen/dlclose come into play), so the bitset coverage can be
 easily used for bitset-based corpus distillation.</p>
 </div>
 <div class="section" id="caller-callee-coverage">
-<h2><a class="toc-backref" href="#id7">Caller-callee coverage</a><a class="headerlink" href="#caller-callee-coverage" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9">Caller-callee coverage</a><a class="headerlink" href="#caller-callee-coverage" title="Permalink to this headline">¶</a></h2>
 <p>(Experimental!)
 Every indirect function call is instrumented with a run-time function call that
 captures caller and callee.  At the shutdown time the process dumps a separate
@@ -242,7 +286,7 @@ different modules and we need to spell out the module names.</li>
 </ul>
 </div>
 <div class="section" id="coverage-counters">
-<h2><a class="toc-backref" href="#id8">Coverage counters</a><a class="headerlink" href="#coverage-counters" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10">Coverage counters</a><a class="headerlink" href="#coverage-counters" title="Permalink to this headline">¶</a></h2>
 <p>This experimental feature is inspired by
 <a class="reference external" href="http://lcamtuf.coredump.cx/afl/technical_details.txt">AFL</a>&#8216;s coverage
 instrumentation. With additional compile-time and run-time flags you can get
@@ -281,8 +325,167 @@ be dumped to disk.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="tracing-basic-blocks">
+<h2><a class="toc-backref" href="#id11">Tracing basic blocks</a><a class="headerlink" href="#tracing-basic-blocks" title="Permalink to this headline">¶</a></h2>
+<p>Experimental support for basic block (or edge) tracing.
+With <code class="docutils literal"><span class="pre">-fsanitize-coverage=trace-bb</span></code> the compiler will insert
+<code class="docutils literal"><span class="pre">__sanitizer_cov_trace_basic_block(s32</span> <span class="pre">*id)</span></code> before every function, basic block, or edge
+(depending on the value of <code class="docutils literal"><span class="pre">-fsanitize-coverage=[func,bb,edge]</span></code>).
+Example:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> clang -g -fsanitize<span class="o">=</span>address -fsanitize-coverage<span class="o">=</span>edge,trace-bb foo.cc
+<span class="gp">%</span> <span class="nv">ASAN_OPTIONS</span><span class="o">=</span><span class="nv">coverage</span><span class="o">=</span><span class="m">1</span> ./a.out
+</pre></div>
+</div>
+<p>This will produce two files after the process exit:
+<cite>trace-points.PID.sancov</cite> and <cite>trace-events.PID.sancov</cite>.
+The first file will contain a textual description of all the instrumented points in the program
+in the form that you can feed into llvm-symbolizer (e.g. <cite>a.out 0x4dca89</cite>), one per line.
+The second file will contain the actual execution trace as a sequence of 4-byte integers
+&#8211; these integers are the indices into the array of instrumented points (the first file).</p>
+<p>Basic block tracing is currently supported only for single-threaded applications.</p>
+</div>
+<div class="section" id="tracing-pcs">
+<h2><a class="toc-backref" href="#id12">Tracing PCs</a><a class="headerlink" href="#tracing-pcs" title="Permalink to this headline">¶</a></h2>
+<p><em>Experimental</em> feature similar to tracing basic blocks, but with a different API.
+With <code class="docutils literal"><span class="pre">-fsanitize-coverage=trace-pc</span></code> the compiler will insert
+<code class="docutils literal"><span class="pre">__sanitizer_cov_trace_pc()</span></code> on every edge.
+With an additional <code class="docutils literal"><span class="pre">...=trace-pc,indirect-calls</span></code> flag
+<code class="docutils literal"><span class="pre">__sanitizer_cov_trace_pc_indirect(void</span> <span class="pre">*callee)</span></code> will be inserted on every indirect call.
+These callbacks are not implemented in the Sanitizer run-time and should be defined
+by the user. So, these flags do not require the other sanitizer to be used.
+This mechanism is used for fuzzing the Linux kernel (<a class="reference external" href="https://github.com/google/syzkaller">https://github.com/google/syzkaller</a>)
+and can be used with <a class="reference external" href="http://lcamtuf.coredump.cx/afl">AFL</a>.</p>
+</div>
+<div class="section" id="tracing-pcs-with-guards">
+<h2><a class="toc-backref" href="#id13">Tracing PCs with guards</a><a class="headerlink" href="#tracing-pcs-with-guards" title="Permalink to this headline">¶</a></h2>
+<p>Another <em>experimental</em> feature that tries to combine the functionality of <cite>trace-pc</cite>,
+<cite>8bit-counters</cite> and boolean coverage.</p>
+<p>With <code class="docutils literal"><span class="pre">-fsanitize-coverage=trace-pc-guard</span></code> the compiler will insert the following code
+on every edge:</p>
+<div class="highlight-none"><div class="highlight"><pre>if (guard_variable)
+  __sanitizer_cov_trace_pc_guard(&amp;guard_variable)
+</pre></div>
+</div>
+<p>Every edge will have its own <cite>guard_variable</cite> (uint32_t).</p>
+<p>The compler will also insert a module constructor that will call</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// The guards are [start, stop).</span>
+<span class="c1">// This function may be called multiple times with the same values of start/stop.</span>
+<span class="n">__sanitizer_cov_trace_pc_guard_init</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">stop</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Similarly to <cite>trace-pc,indirect-calls</cite>, with <cite>trace-pc-guards,indirect-calls</cite>
+<code class="docutils literal"><span class="pre">__sanitizer_cov_trace_pc_indirect(void</span> <span class="pre">*callee)</span></code> will be inserted on every indirect call.</p>
+<p>The functions <cite>__sanitizer_cov_trace_pc_*</cite> should be defined by the user.</p>
+<p>Example:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// trace-pc-guard-cb.cc</span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;sanitizer/coverage_interface.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// This callback is inserted by the compiler as a module constructor</span>
+<span class="c1">// into every compilation unit. &#39;start&#39; and &#39;stop&#39; correspond to the</span>
+<span class="c1">// beginning and end of the section with the guards for the entire</span>
+<span class="c1">// binary (executable or DSO) and so it will be called multiple times</span>
+<span class="c1">// with the same parameters.</span>
+<span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="kt">void</span> <span class="n">__sanitizer_cov_trace_pc_guard_init</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="n">start</span><span class="p">,</span>
+                                                    <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="kt">uint64_t</span> <span class="n">N</span><span class="p">;</span>  <span class="c1">// Counter for the guards.</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">start</span> <span class="o">==</span> <span class="n">stop</span> <span class="o">||</span> <span class="o">*</span><span class="n">start</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>  <span class="c1">// Initialize only once.</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;INIT: %p %p</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="n">x</span> <span class="o">=</span> <span class="n">start</span><span class="p">;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">stop</span><span class="p">;</span> <span class="n">x</span><span class="o">++</span><span class="p">)</span>
+    <span class="o">*</span><span class="n">x</span> <span class="o">=</span> <span class="o">++</span><span class="n">N</span><span class="p">;</span>  <span class="c1">// Guards should start from 1.</span>
+<span class="p">}</span>
+
+<span class="c1">// This callback is inserted by the compiler on every edge in the</span>
+<span class="c1">// control flow (some optimizations apply).</span>
+<span class="c1">// Typically, the compiler will emit the code like this:</span>
+<span class="c1">//    if(*guard)</span>
+<span class="c1">//      __sanitizer_cov_trace_pc_guard(guard);</span>
+<span class="c1">// But for large functions it will emit a simple call:</span>
+<span class="c1">//    __sanitizer_cov_trace_pc_guard(guard);</span>
+<span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="kt">void</span> <span class="n">__sanitizer_cov_trace_pc_guard</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="n">guard</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!*</span><span class="n">guard</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>  <span class="c1">// Duplicate the guard check.</span>
+  <span class="c1">// If you set *guard to 0 this code will not be called again for this edge.</span>
+  <span class="c1">// Now you can get the PC and do whatever you want:</span>
+  <span class="c1">//   store it somewhere or symbolize it and print right away.</span>
+  <span class="c1">// The values of `*guard` are as you set them in</span>
+  <span class="c1">// __sanitizer_cov_trace_pc_guard_init and so you can make them consecutive</span>
+  <span class="c1">// and use them to dereference an array or a bit vector.</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">PC</span> <span class="o">=</span> <span class="n">__builtin_return_address</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+  <span class="kt">char</span> <span class="n">PcDescr</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+  <span class="c1">// This function is a part of the sanitizer run-time.</span>
+  <span class="c1">// To use it, link with AddressSanitizer or other sanitizer.</span>
+  <span class="n">__sanitizer_symbolize_pc</span><span class="p">(</span><span class="n">PC</span><span class="p">,</span> <span class="s">&quot;%p %F %L&quot;</span><span class="p">,</span> <span class="n">PcDescr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">PcDescr</span><span class="p">));</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;guard: %p %x PC %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">guard</span><span class="p">,</span> <span class="o">*</span><span class="n">guard</span><span class="p">,</span> <span class="n">PcDescr</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// trace-pc-guard-example.cc</span>
+<span class="kt">void</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="n">foo</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">clang++ -g  -fsanitize-coverage=trace-pc-guard trace-pc-guard-example.cc -c</span>
+<span class="go">clang++ trace-pc-guard-cb.cc trace-pc-guard-example.o -fsanitize=address</span>
+<span class="go">ASAN_OPTIONS=strip_path_prefix=`pwd`/ ./a.out</span>
+</pre></div>
+</div>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">INIT: 0x71bcd0 0x71bce0</span>
+<span class="go">guard: 0x71bcd4 2 PC 0x4ecd5b in main trace-pc-guard-example.cc:2</span>
+<span class="go">guard: 0x71bcd8 3 PC 0x4ecd9e in main trace-pc-guard-example.cc:3:7</span>
+</pre></div>
+</div>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">ASAN_OPTIONS=strip_path_prefix=`pwd`/ ./a.out with-foo</span>
+</pre></div>
+</div>
+<div class="highlight-console"><div class="highlight"><pre><span class="go">INIT: 0x71bcd0 0x71bce0</span>
+<span class="go">guard: 0x71bcd4 2 PC 0x4ecd5b in main trace-pc-guard-example.cc:3</span>
+<span class="go">guard: 0x71bcdc 4 PC 0x4ecdc7 in main trace-pc-guard-example.cc:4:17</span>
+<span class="go">guard: 0x71bcd0 1 PC 0x4ecd20 in foo() trace-pc-guard-example.cc:2:14</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tracing-data-flow">
+<h2><a class="toc-backref" href="#id14">Tracing data flow</a><a class="headerlink" href="#tracing-data-flow" title="Permalink to this headline">¶</a></h2>
+<p>Support for data-flow-guided fuzzing.
+With <code class="docutils literal"><span class="pre">-fsanitize-coverage=trace-cmp</span></code> the compiler will insert extra instrumentation
+around comparison instructions and switch statements.
+Similarly, with <code class="docutils literal"><span class="pre">-fsanitize-coverage=trace-div</span></code> the compiler will instrument
+integer division instructions (to capture the right argument of division)
+and with  <code class="docutils literal"><span class="pre">-fsanitize-coverage=trace-gep</span></code> &#8211;
+the <a class="reference external" href="http://llvm.org/docs/GetElementPtr.html">LLVM GEP instructions</a>
+(to capture array indices).</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// Called before a comparison instruction.</span>
+<span class="c1">// Arg1 and Arg2 are arguments of the comparison.</span>
+<span class="kt">void</span> <span class="nf">__sanitizer_cov_trace_cmp1</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">Arg1</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">Arg2</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">__sanitizer_cov_trace_cmp2</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">Arg1</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">Arg2</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">__sanitizer_cov_trace_cmp4</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">Arg1</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">Arg2</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">__sanitizer_cov_trace_cmp8</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">Arg1</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="n">Arg2</span><span class="p">);</span>
+
+<span class="c1">// Called before a switch statement.</span>
+<span class="c1">// Val is the switch operand.</span>
+<span class="c1">// Cases[0] is the number of case constants.</span>
+<span class="c1">// Cases[1] is the size of Val in bits.</span>
+<span class="c1">// Cases[2:] are the case constants.</span>
+<span class="kt">void</span> <span class="nf">__sanitizer_cov_trace_switch</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">Val</span><span class="p">,</span> <span class="kt">uint64_t</span> <span class="o">*</span><span class="n">Cases</span><span class="p">);</span>
+
+<span class="c1">// Called before a division statement.</span>
+<span class="c1">// Val is the second argument of division.</span>
+<span class="kt">void</span> <span class="nf">__sanitizer_cov_trace_div4</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">Val</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">__sanitizer_cov_trace_div8</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">Val</span><span class="p">);</span>
+
+<span class="c1">// Called before a GetElemementPtr (GEP) instruction</span>
+<span class="c1">// for every non-constant array index.</span>
+<span class="kt">void</span> <span class="nf">__sanitizer_cov_trace_gep</span><span class="p">(</span><span class="kt">uintptr_t</span> <span class="n">Idx</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This interface is a subject to change.
+The current implementation is not thread-safe and thus can be safely used only for single-threaded targets.</p>
+</div>
 <div class="section" id="output-directory">
-<h2><a class="toc-backref" href="#id9">Output directory</a><a class="headerlink" href="#output-directory" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id15">Output directory</a><a class="headerlink" href="#output-directory" title="Permalink to this headline">¶</a></h2>
 <p>By default, .sancov files are created in the current working directory.
 This can be changed with <code class="docutils literal"><span class="pre">ASAN_OPTIONS=coverage_dir=/path</span></code>:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> <span class="nv">ASAN_OPTIONS</span><span class="o">=</span><span class="s2">&quot;coverage=1:coverage_dir=/tmp/cov&quot;</span> ./a.out foo
@@ -293,7 +496,7 @@ This can be changed with <code class="docutils literal"><span class="pre">ASAN_O
 </div>
 </div>
 <div class="section" id="sudden-death">
-<h2><a class="toc-backref" href="#id10">Sudden death</a><a class="headerlink" href="#sudden-death" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id16">Sudden death</a><a class="headerlink" href="#sudden-death" title="Permalink to this headline">¶</a></h2>
 <p>Normally, coverage data is collected in memory and saved to disk when the
 program exits (with an <code class="docutils literal"><span class="pre">atexit()</span></code> handler), when a SIGSEGV is caught, or when
 <code class="docutils literal"><span class="pre">__sanitizer_cov_dump()</span></code> is called.</p>
@@ -320,7 +523,7 @@ memory-mapped file as soon as it collected.</p>
 because it stores full PC values instead of 32-bit offsets.</p>
 </div>
 <div class="section" id="in-process-fuzzing">
-<h2><a class="toc-backref" href="#id11">In-process fuzzing</a><a class="headerlink" href="#in-process-fuzzing" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id17">In-process fuzzing</a><a class="headerlink" href="#in-process-fuzzing" title="Permalink to this headline">¶</a></h2>
 <p>Coverage data could be useful for fuzzers and sometimes it is preferable to run
 a fuzzer in the same process as the code being fuzzed (in-process fuzzer).</p>
 <p>You can use <code class="docutils literal"><span class="pre">__sanitizer_get_total_unique_coverage()</span></code> from
@@ -333,7 +536,7 @@ before exiting the process.  Use <code class="docutils literal"><span class="pre
 <p>An example of such fuzzer can be found in <a class="reference external" href="http://llvm.org/viewvc/llvm-project/llvm/trunk/lib/Fuzzer/README.txt?view=markup">the LLVM tree</a>.</p>
 </div>
 <div class="section" id="performance">
-<h2><a class="toc-backref" href="#id12">Performance</a><a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id18">Performance</a><a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
 <p>This coverage implementation is <strong>fast</strong>. With function-level coverage
 (<code class="docutils literal"><span class="pre">-fsanitize-coverage=func</span></code>) the overhead is not measurable. With
 basic-block-level coverage (<code class="docutils literal"><span class="pre">-fsanitize-coverage=bb</span></code>) the overhead varies
@@ -515,7 +718,7 @@ between 0 and 25%.</p>
 </table>
 </div>
 <div class="section" id="why-another-coverage">
-<h2><a class="toc-backref" href="#id13">Why another coverage?</a><a class="headerlink" href="#why-another-coverage" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id19">Why another coverage?</a><a class="headerlink" href="#why-another-coverage" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
 <dt>Why did we implement yet another code coverage?</dt>
 <dd><ul class="first last simple">
@@ -538,14 +741,14 @@ AddressSanitizer, and does not significantly increase the binary size.</li>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="SanitizerSpecialCaseList.html">Sanitizer special case list</a>&#160;&#160;»
+        <a href="SanitizerStats.html">SanitizerStats</a>&#160;&#160;»
         </p>
 
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

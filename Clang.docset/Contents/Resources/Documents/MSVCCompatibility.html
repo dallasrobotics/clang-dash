@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MSVC compatibility &mdash; Clang 3.7 documentation</title>
+    <title>MSVC compatibility &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
-    <link rel="next" title="Clang “man” pages" href="CommandGuide/index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <link rel="next" title="ThinLTO" href="ThinLTO.html" />
     <link rel="prev" title="Modules" href="Modules.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>MSVC compatibility</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -40,7 +40,7 @@
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="CommandGuide/index.html">Clang &#8220;man&#8221; pages</a>&#160;&#160;»
+        <a href="ThinLTO.html">ThinLTO</a>&#160;&#160;»
         </p>
 
       </div>
@@ -98,26 +98,27 @@ supports an extension to allow creating a <a class="reference external" href="ht
 base class</a>.  Clang does not yet support this.</li>
 </ul>
 <ul class="simple">
-<li>Debug info: <span class="partial">Minimal</span>.  Clang emits both CodeView line tables
-(similar to what MSVC emits when given the <code class="docutils literal"><span class="pre">/Z7</span></code> flag) and DWARF debug
-information into the object file.
-Microsoft&#8217;s link.exe will transform the CodeView line tables into a PDB,
-enabling stack traces in all modern Windows debuggers.  Clang does not emit
-any CodeView-compatible type info or description of variable layout.
-Binaries linked with either binutils&#8217; ld or LLVM&#8217;s lld should be usable with
-GDB however sophisticated C++ expressions are likely to fail.</li>
+<li>Debug info: <span class="good">Mostly complete</span>.  Clang emits relatively complete CodeView
+debug information if <code class="docutils literal"><span class="pre">/Z7</span></code> or <code class="docutils literal"><span class="pre">/Zi</span></code> is passed. Microsoft&#8217;s link.exe will
+transform the CodeView debug information into a PDB that works in Windows
+debuggers and other tools that consume PDB files like ETW. Work to teach lld
+about CodeView and PDBs is ongoing.</li>
 <li>RTTI: <span class="good">Complete</span>.  Generation of RTTI data structures has been
 finished, along with support for the <code class="docutils literal"><span class="pre">/GR</span></code> flag.</li>
-<li>Exceptions and SEH: <span class="partial">Partial</span>.
-C++ exceptions (<code class="docutils literal"><span class="pre">try</span></code> / <code class="docutils literal"><span class="pre">catch</span></code> / <code class="docutils literal"><span class="pre">throw</span></code>) and
-structured exceptions (<code class="docutils literal"><span class="pre">__try</span></code> / <code class="docutils literal"><span class="pre">__except</span></code> / <code class="docutils literal"><span class="pre">__finally</span></code>) mostly
-work on x64. 32-bit exception handling support is being worked on.  LLVM does
-not model asynchronous exceptions, so it is currently impossible to catch an
-asynchronous exception generated in the same frame as the catching <code class="docutils literal"><span class="pre">__try</span></code>.
+<li>C++ Exceptions: <span class="good">Mostly complete</span>.  Support for
+C++ exceptions (<code class="docutils literal"><span class="pre">try</span></code> / <code class="docutils literal"><span class="pre">catch</span></code> / <code class="docutils literal"><span class="pre">throw</span></code>) have been implemented for
+x86 and x64.  Our implementation has been well tested but we still get the
+odd bug report now and again.
 C++ exception specifications are ignored, but this is <a class="reference external" href="https://msdn.microsoft.com/en-us/library/wfa0edys.aspx">consistent with Visual
 C++</a>.</li>
 </ul>
 <ul class="simple">
+<li>Asynchronous Exceptions (SEH): <span class="partial">Partial</span>.
+Structured exceptions (<code class="docutils literal"><span class="pre">__try</span></code> / <code class="docutils literal"><span class="pre">__except</span></code> / <code class="docutils literal"><span class="pre">__finally</span></code>) mostly
+work on x86 and x64.
+LLVM does not model asynchronous exceptions, so it is currently impossible to
+catch an asynchronous exception generated in the same frame as the catching
+<code class="docutils literal"><span class="pre">__try</span></code>.</li>
 <li>Thread-safe initialization of local statics: <span class="good">Complete</span>.  MSVC 2015
 added support for thread-safe initialization of such variables by taking an
 ABI break.
@@ -177,14 +178,14 @@ apps, but they should be addressed soon.</p>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="CommandGuide/index.html">Clang &#8220;man&#8221; pages</a>&#160;&#160;»
+        <a href="ThinLTO.html">ThinLTO</a>&#160;&#160;»
         </p>
 
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Clang Language Extensions &mdash; Clang 3.7 documentation</title>
+    <title>Clang Language Extensions &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,19 +24,19 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="Objective-C Literals" href="ObjectiveCLiterals.html" />
-    <link rel="prev" title="Clang Compiler User’s Manual" href="UsersManual.html" /> 
+    <link rel="prev" title="Assembling a Complete Toolchain" href="Toolchain.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>Clang Language Extensions</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="UsersManual.html">Clang Compiler User&#8217;s Manual</a>
+        «&#160;&#160;<a href="Toolchain.html">Assembling a Complete Toolchain</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -232,11 +232,11 @@ to 0.  It can be used like this:</p>
 <div class="highlight-c++"><div class="highlight"><pre><span class="p">...</span>
 <span class="cp">#ifdef __is_identifier          </span><span class="c1">// Compatibility with non-clang compilers.</span>
   <span class="cp">#if __is_identifier(__wchar_t)</span>
-    <span class="k">typedef</span> <span class="kt">wchar_t</span> <span class="kt">__wchar_t</span><span class="p">;</span>
+    <span class="k">typedef</span> <span class="kt">wchar_t</span> <span class="kr">__wchar_t</span><span class="p">;</span>
   <span class="cp">#endif</span>
 <span class="cp">#endif</span>
 
-<span class="kt">__wchar_t</span> <span class="n">WideCharacter</span><span class="p">;</span>
+<span class="kr">__wchar_t</span> <span class="n">WideCharacter</span><span class="p">;</span>
 <span class="p">...</span>
 </pre></div>
 </div>
@@ -369,11 +369,11 @@ and functions.  For example:</p>
 </div>
 <p>NEON vector types are created using <code class="docutils literal"><span class="pre">neon_vector_type</span></code> and
 <code class="docutils literal"><span class="pre">neon_polyvector_type</span></code> attributes.  For example:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">typedef</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">neon_vector_type</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span> <span class="kt">int8_t</span> <span class="kt">int8x8_t</span><span class="p">;</span>
-<span class="k">typedef</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">neon_polyvector_type</span><span class="p">(</span><span class="mi">16</span><span class="p">)))</span> <span class="kt">poly8_t</span> <span class="kt">poly8x16_t</span><span class="p">;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">typedef</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">neon_vector_type</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span> <span class="kt">int8_t</span> <span class="n">int8x8_t</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">neon_polyvector_type</span><span class="p">(</span><span class="mi">16</span><span class="p">)))</span> <span class="n">poly8_t</span> <span class="n">poly8x16_t</span><span class="p">;</span>
 
-<span class="kt">int8x8_t</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">int8x8_t</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">int8x8_t</span> <span class="n">v</span><span class="p">;</span>
+<span class="n">int8x8_t</span> <span class="nf">foo</span><span class="p">(</span><span class="n">int8x8_t</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">int8x8_t</span> <span class="n">v</span><span class="p">;</span>
   <span class="n">v</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
   <span class="k">return</span> <span class="n">v</span><span class="p">;</span>
 <span class="p">}</span>
@@ -417,7 +417,7 @@ specification.</p>
 <col width="12%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">Opeator</th>
+<tr class="row-odd"><th class="head">Operator</th>
 <th class="head">OpenCL</th>
 <th class="head">AltiVec</th>
 <th class="head">GCC</th>
@@ -529,7 +529,7 @@ specification.</p>
 </div>
 <p>If the deprecated or unavailable declaration is used, the message will be
 incorporated into the appropriate diagnostic:</p>
-<div class="highlight-c++"><div class="highlight"><pre>harmless.c:4:3: warning: &#39;explode&#39; is deprecated: extremely unsafe, use &#39;combust&#39; instead!!!
+<div class="highlight-none"><div class="highlight"><pre>harmless.c:4:3: warning: &#39;explode&#39; is deprecated: extremely unsafe, use &#39;combust&#39; instead!!!
       [-Wdeprecated-declarations]
   explode();
   ^
@@ -1014,11 +1014,12 @@ value of type <code class="docutils literal"><span class="pre">type</span></code
 <code class="docutils literal"><span class="pre">argtypes...</span></code> such that no non-trivial functions are called as part of
 that initialization.  This trait is required to implement the C++11 standard
 library.</li>
-<li><code class="docutils literal"><span class="pre">__is_destructible</span></code> (MSVC 2013): partially implemented</li>
-<li><code class="docutils literal"><span class="pre">__is_nothrow_destructible</span></code> (MSVC 2013): partially implemented</li>
+<li><code class="docutils literal"><span class="pre">__is_destructible</span></code> (MSVC 2013)</li>
+<li><code class="docutils literal"><span class="pre">__is_nothrow_destructible</span></code> (MSVC 2013)</li>
 <li><code class="docutils literal"><span class="pre">__is_nothrow_assignable</span></code> (MSVC 2013, clang)</li>
 <li><code class="docutils literal"><span class="pre">__is_constructible</span></code> (MSVC 2013, clang)</li>
 <li><code class="docutils literal"><span class="pre">__is_nothrow_constructible</span></code> (MSVC 2013, clang)</li>
+<li><code class="docutils literal"><span class="pre">__is_assignable</span></code> (MSVC 2015, clang)</li>
 </ul>
 </div>
 <div class="section" id="blocks">
@@ -1146,7 +1147,7 @@ expression (an unnamed, local class type called the <em>closure type</em>) to th
 corresponding block pointer type.  The conversion itself is expressed by a
 conversion operator in that closure type that produces a block pointer with the
 same signature as the lambda itself, e.g.,</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="n">operator</span> <span class="n">NSComparisonResult</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="kt">id</span><span class="p">,</span> <span class="kt">id</span><span class="p">)()</span> <span class="k">const</span><span class="p">;</span>
+<div class="highlight-objc"><div class="highlight"><pre><span class="n">operator</span> <span class="nf">NSComparisonResult</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="kt">id</span><span class="p">,</span> <span class="kt">id</span><span class="p">)()</span> <span class="k">const</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>This conversion function returns a new block that simply forwards the two
@@ -1237,8 +1238,8 @@ parameters of protocol-qualified type.</p>
 <div class="section" id="initializer-lists-for-complex-numbers-in-c">
 <span id="langext-overloading"></span><h2><a class="toc-backref" href="#id13">Initializer lists for complex numbers in C</a><a class="headerlink" href="#initializer-lists-for-complex-numbers-in-c" title="Permalink to this headline">¶</a></h2>
 <p>clang supports an extension which allows the following in C:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &lt;math.h&gt;</span>
-<span class="cp">#include &lt;complex.h&gt;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;complex.h&gt;</span><span class="cp"></span>
 <span class="n">complex</span> <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="p">{</span> <span class="mf">1.0f</span><span class="p">,</span> <span class="n">INFINITY</span> <span class="p">};</span> <span class="c1">// Init to (1, Inf)</span>
 </pre></div>
 </div>
@@ -1404,6 +1405,30 @@ type as the second argument, with a value defined in terms of the action of a
 C-style cast applied to each element of the first argument.</p>
 <p>Query for this feature with <code class="docutils literal"><span class="pre">__has_builtin(__builtin_convertvector)</span></code>.</p>
 </div>
+<div class="section" id="builtin-bitreverse">
+<h3><code class="docutils literal"><span class="pre">__builtin_bitreverse</span></code><a class="headerlink" href="#builtin-bitreverse" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">__builtin_bitreverse8</span></code></li>
+<li><code class="docutils literal"><span class="pre">__builtin_bitreverse16</span></code></li>
+<li><code class="docutils literal"><span class="pre">__builtin_bitreverse32</span></code></li>
+<li><code class="docutils literal"><span class="pre">__builtin_bitreverse64</span></code></li>
+</ul>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">__builtin_bitreverse32</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Examples</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="kt">uint8_t</span> <span class="n">rev_x</span> <span class="o">=</span> <span class="n">__builtin_bitreverse8</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="kt">uint16_t</span> <span class="n">rev_x</span> <span class="o">=</span> <span class="n">__builtin_bitreverse16</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="kt">uint32_t</span> <span class="n">rev_y</span> <span class="o">=</span> <span class="n">__builtin_bitreverse32</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
+<span class="kt">uint64_t</span> <span class="n">rev_z</span> <span class="o">=</span> <span class="n">__builtin_bitreverse64</span><span class="p">(</span><span class="n">z</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Description</strong>:</p>
+<p>The &#8216;<code class="docutils literal"><span class="pre">__builtin_bitreverse</span></code>&#8216; family of builtins is used to reverse
+the bitpattern of an integer value; for example <code class="docutils literal"><span class="pre">0b10110110</span></code> becomes
+<code class="docutils literal"><span class="pre">0b01101101</span></code>.</p>
+</div>
 <div class="section" id="builtin-unreachable">
 <h3><code class="docutils literal"><span class="pre">__builtin_unreachable</span></code><a class="headerlink" href="#builtin-unreachable" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal"><span class="pre">__builtin_unreachable</span></code> is used to indicate that a specific point in the
@@ -1430,6 +1455,25 @@ Since it has undefined behavior, it is a statement that it is never reached and
 the optimizer can take advantage of this to produce better code.  This builtin
 takes no arguments and produces a void result.</p>
 <p>Query for this feature with <code class="docutils literal"><span class="pre">__has_builtin(__builtin_unreachable)</span></code>.</p>
+</div>
+<div class="section" id="builtin-unpredictable">
+<h3><code class="docutils literal"><span class="pre">__builtin_unpredictable</span></code><a class="headerlink" href="#builtin-unpredictable" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">__builtin_unpredictable</span></code> is used to indicate that a branch condition is
+unpredictable by hardware mechanisms such as branch prediction logic.</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">__builtin_unpredictable</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example of use</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="n">__builtin_unpredictable</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+   <span class="n">foo</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Description</strong>:</p>
+<p>The <code class="docutils literal"><span class="pre">__builtin_unpredictable()</span></code> builtin is expected to be used with control
+flow conditions such as in <code class="docutils literal"><span class="pre">if</span></code> and <code class="docutils literal"><span class="pre">switch</span></code> statements.</p>
+<p>Query for this feature with <code class="docutils literal"><span class="pre">__has_builtin(__builtin_unpredictable)</span></code>.</p>
 </div>
 <div class="section" id="sync-swap">
 <h3><code class="docutils literal"><span class="pre">__sync_swap</span></code><a class="headerlink" href="#sync-swap" title="Permalink to this headline">¶</a></h3>
@@ -1517,10 +1561,10 @@ manner amenable to C. They all have the following form:</p>
 <p>Clang provides a set of builtins that implement checked arithmetic for security
 critical applications in a manner that is fast and easily expressable in C. As
 an example of their usage:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="kt">errorcode_t</span> <span class="nf">security_critical_application</span><span class="p">(...)</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span class="n">errorcode_t</span> <span class="nf">security_critical_application</span><span class="p">(...)</span> <span class="p">{</span>
   <span class="kt">unsigned</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">result</span><span class="p">;</span>
   <span class="p">...</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">__builtin_umul_overflow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">result</span><span class="p">))</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">__builtin_mul_overflow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">result</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">kErrorCodeHackers</span><span class="p">;</span>
   <span class="p">...</span>
   <span class="n">use_multiply</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
@@ -1528,8 +1572,11 @@ an example of their usage:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>A complete enumeration of the builtins are:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="kt">bool</span> <span class="nf">__builtin_uadd_overflow</span>  <span class="p">(</span><span class="kt">unsigned</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
+<p>Clang provides the following checked arithmetic builtins:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">bool</span> <span class="nf">__builtin_add_overflow</span>   <span class="p">(</span><span class="n">type1</span> <span class="n">x</span><span class="p">,</span> <span class="n">type2</span> <span class="n">y</span><span class="p">,</span> <span class="n">type3</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_sub_overflow</span>   <span class="p">(</span><span class="n">type1</span> <span class="n">x</span><span class="p">,</span> <span class="n">type2</span> <span class="n">y</span><span class="p">,</span> <span class="n">type3</span> <span class="o">*</span><span class="n">diff</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_mul_overflow</span>   <span class="p">(</span><span class="n">type1</span> <span class="n">x</span><span class="p">,</span> <span class="n">type2</span> <span class="n">y</span><span class="p">,</span> <span class="n">type3</span> <span class="o">*</span><span class="n">prod</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="nf">__builtin_uadd_overflow</span>  <span class="p">(</span><span class="kt">unsigned</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
 <span class="kt">bool</span> <span class="nf">__builtin_uaddl_overflow</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
 <span class="kt">bool</span> <span class="nf">__builtin_uaddll_overflow</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="o">*</span><span class="n">sum</span><span class="p">);</span>
 <span class="kt">bool</span> <span class="nf">__builtin_usub_overflow</span>  <span class="p">(</span><span class="kt">unsigned</span> <span class="n">x</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">y</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="o">*</span><span class="n">diff</span><span class="p">);</span>
@@ -1549,6 +1596,68 @@ an example of their usage:</p>
 <span class="kt">bool</span> <span class="nf">__builtin_smulll_overflow</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">x</span><span class="p">,</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">y</span><span class="p">,</span> <span class="kt">long</span> <span class="kt">long</span> <span class="o">*</span><span class="n">prod</span><span class="p">);</span>
 </pre></div>
 </div>
+<p>Each builtin performs the specified mathematical operation on the
+first two arguments and stores the result in the third argument.  If
+possible, the result will be equal to mathematically-correct result
+and the builtin will return 0.  Otherwise, the builtin will return
+1 and the result will be equal to the unique value that is equivalent
+to the mathematically-correct result modulo two raised to the <em>k</em>
+power, where <em>k</em> is the number of bits in the result type.  The
+behavior of these builtins is well-defined for all argument values.</p>
+<p>The first three builtins work generically for operands of any integer type,
+including boolean types.  The operands need not have the same type as each
+other, or as the result.  The other builtins may implicitly promote or
+convert their operands before performing the operation.</p>
+<p>Query for this feature with <code class="docutils literal"><span class="pre">__has_builtin(__builtin_add_overflow)</span></code>, etc.</p>
+</div>
+<div class="section" id="floating-point-builtins">
+<h3>Floating point builtins<a class="headerlink" href="#floating-point-builtins" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="builtin-canonicalize">
+<h3><code class="docutils literal"><span class="pre">__builtin_canonicalize</span></code><a class="headerlink" href="#builtin-canonicalize" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">double</span> <span class="nf">__builtin_canonicalize</span><span class="p">(</span><span class="kt">double</span><span class="p">);</span>
+<span class="kt">float</span> <span class="nf">__builtin_canonicalizef</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+<span class="kt">long</span> <span class="nf">double__builtin_canonicalizel</span><span class="p">(</span><span class="kt">long</span> <span class="kt">double</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Returns the platform specific canonical encoding of a floating point
+number. This canonicalization is useful for implementing certain
+numeric primitives such as frexp. See <a class="reference external" href="http://llvm.org/docs/LangRef.html#llvm-canonicalize-intrinsic">LLVM canonicalize intrinsic</a> for
+more information on the semantics.</p>
+</div>
+<div class="section" id="string-builtins">
+<h3>String builtins<a class="headerlink" href="#string-builtins" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides constant expression evaluation support for builtins forms of
+the following functions from the C standard library <code class="docutils literal"><span class="pre">&lt;strings.h&gt;</span></code> header:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">memchr</span></code></li>
+<li><code class="docutils literal"><span class="pre">memcmp</span></code></li>
+<li><code class="docutils literal"><span class="pre">strchr</span></code></li>
+<li><code class="docutils literal"><span class="pre">strcmp</span></code></li>
+<li><code class="docutils literal"><span class="pre">strlen</span></code></li>
+<li><code class="docutils literal"><span class="pre">strncmp</span></code></li>
+<li><code class="docutils literal"><span class="pre">wcschr</span></code></li>
+<li><code class="docutils literal"><span class="pre">wcscmp</span></code></li>
+<li><code class="docutils literal"><span class="pre">wcslen</span></code></li>
+<li><code class="docutils literal"><span class="pre">wcsncmp</span></code></li>
+<li><code class="docutils literal"><span class="pre">wmemchr</span></code></li>
+<li><code class="docutils literal"><span class="pre">wmemcmp</span></code></li>
+</ul>
+<p>In each case, the builtin form has the name of the C library function prefixed
+by <code class="docutils literal"><span class="pre">__builtin_</span></code>. Example:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">__builtin_memchr</span><span class="p">(</span><span class="s">&quot;foobar&quot;</span><span class="p">,</span> <span class="sc">&#39;b&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>In addition to the above, one further builtin is provided:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">char</span> <span class="o">*</span><span class="nf">__builtin_char_memchr</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">haystack</span><span class="p">,</span> <span class="kt">int</span> <span class="n">needle</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">__builtin_char_memchr(a,</span> <span class="pre">b,</span> <span class="pre">c)</span></code> is identical to
+<code class="docutils literal"><span class="pre">(char*)__builtin_memchr(a,</span> <span class="pre">b,</span> <span class="pre">c)</span></code> except that its use is permitted within
+constant expressions in C++11 onwards (where a cast from <code class="docutils literal"><span class="pre">void*</span></code> to <code class="docutils literal"><span class="pre">char*</span></code>
+is disallowed in general).</p>
+<p>Support for constant expression evaluation for the above builtins be detected
+with <code class="docutils literal"><span class="pre">__has_feature(cxx_constexpr_string_builtins)</span></code>.</p>
 </div>
 <div class="section" id="c11-atomic-builtins">
 <span id="langext-c11-atomic"></span><h3>__c11_atomic builtins<a class="headerlink" href="#c11-atomic-builtins" title="Permalink to this headline">¶</a></h3>
@@ -1578,6 +1687,8 @@ the corresponding C11 operations, are:</p>
 <code class="docutils literal"><span class="pre">__ATOMIC_RELEASE</span></code>, <code class="docutils literal"><span class="pre">__ATOMIC_ACQ_REL</span></code>, and <code class="docutils literal"><span class="pre">__ATOMIC_SEQ_CST</span></code> are
 provided, with values corresponding to the enumerators of C11&#8217;s
 <code class="docutils literal"><span class="pre">memory_order</span></code> enumeration.</p>
+<p>(Note that Clang additionally provides GCC-compatible <code class="docutils literal"><span class="pre">__atomic_*</span></code>
+builtins)</p>
 </div>
 <div class="section" id="low-level-arm-exclusive-memory-builtins">
 <h3>Low-level ARM exclusive memory builtins<a class="headerlink" href="#low-level-arm-exclusive-memory-builtins" title="Permalink to this headline">¶</a></h3>
@@ -1590,10 +1701,12 @@ instructions for implementing atomic operations.</p>
 <span class="kt">void</span> <span class="nf">__builtin_arm_clrex</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>The types <code class="docutils literal"><span class="pre">T</span></code> currently supported are:
-* Integer types with width at most 64 bits (or 128 bits on AArch64).
-* Floating-point types
-* Pointer types.</p>
+<p>The types <code class="docutils literal"><span class="pre">T</span></code> currently supported are:</p>
+<ul class="simple">
+<li>Integer types with width at most 64 bits (or 128 bits on AArch64).</li>
+<li>Floating-point types</li>
+<li>Pointer types.</li>
+</ul>
 <p>Note that the compiler does not guarantee it will not insert stores which clear
 the exclusive monitor in between an <code class="docutils literal"><span class="pre">ldrex</span></code> type operation and its paired
 <code class="docutils literal"><span class="pre">strex</span></code>. In practice this is only usually a risk when the extra store is on
@@ -1605,6 +1718,89 @@ with automatic storage duration.</p>
 care should be exercised.</p>
 <p>For these reasons the higher level atomic primitives should be preferred where
 possible.</p>
+</div>
+<div class="section" id="non-temporal-load-store-builtins">
+<h3>Non-temporal load/store builtins<a class="headerlink" href="#non-temporal-load-store-builtins" title="Permalink to this headline">¶</a></h3>
+<p>Clang provides overloaded builtins allowing generation of non-temporal memory
+accesses.</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="n">T</span> <span class="nf">__builtin_nontemporal_load</span><span class="p">(</span><span class="n">T</span> <span class="o">*</span><span class="n">addr</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">__builtin_nontemporal_store</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">,</span> <span class="n">T</span> <span class="o">*</span><span class="n">addr</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The types <code class="docutils literal"><span class="pre">T</span></code> currently supported are:</p>
+<ul class="simple">
+<li>Integer types.</li>
+<li>Floating-point types.</li>
+<li>Vector types.</li>
+</ul>
+<p>Note that the compiler does not guarantee that non-temporal loads or stores
+will be used.</p>
+</div>
+<div class="section" id="c-coroutines-support-builtins">
+<h3>C++ Coroutines support builtins<a class="headerlink" href="#c-coroutines-support-builtins" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This is a work in progress. Compatibility across Clang/LLVM releases is not
+guaranteed.</p>
+</div>
+<p>Clang provides experimental builtins to support C++ Coroutines as defined by
+<a class="reference external" href="http://wg21.link/P0057">http://wg21.link/P0057</a>. The following four are intended to be used by the
+standard library to implement <cite>std::experimental::coroutine_handle</cite> type.</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">void</span>  <span class="nf">__builtin_coro_resume</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">addr</span><span class="p">);</span>
+<span class="kt">void</span>  <span class="nf">__builtin_coro_destroy</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">addr</span><span class="p">);</span>
+<span class="kt">bool</span>  <span class="nf">__builtin_coro_done</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">addr</span><span class="p">);</span>
+<span class="kt">void</span> <span class="o">*</span><span class="n">__builtin_coro_promise</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">addr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">alignment</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">from_promise</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Example of use</strong>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="k">template</span> <span class="o">&lt;&gt;</span> <span class="k">struct</span> <span class="n">coroutine_handle</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="kt">void</span> <span class="n">resume</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="n">__builtin_coro_resume</span><span class="p">(</span><span class="n">ptr</span><span class="p">);</span> <span class="p">}</span>
+  <span class="kt">void</span> <span class="n">destroy</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="n">__builtin_coro_destroy</span><span class="p">(</span><span class="n">ptr</span><span class="p">);</span> <span class="p">}</span>
+  <span class="kt">bool</span> <span class="n">done</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">__builtin_coro_done</span><span class="p">(</span><span class="n">ptr</span><span class="p">);</span> <span class="p">}</span>
+  <span class="c1">// ...</span>
+<span class="k">protected</span><span class="o">:</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">Promise</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nl">coroutine_handle</span> <span class="p">:</span> <span class="n">coroutine_handle</span><span class="o">&lt;&gt;</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+  <span class="n">Promise</span> <span class="o">&amp;</span><span class="n">promise</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">*</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">Promise</span> <span class="o">*&gt;</span><span class="p">(</span>
+      <span class="n">__builtin_coro_promise</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="k">alignof</span><span class="p">(</span><span class="n">Promise</span><span class="p">),</span> <span class="cm">/*from-promise=*/</span><span class="nb">false</span><span class="p">));</span>
+  <span class="p">}</span>
+  <span class="k">static</span> <span class="n">coroutine_handle</span> <span class="n">from_promise</span><span class="p">(</span><span class="n">Promise</span> <span class="o">&amp;</span><span class="n">promise</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">coroutine_handle</span> <span class="n">p</span><span class="p">;</span>
+    <span class="n">p</span><span class="p">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">__builtin_coro_promise</span><span class="p">(</span><span class="o">&amp;</span><span class="n">promise</span><span class="p">,</span> <span class="k">alignof</span><span class="p">(</span><span class="n">Promise</span><span class="p">),</span>
+                                                    <span class="cm">/*from-promise=*/</span><span class="nb">true</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Other coroutine builtins are either for internal clang use or for use during
+development of the coroutine feature. See <a class="reference external" href="http://llvm.org/docs/Coroutines.html#intrinsics">Coroutines in LLVM</a> for
+more information on their semantics. Note that builtins matching the intrinsics
+that take token as the first parameter (llvm.coro.begin, llvm.coro.alloc,
+llvm.coro.free and llvm.coro.suspend) omit the token parameter and fill it to
+an appropriate value during the emission.</p>
+<p><strong>Syntax</strong>:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="kt">size_t</span> <span class="n">__builtin_coro_size</span><span class="p">()</span>
+<span class="kt">void</span>  <span class="o">*</span><span class="n">__builtin_coro_frame</span><span class="p">()</span>
+<span class="kt">void</span>  <span class="o">*</span><span class="n">__builtin_coro_free</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">coro_frame</span><span class="p">)</span>
+
+<span class="kt">void</span>  <span class="o">*</span><span class="n">__builtin_coro_id</span><span class="p">(</span><span class="kt">int</span> <span class="n">align</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">promise</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">fnaddr</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">parts</span><span class="p">)</span>
+<span class="kt">bool</span>   <span class="n">__builtin_coro_alloc</span><span class="p">()</span>
+<span class="kt">void</span>  <span class="o">*</span><span class="n">__builtin_coro_begin</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">memory</span><span class="p">)</span>
+<span class="kt">void</span>   <span class="n">__builtin_coro_end</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">coro_frame</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">unwind</span><span class="p">)</span>
+<span class="kt">char</span>   <span class="n">__builtin_coro_suspend</span><span class="p">(</span><span class="kt">bool</span> <span class="n">final</span><span class="p">)</span>
+<span class="kt">bool</span>   <span class="n">__builtin_coro_param</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">original</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">copy</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that there is no builtin matching the <cite>llvm.coro.save</cite> intrinsic. LLVM
+automatically will insert one if the first argument to <cite>llvm.coro.suspend</cite> is
+token <cite>none</cite>. If a user calls <cite>__builin_suspend</cite>, clang will insert <cite>token none</cite>
+as the first argument to the intrinsic.</p>
 </div>
 </div>
 <div class="section" id="non-standard-c-11-attributes">
@@ -1637,18 +1833,19 @@ also applies the GNU <code class="docutils literal"><span class="pre">noreturn</
 in the <a class="reference external" href="http://infocenter.arm.com/help/topic/com.arm.doc.ihi0053c/IHI0053C_acle_2_0.pdf">ARM C Language Extensions Release 2.0</a>.
 Note that these intrinsics are implemented as motion barriers that block
 reordering of memory accesses and side effect instructions. Other instructions
-like simple arithmatic may be reordered around the intrinsic. If you expect to
+like simple arithmetic may be reordered around the intrinsic. If you expect to
 have no reordering at all, use inline assembly instead.</p>
 </div>
 </div>
 <div class="section" id="x86-x86-64-language-extensions">
 <h3>X86/X86-64 Language Extensions<a class="headerlink" href="#x86-x86-64-language-extensions" title="Permalink to this headline">¶</a></h3>
 <p>The X86 backend has these language extensions:</p>
-<div class="section" id="memory-references-off-the-gs-segment">
-<h4>Memory references off the GS segment<a class="headerlink" href="#memory-references-off-the-gs-segment" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="memory-references-to-specified-segments">
+<h4>Memory references to specified segments<a class="headerlink" href="#memory-references-to-specified-segments" title="Permalink to this headline">¶</a></h4>
 <p>Annotating a pointer with address space #256 causes it to be code generated
-relative to the X86 GS segment register, and address space #257 causes it to be
-relative to the X86 FS segment.  Note that this is a very very low-level
+relative to the X86 GS segment register, address space #257 causes it to be
+relative to the X86 FS segment, and address space #258 causes it to be
+relative to the X86 SS segment.  Note that this is a very very low-level
 feature that should only be used if you know what you&#8217;re doing (for example in
 an OS kernel).</p>
 <p>Here is an example:</p>
@@ -1757,9 +1954,9 @@ was outside the region) and <code class="docutils literal"><span class="pre">thr
 <h2><a class="toc-backref" href="#id20">Extensions for loop hint optimizations</a><a class="headerlink" href="#extensions-for-loop-hint-optimizations" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">clang</span> <span class="pre">loop</span></code> directive is used to specify hints for optimizing the
 subsequent for, while, do-while, or c++11 range-based for loop. The directive
-provides options for vectorization, interleaving, and unrolling. Loop hints can
-be specified before any loop and will be ignored if the optimization is not safe
-to apply.</p>
+provides options for vectorization, interleaving, unrolling and
+distribution. Loop hints can be specified before any loop and will be ignored if
+the optimization is not safe to apply.</p>
 <div class="section" id="vectorization-and-interleaving">
 <h3>Vectorization and Interleaving<a class="headerlink" href="#vectorization-and-interleaving" title="Permalink to this headline">¶</a></h3>
 <p>A vectorized loop performs multiple iterations of the original loop
@@ -1805,11 +2002,21 @@ eliminates the loop and replaces it with an enumerated sequence of loop
 iterations. Full unrolling is only possible if the loop trip count is known at
 compile time. Partial unrolling replicates the loop body within the loop and
 reduces the trip count.</p>
-<p>If <code class="docutils literal"><span class="pre">unroll(full)</span></code> is specified the unroller will attempt to fully unroll the
+<p>If <code class="docutils literal"><span class="pre">unroll(enable)</span></code> is specified the unroller will attempt to fully unroll the
 loop if the trip count is known at compile time. If the fully unrolled code size
 is greater than an internal limit the loop will be partially unrolled up to this
-limit. If the loop count is not known at compile time the loop will not be
-unrolled.</p>
+limit. If the trip count is not known at compile time the loop will be partially
+unrolled with a heuristically chosen unroll factor.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#pragma clang loop unroll(enable)</span>
+<span class="k">for</span><span class="p">(...)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal"><span class="pre">unroll(full)</span></code> is specified the unroller will attempt to fully unroll the
+loop if the trip count is known at compile time identically to
+<code class="docutils literal"><span class="pre">unroll(enable)</span></code>. However, with <code class="docutils literal"><span class="pre">unroll(full)</span></code> the loop will not be unrolled
+if the loop count is not known at compile time.</p>
 <div class="highlight-c++"><div class="highlight"><pre><span class="cp">#pragma clang loop unroll(full)</span>
 <span class="k">for</span><span class="p">(...)</span> <span class="p">{</span>
   <span class="p">...</span>
@@ -1819,7 +2026,7 @@ unrolled.</p>
 <p>The unroll count can be specified explicitly with <code class="docutils literal"><span class="pre">unroll_count(_value_)</span></code> where
 _value_ is a positive integer. If this value is greater than the trip count the
 loop will be fully unrolled. Otherwise the loop is partially unrolled subject
-to the same code size limit as with <code class="docutils literal"><span class="pre">unroll(full)</span></code>.</p>
+to the same code size limit as with <code class="docutils literal"><span class="pre">unroll(enable)</span></code>.</p>
 <div class="highlight-c++"><div class="highlight"><pre><span class="cp">#pragma clang loop unroll_count(8)</span>
 <span class="k">for</span><span class="p">(...)</span> <span class="p">{</span>
   <span class="p">...</span>
@@ -1827,6 +2034,32 @@ to the same code size limit as with <code class="docutils literal"><span class="
 </pre></div>
 </div>
 <p>Unrolling of a loop can be prevented by specifying <code class="docutils literal"><span class="pre">unroll(disable)</span></code>.</p>
+</div>
+<div class="section" id="loop-distribution">
+<h3>Loop Distribution<a class="headerlink" href="#loop-distribution" title="Permalink to this headline">¶</a></h3>
+<p>Loop Distribution allows splitting a loop into multiple loops.  This is
+beneficial for example when the entire loop cannot be vectorized but some of the
+resulting loops can.</p>
+<p>If <code class="docutils literal"><span class="pre">distribute(enable))</span></code> is specified and the loop has memory dependencies
+that inhibit vectorization, the compiler will attempt to isolate the offending
+operations into a new loop.  This optimization is not enabled by default, only
+loops marked with the pragma are considered.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#pragma clang loop distribute(enable)</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nl">S1</span><span class="p">:</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+  <span class="nl">S2</span><span class="p">:</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This loop will be split into two loops between statements S1 and S2.  The
+second loop containing S2 will be vectorized.</p>
+<p>Loop Distribution is currently not enabled by default in the optimizer because
+it can hurt performance in some cases.  For example, instruction-level
+parallelism could be reduced by sequentializing the execution of the
+statements S1 and S2 above.</p>
+<p>If Loop Distribution is turned on globally with
+<code class="docutils literal"><span class="pre">-mllvm</span> <span class="pre">-enable-loop-distribution</span></code>, specifying <code class="docutils literal"><span class="pre">distribute(disable)</span></code> can
+be used the disable it on a per-loop basis.</p>
 </div>
 <div class="section" id="additional-information">
 <h3>Additional Information<a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h3>
@@ -1851,7 +2084,7 @@ user guide for details.</p>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="UsersManual.html">Clang Compiler User&#8217;s Manual</a>
+        «&#160;&#160;<a href="Toolchain.html">Assembling a Complete Toolchain</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -1861,8 +2094,8 @@ user guide for details.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

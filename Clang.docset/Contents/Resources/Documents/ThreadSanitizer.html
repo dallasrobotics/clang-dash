@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ThreadSanitizer &mdash; Clang 3.7 documentation</title>
+    <title>ThreadSanitizer &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="MemorySanitizer" href="MemorySanitizer.html" />
     <link rel="prev" title="AddressSanitizer" href="AddressSanitizer.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>ThreadSanitizer</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -72,22 +72,22 @@ Support for 32-bit platforms is problematic and is not planned.</p>
 reasonable performance add <code class="docutils literal"><span class="pre">-O1</span></code> or higher.  Use <code class="docutils literal"><span class="pre">-g</span></code> to get file names
 and line numbers in the warning messages.</p>
 <p>Example:</p>
-<div class="highlight-c++"><div class="highlight"><pre>% cat projects/compiler-rt/lib/tsan/lit_tests/tiny_race.c
-#include &lt;pthread.h&gt;
-int Global;
-void *Thread1(void *x) {
-  Global = 42;
-  return x;
-}
-int main() {
-  pthread_t t;
-  pthread_create(&amp;t, NULL, Thread1, NULL);
-  Global = 43;
-  pthread_join(t, NULL);
-  return Global;
-}
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> cat projects/compiler-rt/lib/tsan/lit_tests/tiny_race.c
+<span class="gp">#</span>include &lt;pthread.h&gt;
+<span class="go">int Global;</span>
+<span class="go">void *Thread1(void *x) {</span>
+<span class="go">  Global = 42;</span>
+<span class="go">  return x;</span>
+<span class="go">}</span>
+<span class="go">int main() {</span>
+<span class="go">  pthread_t t;</span>
+<span class="go">  pthread_create(&amp;t, NULL, Thread1, NULL);</span>
+<span class="go">  Global = 43;</span>
+<span class="go">  pthread_join(t, NULL);</span>
+<span class="go">  return Global;</span>
+<span class="go">}</span>
 
-$ clang -fsanitize=thread -g -O1 tiny_race.c
+<span class="gp">$</span> clang -fsanitize<span class="o">=</span>thread -g -O1 tiny_race.c
 </pre></div>
 </div>
 <p>If a bug is detected, the program will print an error message to stderr.
@@ -96,14 +96,14 @@ Currently, ThreadSanitizer symbolizes its output using an external
 <div class="highlight-bash"><div class="highlight"><pre>% ./a.out
 WARNING: ThreadSanitizer: data race <span class="o">(</span><span class="nv">pid</span><span class="o">=</span>19219<span class="o">)</span>
   Write of size <span class="m">4</span> at 0x7fcf47b21bc0 by thread T1:
-    <span class="c">#0 Thread1 tiny_race.c:4 (exe+0x00000000a360)</span>
+    <span class="c1">#0 Thread1 tiny_race.c:4 (exe+0x00000000a360)</span>
 
   Previous write of size <span class="m">4</span> at 0x7fcf47b21bc0 by main thread:
-    <span class="c">#0 main tiny_race.c:10 (exe+0x00000000a3b4)</span>
+    <span class="c1">#0 main tiny_race.c:10 (exe+0x00000000a3b4)</span>
 
   Thread T1 <span class="o">(</span>running<span class="o">)</span> created at:
-    <span class="c">#0 pthread_create tsan_interceptors.cc:705 (exe+0x00000000c790)</span>
-    <span class="c">#1 main tiny_race.c:9 (exe+0x00000000a3a4)</span>
+    <span class="c1">#0 pthread_create tsan_interceptors.cc:705 (exe+0x00000000c790)</span>
+    <span class="c1">#1 main tiny_race.c:9 (exe+0x00000000a3a4)</span>
 </pre></div>
 </div>
 </div>
@@ -122,25 +122,22 @@ this purpose.</p>
 </div>
 </div>
 <div class="section" id="attribute-no-sanitize-thread">
-<h2><code class="docutils literal"><span class="pre">__attribute__((no_sanitize_thread))</span></code><a class="headerlink" href="#attribute-no-sanitize-thread" title="Permalink to this headline">¶</a></h2>
-<p>Some code should not be instrumented by ThreadSanitizer.
-One may use the function attribute
-<a class="reference internal" href="AttributeReference.html#langext-thread-sanitizer"><span>no_sanitize_thread</span></a>
-to disable instrumentation of plain (non-atomic) loads/stores in a particular function.
-ThreadSanitizer still instruments such functions to avoid false positives and
-provide meaningful stack traces.
-This attribute may not be
-supported by other compilers, so we suggest to use it together with
-<code class="docutils literal"><span class="pre">__has_feature(thread_sanitizer)</span></code>.</p>
+<h2><code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;thread&quot;)))</span></code><a class="headerlink" href="#attribute-no-sanitize-thread" title="Permalink to this headline">¶</a></h2>
+<p>Some code should not be instrumented by ThreadSanitizer.  One may use the
+function attribute <code class="docutils literal"><span class="pre">no_sanitize(&quot;thread&quot;)</span></code> to disable instrumentation of plain
+(non-atomic) loads/stores in a particular function.  ThreadSanitizer still
+instruments such functions to avoid false positives and provide meaningful stack
+traces.  This attribute may not be supported by other compilers, so we suggest
+to use it together with <code class="docutils literal"><span class="pre">__has_feature(thread_sanitizer)</span></code>.</p>
 </div>
 <div class="section" id="blacklist">
 <h2>Blacklist<a class="headerlink" href="#blacklist" title="Permalink to this headline">¶</a></h2>
 <p>ThreadSanitizer supports <code class="docutils literal"><span class="pre">src</span></code> and <code class="docutils literal"><span class="pre">fun</span></code> entity types in
-<a class="reference internal" href="SanitizerSpecialCaseList.html"><em>Sanitizer special case list</em></a>, that can be used to suppress data race reports in
-the specified source files or functions. Unlike functions marked with
-<a class="reference internal" href="AttributeReference.html#langext-thread-sanitizer"><span>no_sanitize_thread</span></a> attribute,
-blacklisted functions are not instrumented at all. This can lead to false positives
-due to missed synchronization via atomic operations and missed stack frames in reports.</p>
+<a class="reference internal" href="SanitizerSpecialCaseList.html"><em>Sanitizer special case list</em></a>, that can be used to suppress data race reports
+in the specified source files or functions. Unlike functions marked with
+<code class="docutils literal"><span class="pre">no_sanitize(&quot;thread&quot;)</span></code> attribute, blacklisted functions are not instrumented
+at all. This can lead to false positives due to missed synchronization via
+atomic operations and missed stack frames in reports.</p>
 </div>
 <div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
@@ -169,7 +166,7 @@ especially in the form of minimized standalone tests is more than welcome.</p>
 </div>
 <div class="section" id="more-information">
 <h2>More Information<a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="http://code.google.com/p/thread-sanitizer/">http://code.google.com/p/thread-sanitizer</a>.</p>
+<p><a class="reference external" href="https://github.com/google/sanitizers/wiki/ThreadSanitizerCppManual">https://github.com/google/sanitizers/wiki/ThreadSanitizerCppManual</a></p>
 </div>
 </div>
 
@@ -188,8 +185,8 @@ especially in the form of minimized standalone tests is more than welcome.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MemorySanitizer &mdash; Clang 3.7 documentation</title>
+    <title>MemorySanitizer &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
-    <link rel="next" title="DataFlowSanitizer" href="DataFlowSanitizer.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <link rel="next" title="UndefinedBehaviorSanitizer" href="UndefinedBehaviorSanitizer.html" />
     <link rel="prev" title="ThreadSanitizer" href="ThreadSanitizer.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>MemorySanitizer</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -40,7 +40,7 @@
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="DataFlowSanitizer.html">DataFlowSanitizer</a>&#160;&#160;»
+        <a href="UndefinedBehaviorSanitizer.html">UndefinedBehaviorSanitizer</a>&#160;&#160;»
         </p>
 
       </div>
@@ -55,17 +55,18 @@
 <li><a class="reference internal" href="#how-to-build" id="id2">How to build</a></li>
 <li><a class="reference internal" href="#usage" id="id3">Usage</a><ul>
 <li><a class="reference internal" href="#has-feature-memory-sanitizer" id="id4"><code class="docutils literal"><span class="pre">__has_feature(memory_sanitizer)</span></code></a></li>
-<li><a class="reference internal" href="#attribute-no-sanitize-memory" id="id5"><code class="docutils literal"><span class="pre">__attribute__((no_sanitize_memory))</span></code></a></li>
+<li><a class="reference internal" href="#attribute-no-sanitize-memory" id="id5"><code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;memory&quot;)))</span></code></a></li>
 <li><a class="reference internal" href="#blacklist" id="id6">Blacklist</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#report-symbolization" id="id7">Report symbolization</a></li>
 <li><a class="reference internal" href="#origin-tracking" id="id8">Origin Tracking</a></li>
-<li><a class="reference internal" href="#handling-external-code" id="id9">Handling external code</a></li>
-<li><a class="reference internal" href="#supported-platforms" id="id10">Supported Platforms</a></li>
-<li><a class="reference internal" href="#limitations" id="id11">Limitations</a></li>
-<li><a class="reference internal" href="#current-status" id="id12">Current Status</a></li>
-<li><a class="reference internal" href="#more-information" id="id13">More Information</a></li>
+<li><a class="reference internal" href="#use-after-destruction-detection" id="id9">Use-after-destruction detection</a></li>
+<li><a class="reference internal" href="#handling-external-code" id="id10">Handling external code</a></li>
+<li><a class="reference internal" href="#supported-platforms" id="id11">Supported Platforms</a></li>
+<li><a class="reference internal" href="#limitations" id="id12">Limitations</a></li>
+<li><a class="reference internal" href="#current-status" id="id13">Current Status</a></li>
+<li><a class="reference internal" href="#more-information" id="id14">More Information</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
@@ -105,17 +106,16 @@ to disable inlining (just use <code class="docutils literal"><span class="pre">-
 </pre></div>
 </div>
 <p>If a bug is detected, the program will print an error message to
-stderr and exit with a non-zero exit code. Currently, MemorySanitizer
-does not symbolize its output by default, so you may need to use a
-separate script to symbolize the result offline (this will be fixed in
-future).</p>
+stderr and exit with a non-zero exit code.</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> ./a.out
 <span class="go">WARNING: MemorySanitizer: use-of-uninitialized-value</span>
-<span class="go">    #0 0x7f45944b418a in main umr.cc:6</span>
-<span class="go">    #1 0x7f45938b676c in __libc_start_main libc-start.c:226</span>
+<span class="gp">    #</span><span class="m">0</span> 0x7f45944b418a in main umr.cc:6
+<span class="gp">    #</span><span class="m">1</span> 0x7f45938b676c in __libc_start_main libc-start.c:226
 </pre></div>
 </div>
-<p>By default, MemorySanitizer exits on the first detected error.</p>
+<p>By default, MemorySanitizer exits on the first detected error. If you
+find the error report hard to understand, try enabling
+<a class="reference internal" href="#msan-origins"><span>origin tracking</span></a>.</p>
 <div class="section" id="has-feature-memory-sanitizer">
 <h3><a class="toc-backref" href="#id4"><code class="docutils literal"><span class="pre">__has_feature(memory_sanitizer)</span></code></a><a class="headerlink" href="#has-feature-memory-sanitizer" title="Permalink to this headline">¶</a></h3>
 <p>In some cases one may need to execute different code depending on
@@ -129,15 +129,12 @@ whether MemorySanitizer is enabled. <a class="reference internal" href="Language
 </div>
 </div>
 <div class="section" id="attribute-no-sanitize-memory">
-<h3><a class="toc-backref" href="#id5"><code class="docutils literal"><span class="pre">__attribute__((no_sanitize_memory))</span></code></a><a class="headerlink" href="#attribute-no-sanitize-memory" title="Permalink to this headline">¶</a></h3>
-<p>Some code should not be checked by MemorySanitizer.
-One may use the function attribute
-<a class="reference internal" href="AttributeReference.html#langext-memory-sanitizer"><span>no_sanitize_memory</span></a>
-to disable uninitialized checks in a particular function.
-MemorySanitizer may still instrument such functions to avoid false positives.
-This attribute may not be
-supported by other compilers, so we suggest to use it together with
-<code class="docutils literal"><span class="pre">__has_feature(memory_sanitizer)</span></code>.</p>
+<h3><a class="toc-backref" href="#id5"><code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;memory&quot;)))</span></code></a><a class="headerlink" href="#attribute-no-sanitize-memory" title="Permalink to this headline">¶</a></h3>
+<p>Some code should not be checked by MemorySanitizer.  One may use the function
+attribute <code class="docutils literal"><span class="pre">no_sanitize(&quot;memory&quot;)</span></code> to disable uninitialized checks in a
+particular function.  MemorySanitizer may still instrument such functions to
+avoid false positives.  This attribute may not be supported by other compilers,
+so we suggest to use it together with <code class="docutils literal"><span class="pre">__has_feature(memory_sanitizer)</span></code>.</p>
 </div>
 <div class="section" id="blacklist">
 <h3><a class="toc-backref" href="#id6">Blacklist</a><a class="headerlink" href="#blacklist" title="Permalink to this headline">¶</a></h3>
@@ -155,8 +152,8 @@ reports. Make sure that <code class="docutils literal"><span class="pre">llvm-sy
 or set environment variable <code class="docutils literal"><span class="pre">MSAN_SYMBOLIZER_PATH</span></code> to point to it.</p>
 </div>
 <div class="section" id="origin-tracking">
-<h2><a class="toc-backref" href="#id8">Origin Tracking</a><a class="headerlink" href="#origin-tracking" title="Permalink to this headline">¶</a></h2>
-<p>MemorySanitizer can track origins of unitialized values, similar to
+<span id="msan-origins"></span><h2><a class="toc-backref" href="#id8">Origin Tracking</a><a class="headerlink" href="#origin-tracking" title="Permalink to this headline">¶</a></h2>
+<p>MemorySanitizer can track origins of uninitialized values, similar to
 Valgrind&#8217;s &#8211;track-origins option. This feature is enabled by
 <code class="docutils literal"><span class="pre">-fsanitize-memory-track-origins=2</span></code> (or simply
 <code class="docutils literal"><span class="pre">-fsanitize-memory-track-origins</span></code>) Clang option. With the code from
@@ -176,32 +173,48 @@ the example above,</p>
 <span class="gp">%</span> clang -fsanitize<span class="o">=</span>memory -fsanitize-memory-track-origins<span class="o">=</span><span class="m">2</span> -fno-omit-frame-pointer -g -O2 umr2.cc
 <span class="gp">%</span> ./a.out
 <span class="go">WARNING: MemorySanitizer: use-of-uninitialized-value</span>
-<span class="go">    #0 0x7f7893912f0b in main umr2.cc:7</span>
-<span class="go">    #1 0x7f789249b76c in __libc_start_main libc-start.c:226</span>
+<span class="gp">    #</span><span class="m">0</span> 0x7f7893912f0b in main umr2.cc:7
+<span class="gp">    #</span><span class="m">1</span> 0x7f789249b76c in __libc_start_main libc-start.c:226
 
 <span class="go">  Uninitialized value was stored to memory at</span>
-<span class="go">    #0 0x7f78938b5c25 in __msan_chain_origin msan.cc:484</span>
-<span class="go">    #1 0x7f7893912ecd in main umr2.cc:6</span>
+<span class="gp">    #</span><span class="m">0</span> 0x7f78938b5c25 in __msan_chain_origin msan.cc:484
+<span class="gp">    #</span><span class="m">1</span> 0x7f7893912ecd in main umr2.cc:6
 
 <span class="go">  Uninitialized value was created by a heap allocation</span>
-<span class="go">    #0 0x7f7893901cbd in operator new[](unsigned long) msan_new_delete.cc:44</span>
-<span class="go">    #1 0x7f7893912e06 in main umr2.cc:4</span>
+<span class="gp">    #</span><span class="m">0</span> 0x7f7893901cbd in operator new<span class="o">[](</span>unsigned long<span class="o">)</span> msan_new_delete.cc:44
+<span class="gp">    #</span><span class="m">1</span> 0x7f7893912e06 in main umr2.cc:4
 </pre></div>
 </div>
 <p>By default, MemorySanitizer collects both allocation points and all
 intermediate stores the uninitialized value went through.  Origin
 tracking has proved to be very useful for debugging MemorySanitizer
 reports. It slows down program execution by a factor of 1.5x-2x on top
-of the usual MemorySanitizer slowdown.</p>
-<p>Clang option <code class="docutils literal"><span class="pre">-fsanitize-memory-track-origins=1</span></code> enabled a slightly
+of the usual MemorySanitizer slowdown and increases memory overhead.</p>
+<p>Clang option <code class="docutils literal"><span class="pre">-fsanitize-memory-track-origins=1</span></code> enables a slightly
 faster mode when MemorySanitizer collects only allocation points but
 not intermediate stores.</p>
 </div>
+<div class="section" id="use-after-destruction-detection">
+<h2><a class="toc-backref" href="#id9">Use-after-destruction detection</a><a class="headerlink" href="#use-after-destruction-detection" title="Permalink to this headline">¶</a></h2>
+<p>You can enable experimental use-after-destruction detection in MemorySanitizer.
+After invocation of the destructor, the object will be considered no longer
+readable, and using underlying memory will lead to error reports in runtime.</p>
+<p>This feature is still experimental, in order to enable it at runtime you need
+to:</p>
+<ol class="arabic simple">
+<li>Pass addition Clang option <code class="docutils literal"><span class="pre">-fsanitize-memory-use-after-dtor</span></code> during
+compilation.</li>
+<li>Set environment variable <cite>MSAN_OPTIONS=poison_in_dtor=1</cite> before running
+the program.</li>
+</ol>
+</div>
 <div class="section" id="handling-external-code">
-<h2><a class="toc-backref" href="#id9">Handling external code</a><a class="headerlink" href="#handling-external-code" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10">Handling external code</a><a class="headerlink" href="#handling-external-code" title="Permalink to this headline">¶</a></h2>
 <p>MemorySanitizer requires that all program code is instrumented. This
 also includes any libraries that the program depends on, even libc.
-Failing to achieve this may result in false reports.</p>
+Failing to achieve this may result in false reports.
+For the same reason you may need to replace all inline assembly code that writes to memory
+with a pure C/C++ code.</p>
 <p>Full MemorySanitizer instrumentation is very difficult to achieve. To
 make it easier, MemorySanitizer runtime library includes 70+
 interceptors for the most common libc functions. They make it possible
@@ -211,14 +224,11 @@ MemorySanitizer-instrumented Clang compiler by linking it with
 self-built instrumented libc++ (as a replacement for libstdc++).</p>
 </div>
 <div class="section" id="supported-platforms">
-<h2><a class="toc-backref" href="#id10">Supported Platforms</a><a class="headerlink" href="#supported-platforms" title="Permalink to this headline">¶</a></h2>
-<p>MemorySanitizer is supported on</p>
-<ul class="simple">
-<li>Linux x86_64 (tested on Ubuntu 12.04);</li>
-</ul>
+<h2><a class="toc-backref" href="#id11">Supported Platforms</a><a class="headerlink" href="#supported-platforms" title="Permalink to this headline">¶</a></h2>
+<p>MemorySanitizer is supported on Linux x86_64/MIPS64/AArch64.</p>
 </div>
 <div class="section" id="limitations">
-<h2><a class="toc-backref" href="#id11">Limitations</a><a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id12">Limitations</a><a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>MemorySanitizer uses 2x more real memory than a native run, 3x with
 origin tracking.</li>
@@ -226,23 +236,21 @@ origin tracking.</li>
 address space. This means that tools like <code class="docutils literal"><span class="pre">ulimit</span></code> may not work as
 usually expected.</li>
 <li>Static linking is not supported.</li>
-<li>Non-position-independent executables are not supported.  Therefore, the
-<code class="docutils literal"><span class="pre">fsanitize=memory</span></code> flag will cause Clang to act as though the <code class="docutils literal"><span class="pre">-fPIE</span></code>
-flag had been supplied if compiling without <code class="docutils literal"><span class="pre">-fPIC</span></code>, and as though the
-<code class="docutils literal"><span class="pre">-pie</span></code> flag had been supplied if linking an executable.</li>
-<li>Depending on the version of Linux kernel, running without ASLR may
-be not supported. Note that GDB disables ASLR by default. To debug
-instrumented programs, use &#8220;set disable-randomization off&#8221;.</li>
+<li>Older versions of MSan (LLVM 3.7 and older) didn&#8217;t work with
+non-position-independent executables, and could fail on some Linux
+kernel versions with disabled ASLR. Refer to documentation for older versions
+for more details.</li>
 </ul>
 </div>
 <div class="section" id="current-status">
-<h2><a class="toc-backref" href="#id12">Current Status</a><a class="headerlink" href="#current-status" title="Permalink to this headline">¶</a></h2>
-<p>MemorySanitizer is an experimental tool. It is known to work on large
-real-world programs, like Clang/LLVM itself.</p>
+<h2><a class="toc-backref" href="#id13">Current Status</a><a class="headerlink" href="#current-status" title="Permalink to this headline">¶</a></h2>
+<p>MemorySanitizer is known to work on large real-world programs
+(like Clang/LLVM itself) that can be recompiled from source, including all
+dependent libraries.</p>
 </div>
 <div class="section" id="more-information">
-<h2><a class="toc-backref" href="#id13">More Information</a><a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="http://code.google.com/p/memory-sanitizer/">http://code.google.com/p/memory-sanitizer</a></p>
+<h2><a class="toc-backref" href="#id14">More Information</a><a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/google/sanitizers/wiki/MemorySanitizer">https://github.com/google/sanitizers/wiki/MemorySanitizer</a></p>
 </div>
 </div>
 
@@ -255,14 +263,14 @@ real-world programs, like Clang/LLVM itself.</p>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="DataFlowSanitizer.html">DataFlowSanitizer</a>&#160;&#160;»
+        <a href="UndefinedBehaviorSanitizer.html">UndefinedBehaviorSanitizer</a>&#160;&#160;»
         </p>
 
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

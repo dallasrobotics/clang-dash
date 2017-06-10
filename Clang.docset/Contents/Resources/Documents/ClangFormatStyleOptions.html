@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Clang-Format Style Options &mdash; Clang 3.7 documentation</title>
+    <title>Clang-Format Style Options &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="“Clang” CFE Internals Manual" href="InternalsManual.html" />
     <link rel="prev" title="ClangFormat" href="ClangFormat.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>Clang-Format Style Options</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -66,8 +66,8 @@ try to find the <code class="docutils literal"><span class="pre">.clang-format</
 of the input file. When the standard input is used, the search is started from
 the current directory.</p>
 <p>The <code class="docutils literal"><span class="pre">.clang-format</span></code> file uses YAML format:</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">key1</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">value1</span>
-<span class="l-Scalar-Plain">key2</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">value2</span>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l l-Scalar l-Scalar-Plain">key1</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">value1</span>
+<span class="l l-Scalar l-Scalar-Plain">key2</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">value2</span>
 <span class="c1"># A comment.</span>
 <span class="nn">...</span>
 </pre></div>
@@ -87,21 +87,21 @@ language.</p>
 <p>An example of a configuration file for multiple languages:</p>
 <div class="highlight-yaml"><div class="highlight"><pre><span class="nn">---</span>
 <span class="c1"># We&#39;ll use defaults from the LLVM style, but with 4 columns indentation.</span>
-<span class="l-Scalar-Plain">BasedOnStyle</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">LLVM</span>
-<span class="l-Scalar-Plain">IndentWidth</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">4</span>
+<span class="l l-Scalar l-Scalar-Plain">BasedOnStyle</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">LLVM</span>
+<span class="l l-Scalar l-Scalar-Plain">IndentWidth</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
 <span class="nn">---</span>
-<span class="l-Scalar-Plain">Language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Cpp</span>
+<span class="l l-Scalar l-Scalar-Plain">Language</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Cpp</span>
 <span class="c1"># Force pointers to the type for C++.</span>
-<span class="l-Scalar-Plain">DerivePointerAlignment</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
-<span class="l-Scalar-Plain">PointerAlignment</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Left</span>
+<span class="l l-Scalar l-Scalar-Plain">DerivePointerAlignment</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="l l-Scalar l-Scalar-Plain">PointerAlignment</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Left</span>
 <span class="nn">---</span>
-<span class="l-Scalar-Plain">Language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">JavaScript</span>
+<span class="l l-Scalar l-Scalar-Plain">Language</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">JavaScript</span>
 <span class="c1"># Use 100 columns for JS.</span>
-<span class="l-Scalar-Plain">ColumnLimit</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">100</span>
+<span class="l l-Scalar l-Scalar-Plain">ColumnLimit</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
 <span class="nn">---</span>
-<span class="l-Scalar-Plain">Language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Proto</span>
+<span class="l l-Scalar l-Scalar-Plain">Language</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Proto</span>
 <span class="c1"># Don&#39;t format .proto files.</span>
-<span class="l-Scalar-Plain">DisableFormat</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
+<span class="l l-Scalar l-Scalar-Plain">DisableFormat</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nn">...</span>
 </pre></div>
 </div>
@@ -166,31 +166,69 @@ A style complying with <a class="reference external" href="http://www.webkit.org
 <dl class="docutils">
 <dt><strong>AccessModifierOffset</strong> (<code class="docutils literal"><span class="pre">int</span></code>)</dt>
 <dd>The extra indent or outdent of access modifiers, e.g. <code class="docutils literal"><span class="pre">public:</span></code>.</dd>
-<dt><strong>AlignAfterOpenBracket</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
+<dt><strong>AlignAfterOpenBracket</strong> (<code class="docutils literal"><span class="pre">BracketAlignmentStyle</span></code>)</dt>
 <dd><p class="first">If <code class="docutils literal"><span class="pre">true</span></code>, horizontally aligns arguments after an open bracket.</p>
-<p class="last">This applies to round brackets (parentheses), angle brackets and square
-brackets. This will result in formattings like
-code
-someLongFunction(argument1,
-argument2);
-endcode</p>
+<p>This applies to round brackets (parentheses), angle brackets and square
+brackets.</p>
+<p>Possible values:</p>
+<ul class="last">
+<li><p class="first"><code class="docutils literal"><span class="pre">BAS_Align</span></code> (in configuration: <code class="docutils literal"><span class="pre">Align</span></code>)
+Align parameters on the open bracket, e.g.:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">someLongFunction</span><span class="p">(</span><span class="n">argument1</span><span class="p">,</span>
+                 <span class="n">argument2</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">BAS_DontAlign</span></code> (in configuration: <code class="docutils literal"><span class="pre">DontAlign</span></code>)
+Don&#8217;t align, instead use <code class="docutils literal"><span class="pre">ContinuationIndentWidth</span></code>, e.g.:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">someLongFunction</span><span class="p">(</span><span class="n">argument1</span><span class="p">,</span>
+    <span class="n">argument2</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">BAS_AlwaysBreak</span></code> (in configuration: <code class="docutils literal"><span class="pre">AlwaysBreak</span></code>)
+Always break after an open bracket, if the parameters don&#8217;t fit
+on a single line, e.g.:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">someLongFunction</span><span class="p">(</span>
+    <span class="n">argument1</span><span class="p">,</span> <span class="n">argument2</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+</ul>
 </dd>
 <dt><strong>AlignConsecutiveAssignments</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd><p class="first">If <code class="docutils literal"><span class="pre">true</span></code>, aligns consecutive assignments.</p>
-<p class="last">This will align the assignment operators of consecutive lines. This
-will result in formattings like
-code
-int aaaa = 12;
-int b    = 23;
-int ccc  = 23;
-endcode</p>
+<p>This will align the assignment operators of consecutive lines. This
+will result in formattings like</p>
+<div class="last highlight-c++"><div class="highlight"><pre><span class="kt">int</span> <span class="n">aaaa</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">b</span>    <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">ccc</span>  <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>AlignConsecutiveDeclarations</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
+<dd><p class="first">If <code class="docutils literal"><span class="pre">true</span></code>, aligns consecutive declarations.</p>
+<p>This will align the declaration names of consecutive lines. This
+will result in formattings like</p>
+<div class="last highlight-c++"><div class="highlight"><pre><span class="kt">int</span>         <span class="n">aaaa</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+<span class="kt">float</span>       <span class="n">b</span> <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">ccc</span> <span class="o">=</span> <span class="mi">23</span><span class="p">;</span>
+</pre></div>
+</div>
 </dd>
 <dt><strong>AlignEscapedNewlinesLeft</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If <code class="docutils literal"><span class="pre">true</span></code>, aligns escaped newlines as far left as possible.
 Otherwise puts them into the right-most column.</dd>
 <dt><strong>AlignOperands</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
-<dd>If <code class="docutils literal"><span class="pre">true</span></code>, horizontally align operands of binary and ternary
-expressions.</dd>
+<dd><p class="first">If <code class="docutils literal"><span class="pre">true</span></code>, horizontally align operands of binary and ternary
+expressions.</p>
+<p>Specifically, this aligns operands of a single expression that needs to be
+split over multiple lines, e.g.:</p>
+<div class="last highlight-c++"><div class="highlight"><pre><span class="kt">int</span> <span class="n">aaa</span> <span class="o">=</span> <span class="n">bbbbbbbbbbbbbbb</span> <span class="o">+</span>
+          <span class="n">ccccccccccccccc</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd>
 <dt><strong>AlignTrailingComments</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If <code class="docutils literal"><span class="pre">true</span></code>, aligns trailing comments.</dd>
 <dt><strong>AllowAllParametersOfDeclarationOnNextLine</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
@@ -203,8 +241,8 @@ the next line even if <code class="docutils literal"><span class="pre">BinPackPa
 <dt><strong>AllowShortCaseLabelsOnASingleLine</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If <code class="docutils literal"><span class="pre">true</span></code>, short case labels will be contracted to a single line.</dd>
 <dt><strong>AllowShortFunctionsOnASingleLine</strong> (<code class="docutils literal"><span class="pre">ShortFunctionStyle</span></code>)</dt>
-<dd><p class="first">Dependent on the value, <code class="docutils literal"><span class="pre">int</span> <span class="pre">f()</span> <span class="pre">{</span> <span class="pre">return</span> <span class="pre">0;</span> <span class="pre">}</span></code> can be put
-on a single line.</p>
+<dd><p class="first">Dependent on the value, <code class="docutils literal"><span class="pre">int</span> <span class="pre">f()</span> <span class="pre">{</span> <span class="pre">return</span> <span class="pre">0;</span> <span class="pre">}</span></code> can be put on a
+single line.</p>
 <p>Possible values:</p>
 <ul class="last simple">
 <li><code class="docutils literal"><span class="pre">SFS_None</span></code> (in configuration: <code class="docutils literal"><span class="pre">None</span></code>)
@@ -218,13 +256,13 @@ Merge all functions fitting on a single line.</li>
 </ul>
 </dd>
 <dt><strong>AllowShortIfStatementsOnASingleLine</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
-<dd>If <code class="docutils literal"><span class="pre">true</span></code>, <code class="docutils literal"><span class="pre">if</span> <span class="pre">(a)</span> <span class="pre">return;</span></code> can be put on a single
-line.</dd>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code>, <code class="docutils literal"><span class="pre">if</span> <span class="pre">(a)</span> <span class="pre">return;</span></code> can be put on a single line.</dd>
 <dt><strong>AllowShortLoopsOnASingleLine</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
-<dd>If <code class="docutils literal"><span class="pre">true</span></code>, <code class="docutils literal"><span class="pre">while</span> <span class="pre">(true)</span> <span class="pre">continue;</span></code> can be put on a
-single line.</dd>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code>, <code class="docutils literal"><span class="pre">while</span> <span class="pre">(true)</span> <span class="pre">continue;</span></code> can be put on a single
+line.</dd>
 <dt><strong>AlwaysBreakAfterDefinitionReturnType</strong> (<code class="docutils literal"><span class="pre">DefinitionReturnTypeBreakingStyle</span></code>)</dt>
-<dd><p class="first">The function definition return type breaking style to use.</p>
+<dd><p class="first">The function definition return type breaking style to use.  This
+option is deprecated and is retained for backwards compatibility.</p>
 <p>Possible values:</p>
 <ul class="last simple">
 <li><code class="docutils literal"><span class="pre">DRTBS_None</span></code> (in configuration: <code class="docutils literal"><span class="pre">None</span></code>)
@@ -233,7 +271,24 @@ Break after return type automatically.
 <li><code class="docutils literal"><span class="pre">DRTBS_All</span></code> (in configuration: <code class="docutils literal"><span class="pre">All</span></code>)
 Always break after the return type.</li>
 <li><code class="docutils literal"><span class="pre">DRTBS_TopLevel</span></code> (in configuration: <code class="docutils literal"><span class="pre">TopLevel</span></code>)
-Always break after the return types of top level functions.</li>
+Always break after the return types of top-level functions.</li>
+</ul>
+</dd>
+<dt><strong>AlwaysBreakAfterReturnType</strong> (<code class="docutils literal"><span class="pre">ReturnTypeBreakingStyle</span></code>)</dt>
+<dd><p class="first">The function declaration return type breaking style to use.</p>
+<p>Possible values:</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">RTBS_None</span></code> (in configuration: <code class="docutils literal"><span class="pre">None</span></code>)
+Break after return type automatically.
+<code class="docutils literal"><span class="pre">PenaltyReturnTypeOnItsOwnLine</span></code> is taken into account.</li>
+<li><code class="docutils literal"><span class="pre">RTBS_All</span></code> (in configuration: <code class="docutils literal"><span class="pre">All</span></code>)
+Always break after the return type.</li>
+<li><code class="docutils literal"><span class="pre">RTBS_TopLevel</span></code> (in configuration: <code class="docutils literal"><span class="pre">TopLevel</span></code>)
+Always break after the return types of top-level functions.</li>
+<li><code class="docutils literal"><span class="pre">RTBS_AllDefinitions</span></code> (in configuration: <code class="docutils literal"><span class="pre">AllDefinitions</span></code>)
+Always break after the return type of function definitions.</li>
+<li><code class="docutils literal"><span class="pre">RTBS_TopLevelDefinitions</span></code> (in configuration: <code class="docutils literal"><span class="pre">TopLevelDefinitions</span></code>)
+Always break after the return type of top-level definitions.</li>
 </ul>
 </dd>
 <dt><strong>AlwaysBreakBeforeMultilineStrings</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
@@ -244,14 +299,35 @@ the string at that point leads to it being indented
 <code class="docutils literal"><span class="pre">ContinuationIndentWidth</span></code> spaces from the start of the line.</p>
 </dd>
 <dt><strong>AlwaysBreakTemplateDeclarations</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
-<dd>If <code class="docutils literal"><span class="pre">true</span></code>, always break after the <code class="docutils literal"><span class="pre">template&lt;...&gt;</span></code> of a
-template declaration.</dd>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code>, always break after the <code class="docutils literal"><span class="pre">template&lt;...&gt;</span></code> of a template
+declaration.</dd>
 <dt><strong>BinPackArguments</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If <code class="docutils literal"><span class="pre">false</span></code>, a function call&#8217;s arguments will either be all on the
 same line or will have one line each.</dd>
 <dt><strong>BinPackParameters</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If <code class="docutils literal"><span class="pre">false</span></code>, a function declaration&#8217;s or function definition&#8217;s
 parameters will either all be on the same line or will have one line each.</dd>
+<dt><strong>BraceWrapping</strong> (<code class="docutils literal"><span class="pre">BraceWrappingFlags</span></code>)</dt>
+<dd><p class="first">Control of individual brace wrapping cases.</p>
+<p>If <code class="docutils literal"><span class="pre">BreakBeforeBraces</span></code> is set to <code class="docutils literal"><span class="pre">BS_Custom</span></code>, use this to specify how
+each individual brace case should be handled. Otherwise, this is ignored.</p>
+<p>Nested configuration flags:</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">AfterClass</span></code> Wrap class definitions.</li>
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">AfterControlStatement</span></code> Wrap control statements (<code class="docutils literal"><span class="pre">if</span></code>/<code class="docutils literal"><span class="pre">for</span></code>/<code class="docutils literal"><span class="pre">while</span></code>/<code class="docutils literal"><span class="pre">switch</span></code>/..).</li>
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">AfterEnum</span></code> Wrap enum definitions.</li>
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">AfterFunction</span></code> Wrap function definitions.</li>
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">AfterNamespace</span></code> Wrap namespace definitions.</li>
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">AfterObjCDeclaration</span></code> Wrap ObjC definitions (<code class="docutils literal"><span class="pre">&#64;autoreleasepool</span></code>, interfaces, ..).</li>
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">AfterStruct</span></code> Wrap struct definitions.</li>
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">AfterUnion</span></code> Wrap union definitions.</li>
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">BeforeCatch</span></code> Wrap before <code class="docutils literal"><span class="pre">catch</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">BeforeElse</span></code> Wrap before <code class="docutils literal"><span class="pre">else</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">bool</span> <span class="pre">IndentBraces</span></code> Indent the wrapped braces themselves.</li>
+</ul>
+</dd>
+<dt><strong>BreakAfterJavaFieldAnnotations</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
+<dd>Break after each annotation on a field in Java files.</dd>
 <dt><strong>BreakBeforeBinaryOperators</strong> (<code class="docutils literal"><span class="pre">BinaryOperatorStyle</span></code>)</dt>
 <dd><p class="first">The way to wrap binary operators.</p>
 <p>Possible values:</p>
@@ -277,13 +353,18 @@ class definitions.</li>
 Like <code class="docutils literal"><span class="pre">Attach</span></code>, but break before braces on enum, function, and record
 definitions.</li>
 <li><code class="docutils literal"><span class="pre">BS_Stroustrup</span></code> (in configuration: <code class="docutils literal"><span class="pre">Stroustrup</span></code>)
-Like <code class="docutils literal"><span class="pre">Attach</span></code>, but break before function definitions, and &#8216;else&#8217;.</li>
+Like <code class="docutils literal"><span class="pre">Attach</span></code>, but break before function definitions, <code class="docutils literal"><span class="pre">catch</span></code>, and
+<code class="docutils literal"><span class="pre">else</span></code>.</li>
 <li><code class="docutils literal"><span class="pre">BS_Allman</span></code> (in configuration: <code class="docutils literal"><span class="pre">Allman</span></code>)
 Always break before braces.</li>
 <li><code class="docutils literal"><span class="pre">BS_GNU</span></code> (in configuration: <code class="docutils literal"><span class="pre">GNU</span></code>)
 Always break before braces and add an extra level of indentation to
 braces of control statements, not to those of class, function
 or other definitions.</li>
+<li><code class="docutils literal"><span class="pre">BS_WebKit</span></code> (in configuration: <code class="docutils literal"><span class="pre">WebKit</span></code>)
+Like <code class="docutils literal"><span class="pre">Attach</span></code>, but break before functions.</li>
+<li><code class="docutils literal"><span class="pre">BS_Custom</span></code> (in configuration: <code class="docutils literal"><span class="pre">Custom</span></code>)
+Configure each individual brace in <cite>BraceWrapping</cite>.</li>
 </ul>
 </dd>
 <dt><strong>BreakBeforeTernaryOperators</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
@@ -291,6 +372,8 @@ or other definitions.</li>
 <dt><strong>BreakConstructorInitializersBeforeComma</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>Always break constructor initializers before commas and align
 the commas with the colon.</dd>
+<dt><strong>BreakStringLiterals</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
+<dd>Allow breaking string literals when formatting.</dd>
 <dt><strong>ColumnLimit</strong> (<code class="docutils literal"><span class="pre">unsigned</span></code>)</dt>
 <dd><p class="first">The column limit.</p>
 <p class="last">A column limit of <code class="docutils literal"><span class="pre">0</span></code> means that there is no column limit. In this case,
@@ -323,7 +406,8 @@ a zero-length name is assumed.</p>
 </dd>
 <dt><strong>DerivePointerAlignment</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If <code class="docutils literal"><span class="pre">true</span></code>, analyze the formatted file for the most common
-alignment of &amp; and *. <code class="docutils literal"><span class="pre">PointerAlignment</span></code> is then used only as fallback.</dd>
+alignment of <code class="docutils literal"><span class="pre">&amp;</span></code> and <code class="docutils literal"><span class="pre">\*</span></code>. <code class="docutils literal"><span class="pre">PointerAlignment</span></code> is then used only as
+fallback.</dd>
 <dt><strong>DisableFormat</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>Disables formatting completely.</dd>
 <dt><strong>ExperimentalAutoDetectBinPacking</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
@@ -339,12 +423,52 @@ not use this in config files, etc. Use at your own risk.</p>
 <dt><strong>ForEachMacros</strong> (<code class="docutils literal"><span class="pre">std::vector&lt;std::string&gt;</span></code>)</dt>
 <dd><p class="first">A vector of macros that should be interpreted as foreach loops
 instead of as function calls.</p>
-<p>These are expected to be macros of the form:
-code
-FOREACH(&lt;variable-declaration&gt;, ...)
-&lt;loop-body&gt;
-endcode</p>
+<p>These are expected to be macros of the form:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">FOREACH</span><span class="p">(</span><span class="o">&lt;</span><span class="n">variable</span><span class="o">-</span><span class="n">declaration</span><span class="o">&gt;</span><span class="p">,</span> <span class="p">...)</span>
+  <span class="o">&lt;</span><span class="n">loop</span><span class="o">-</span><span class="n">body</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>In the .clang-format configuration file, this can be configured like:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l l-Scalar l-Scalar-Plain">ForEachMacros</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;RANGES_FOR&#39;</span><span class="p p-Indicator">,</span> <span class="s">&#39;FOREACH&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
 <p class="last">For example: BOOST_FOREACH.</p>
+</dd>
+<dt><strong>IncludeCategories</strong> (<code class="docutils literal"><span class="pre">std::vector&lt;IncludeCategory&gt;</span></code>)</dt>
+<dd><p class="first">Regular expressions denoting the different <code class="docutils literal"><span class="pre">#include</span></code> categories
+used for ordering <code class="docutils literal"><span class="pre">#includes</span></code>.</p>
+<p>These regular expressions are matched against the filename of an include
+(including the &lt;&gt; or &#8220;&#8221;) in order. The value belonging to the first
+matching regular expression is assigned and <code class="docutils literal"><span class="pre">#includes</span></code> are sorted first
+according to increasing category number and then alphabetically within
+each category.</p>
+<p>If none of the regular expressions match, INT_MAX is assigned as
+category. The main header for a source file automatically gets category 0.
+so that it is generally kept at the beginning of the <code class="docutils literal"><span class="pre">#includes</span></code>
+(<a class="reference external" href="http://llvm.org/docs/CodingStandards.html#include-style">http://llvm.org/docs/CodingStandards.html#include-style</a>). However, you
+can also assign negative priorities if you have certain headers that
+always need to be first.</p>
+<p>To configure this in the .clang-format file, use:</p>
+<div class="last highlight-yaml"><div class="highlight"><pre><span class="l l-Scalar l-Scalar-Plain">IncludeCategories</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Regex</span><span class="p p-Indicator">:</span>           <span class="s">&#39;^&quot;(llvm|llvm-c|clang|clang-c)/&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">Priority</span><span class="p p-Indicator">:</span>        <span class="l l-Scalar l-Scalar-Plain">2</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Regex</span><span class="p p-Indicator">:</span>           <span class="s">&#39;^(&lt;|&quot;(gtest|isl|json)/)&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">Priority</span><span class="p p-Indicator">:</span>        <span class="l l-Scalar l-Scalar-Plain">3</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Regex</span><span class="p p-Indicator">:</span>           <span class="s">&#39;.\*&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">Priority</span><span class="p p-Indicator">:</span>        <span class="l l-Scalar l-Scalar-Plain">1</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>IncludeIsMainRegex</strong> (<code class="docutils literal"><span class="pre">std::string</span></code>)</dt>
+<dd><p class="first">Specify a regular expression of suffixes that are allowed in the
+file-to-main-include mapping.</p>
+<p>When guessing whether a #include is the &#8220;main&#8221; include (to assign
+category 0, see above), use this regex of allowed suffixes to the header
+stem. A partial match is done, so that:
+- &#8220;&#8221; means &#8220;arbitrary suffix&#8221;
+- &#8220;$&#8221; means &#8220;no suffix&#8221;</p>
+<p class="last">For example, if configured to &#8220;(_test)?$&#8221;, then a header a.h would be seen
+as the &#8220;main&#8221; include in both a.cc and a_test.cc.</p>
 </dd>
 <dt><strong>IndentCaseLabels</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd><p class="first">Indent case labels one level from the switch statement.</p>
@@ -356,6 +480,18 @@ Switch statement body is always indented one level more than case labels.</p>
 <dt><strong>IndentWrappedFunctionNames</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>Indent if a function definition or declaration is wrapped after the
 type.</dd>
+<dt><strong>JavaScriptQuotes</strong> (<code class="docutils literal"><span class="pre">JavaScriptQuoteStyle</span></code>)</dt>
+<dd><p class="first">The JavaScriptQuoteStyle to use for JavaScript strings.</p>
+<p>Possible values:</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">JSQS_Leave</span></code> (in configuration: <code class="docutils literal"><span class="pre">Leave</span></code>)
+Leave string quotes as they are.</li>
+<li><code class="docutils literal"><span class="pre">JSQS_Single</span></code> (in configuration: <code class="docutils literal"><span class="pre">Single</span></code>)
+Always use single quotes.</li>
+<li><code class="docutils literal"><span class="pre">JSQS_Double</span></code> (in configuration: <code class="docutils literal"><span class="pre">Double</span></code>)
+Always use double quotes.</li>
+</ul>
+</dd>
 <dt><strong>KeepEmptyLinesAtTheStartOfBlocks</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If true, empty lines at the start of blocks are kept.</dd>
 <dt><strong>Language</strong> (<code class="docutils literal"><span class="pre">LanguageKind</span></code>)</dt>
@@ -373,6 +509,8 @@ Should be used for JavaScript.</li>
 <li><code class="docutils literal"><span class="pre">LK_Proto</span></code> (in configuration: <code class="docutils literal"><span class="pre">Proto</span></code>)
 Should be used for Protocol Buffers
 (<a class="reference external" href="https://developers.google.com/protocol-buffers/">https://developers.google.com/protocol-buffers/</a>).</li>
+<li><code class="docutils literal"><span class="pre">LK_TableGen</span></code> (in configuration: <code class="docutils literal"><span class="pre">TableGen</span></code>)
+Should be used for TableGen code.</li>
 </ul>
 </dd>
 <dt><strong>MacroBlockBegin</strong> (<code class="docutils literal"><span class="pre">std::string</span></code>)</dt>
@@ -397,12 +535,12 @@ Indent in all namespaces.</li>
 <dd>The number of characters to use for indentation of ObjC blocks.</dd>
 <dt><strong>ObjCSpaceAfterProperty</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>Add a space after <code class="docutils literal"><span class="pre">&#64;property</span></code> in Objective-C, i.e. use
-<code class="docutils literal"><span class="pre">\&#64;property</span> <span class="pre">(readonly)</span></code> instead of <code class="docutils literal"><span class="pre">\&#64;property(readonly)</span></code>.</dd>
+<code class="docutils literal"><span class="pre">&#64;property</span> <span class="pre">(readonly)</span></code> instead of <code class="docutils literal"><span class="pre">&#64;property(readonly)</span></code>.</dd>
 <dt><strong>ObjCSpaceBeforeProtocolList</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>Add a space in front of an Objective-C protocol list, i.e. use
 <code class="docutils literal"><span class="pre">Foo</span> <span class="pre">&lt;Protocol&gt;</span></code> instead of <code class="docutils literal"><span class="pre">Foo&lt;Protocol&gt;</span></code>.</dd>
 <dt><strong>PenaltyBreakBeforeFirstCallParameter</strong> (<code class="docutils literal"><span class="pre">unsigned</span></code>)</dt>
-<dd>The penalty for breaking a function call after &#8220;call(&#8221;.</dd>
+<dd>The penalty for breaking a function call after <code class="docutils literal"><span class="pre">call(</span></code>.</dd>
 <dt><strong>PenaltyBreakComment</strong> (<code class="docutils literal"><span class="pre">unsigned</span></code>)</dt>
 <dd>The penalty for each line break introduced inside a comment.</dd>
 <dt><strong>PenaltyBreakFirstLessLess</strong> (<code class="docutils literal"><span class="pre">unsigned</span></code>)</dt>
@@ -426,8 +564,14 @@ Align pointer to the right.</li>
 Align pointer in the middle.</li>
 </ul>
 </dd>
+<dt><strong>ReflowComments</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code>, clang-format will attempt to re-flow comments.</dd>
+<dt><strong>SortIncludes</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code>, clang-format will sort <code class="docutils literal"><span class="pre">#includes</span></code>.</dd>
 <dt><strong>SpaceAfterCStyleCast</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If <code class="docutils literal"><span class="pre">true</span></code>, a space may be inserted after C style casts.</dd>
+<dt><strong>SpaceAfterTemplateKeyword</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code>, a space will be inserted after the &#8216;template&#8217; keyword.</dd>
 <dt><strong>SpaceBeforeAssignmentOperators</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If <code class="docutils literal"><span class="pre">false</span></code>, spaces will be removed before assignment operators.</dd>
 <dt><strong>SpaceBeforeParens</strong> (<code class="docutils literal"><span class="pre">SpaceBeforeParensOptions</span></code>)</dt>
@@ -447,35 +591,35 @@ parentheses, etc.)</li>
 </ul>
 </dd>
 <dt><strong>SpaceInEmptyParentheses</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
-<dd>If <code class="docutils literal"><span class="pre">true</span></code>, spaces may be inserted into &#8216;()&#8217;.</dd>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code>, spaces may be inserted into <code class="docutils literal"><span class="pre">()</span></code>.</dd>
 <dt><strong>SpacesBeforeTrailingComments</strong> (<code class="docutils literal"><span class="pre">unsigned</span></code>)</dt>
 <dd><p class="first">The number of spaces before trailing line comments
 (<code class="docutils literal"><span class="pre">//</span></code> - comments).</p>
-<p class="last">This does not affect trailing block comments (<code class="docutils literal"><span class="pre">/**/</span></code> - comments) as those
-commonly have different usage patterns and a number of special cases.</p>
+<p class="last">This does not affect trailing block comments (<code class="docutils literal"><span class="pre">/*</span></code> - comments) as
+those commonly have different usage patterns and a number of special
+cases.</p>
 </dd>
 <dt><strong>SpacesInAngles</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
-<dd>If <code class="docutils literal"><span class="pre">true</span></code>, spaces will be inserted after &#8216;&lt;&#8217; and before &#8216;&gt;&#8217; in
-template argument lists</dd>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code>, spaces will be inserted after <code class="docutils literal"><span class="pre">&lt;</span></code> and before <code class="docutils literal"><span class="pre">&gt;</span></code>
+in template argument lists.</dd>
 <dt><strong>SpacesInCStyleCastParentheses</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If <code class="docutils literal"><span class="pre">true</span></code>, spaces may be inserted into C style casts.</dd>
 <dt><strong>SpacesInContainerLiterals</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd>If <code class="docutils literal"><span class="pre">true</span></code>, spaces are inserted inside container literals (e.g.
 ObjC and Javascript array and dict literals).</dd>
 <dt><strong>SpacesInParentheses</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
-<dd>If <code class="docutils literal"><span class="pre">true</span></code>, spaces will be inserted after &#8216;(&#8216; and before &#8216;)&#8217;.</dd>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code>, spaces will be inserted after <code class="docutils literal"><span class="pre">(</span></code> and before <code class="docutils literal"><span class="pre">)</span></code>.</dd>
 <dt><strong>SpacesInSquareBrackets</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
-<dd>If <code class="docutils literal"><span class="pre">true</span></code>, spaces will be inserted after &#8216;[&#8216; and before &#8216;]&#8217;.</dd>
+<dd>If <code class="docutils literal"><span class="pre">true</span></code>, spaces will be inserted after <code class="docutils literal"><span class="pre">[</span></code> and before <code class="docutils literal"><span class="pre">]</span></code>.</dd>
 <dt><strong>Standard</strong> (<code class="docutils literal"><span class="pre">LanguageStandard</span></code>)</dt>
-<dd><p class="first">Format compatible with this standard, e.g. use
-<code class="docutils literal"><span class="pre">A&lt;A&lt;int&gt;</span> <span class="pre">&gt;</span></code> instead of <code class="docutils literal"><span class="pre">A&lt;A&lt;int&gt;&gt;</span></code> for LS_Cpp03.</p>
+<dd><p class="first">Format compatible with this standard, e.g. use <code class="docutils literal"><span class="pre">A&lt;A&lt;int&gt;</span> <span class="pre">&gt;</span></code>
+instead of <code class="docutils literal"><span class="pre">A&lt;A&lt;int&gt;&gt;</span></code> for <code class="docutils literal"><span class="pre">LS_Cpp03</span></code>.</p>
 <p>Possible values:</p>
 <ul class="last simple">
 <li><code class="docutils literal"><span class="pre">LS_Cpp03</span></code> (in configuration: <code class="docutils literal"><span class="pre">Cpp03</span></code>)
 Use C++03-compatible syntax.</li>
 <li><code class="docutils literal"><span class="pre">LS_Cpp11</span></code> (in configuration: <code class="docutils literal"><span class="pre">Cpp11</span></code>)
-Use features of C++11 (e.g. <code class="docutils literal"><span class="pre">A&lt;A&lt;int&gt;&gt;</span></code> instead of
-<code class="docutils literal"><span class="pre">A&lt;A&lt;int&gt;</span> <span class="pre">&gt;</span></code>).</li>
+Use features of C++11 (e.g. <code class="docutils literal"><span class="pre">A&lt;A&lt;int&gt;&gt;</span></code> instead of <code class="docutils literal"><span class="pre">A&lt;A&lt;int&gt;</span> <span class="pre">&gt;</span></code>).</li>
 <li><code class="docutils literal"><span class="pre">LS_Auto</span></code> (in configuration: <code class="docutils literal"><span class="pre">Auto</span></code>)
 Automatic detection based on the input.</li>
 </ul>
@@ -497,15 +641,36 @@ one tab stop to the next one.</li>
 </dd>
 </dl>
 </div>
+<div class="section" id="adding-additional-style-options">
+<h2>Adding additional style options<a class="headerlink" href="#adding-additional-style-options" title="Permalink to this headline">¶</a></h2>
+<p>Each additional style option adds costs to the clang-format project. Some of
+these costs affect the clang-format development itself, as we need to make
+sure that any given combination of options work and that new features don&#8217;t
+break any of the existing options in any way. There are also costs for end users
+as options become less discoverable and people have to think about and make a
+decision on options they don&#8217;t really care about.</p>
+<p>The goal of the clang-format project is more on the side of supporting a
+limited set of styles really well as opposed to supporting every single style
+used by a codebase somewhere in the wild. Of course, we do want to support all
+major projects and thus have established the following bar for adding style
+options. Each new style option must ..</p>
+<blockquote>
+<div><ul class="simple">
+<li>be used in a project of significant size (have dozens of contributors)</li>
+<li>have a publicly accessible style guide</li>
+<li>have a person willing to contribute and maintain patches</li>
+</ul>
+</div></blockquote>
+</div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>A style similar to the <a class="reference external" href="https://www.kernel.org/doc/Documentation/CodingStyle">Linux Kernel style</a>:</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">BasedOnStyle</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">LLVM</span>
-<span class="l-Scalar-Plain">IndentWidth</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">8</span>
-<span class="l-Scalar-Plain">UseTab</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Always</span>
-<span class="l-Scalar-Plain">BreakBeforeBraces</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Linux</span>
-<span class="l-Scalar-Plain">AllowShortIfStatementsOnASingleLine</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
-<span class="l-Scalar-Plain">IndentCaseLabels</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l l-Scalar l-Scalar-Plain">BasedOnStyle</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">LLVM</span>
+<span class="l l-Scalar l-Scalar-Plain">IndentWidth</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="l l-Scalar l-Scalar-Plain">UseTab</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Always</span>
+<span class="l l-Scalar l-Scalar-Plain">BreakBeforeBraces</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Linux</span>
+<span class="l l-Scalar l-Scalar-Plain">AllowShortIfStatementsOnASingleLine</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="l l-Scalar l-Scalar-Plain">IndentCaseLabels</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 </pre></div>
 </div>
 <p>The result is (imagine that tabs are used for indentation here):</p>
@@ -536,12 +701,12 @@ one tab stop to the next one.</li>
 </pre></div>
 </div>
 <p>A style similar to the default Visual Studio formatting style:</p>
-<div class="highlight-yaml"><div class="highlight"><pre><span class="l-Scalar-Plain">UseTab</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Never</span>
-<span class="l-Scalar-Plain">IndentWidth</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">4</span>
-<span class="l-Scalar-Plain">BreakBeforeBraces</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Allman</span>
-<span class="l-Scalar-Plain">AllowShortIfStatementsOnASingleLine</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
-<span class="l-Scalar-Plain">IndentCaseLabels</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">false</span>
-<span class="l-Scalar-Plain">ColumnLimit</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">0</span>
+<div class="highlight-yaml"><div class="highlight"><pre><span class="l l-Scalar l-Scalar-Plain">UseTab</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Never</span>
+<span class="l l-Scalar l-Scalar-Plain">IndentWidth</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="l l-Scalar l-Scalar-Plain">BreakBeforeBraces</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Allman</span>
+<span class="l l-Scalar l-Scalar-Plain">AllowShortIfStatementsOnASingleLine</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="l l-Scalar l-Scalar-Plain">IndentCaseLabels</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="l l-Scalar l-Scalar-Plain">ColumnLimit</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
 </pre></div>
 </div>
 <p>The result is:</p>
@@ -595,8 +760,8 @@ one tab stop to the next one.</li>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

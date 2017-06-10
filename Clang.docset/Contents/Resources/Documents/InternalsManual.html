@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>“Clang” CFE Internals Manual &mdash; Clang 3.7 documentation</title>
+    <title>“Clang” CFE Internals Manual &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="Driver Design &amp; Internals" href="DriverInternals.html" />
     <link rel="prev" title="Clang-Format Style Options" href="ClangFormatStyleOptions.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>“Clang” CFE Internals Manual</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -171,7 +171,7 @@ number of source ranges that related to the diagnostic.</p>
 <p>In this section, we&#8217;ll be giving examples produced by the Clang command line
 driver, but diagnostics can be <a class="reference internal" href="#diagnosticclient"><span>rendered in many different ways</span></a> depending on how the <code class="docutils literal"><span class="pre">DiagnosticClient</span></code> interface is
 implemented.  A representative example of a diagnostic is:</p>
-<div class="highlight-c++"><div class="highlight"><pre>t.c:38:15: error: invalid operands to binary expression (&#39;int *&#39; and &#39;_Complex float&#39;)
+<div class="highlight-text"><div class="highlight"><pre>t.c:38:15: error: invalid operands to binary expression (&#39;int *&#39; and &#39;_Complex float&#39;)
 P = (P-42) + Gamma*4;
     ~~~~~~ ^ ~~~~~~~
 </pre></div>
@@ -461,7 +461,7 @@ it might add the missing semicolon at the end of the statement or rewrite the
 use of a deprecated construct into something more palatable.  Here is one such
 example from the C++ front end, where we warn about the right-shift operator
 changing meaning from C++98 to C++11:</p>
-<div class="highlight-c++"><div class="highlight"><pre>test.cpp:3:7: warning: use of right-shift operator (&#39;&gt;&gt;&#39;) in template argument
+<div class="highlight-text"><div class="highlight"><pre>test.cpp:3:7: warning: use of right-shift operator (&#39;&gt;&gt;&#39;) in template argument
                        will require parentheses in C++11
 A&lt;100 &gt;&gt; 2&gt; *a;
       ^
@@ -584,8 +584,8 @@ token.  This concept maps directly to the &#8220;spelling location&#8221; for th
 <p>Clang represents most source ranges by [first, last], where &#8220;first&#8221; and &#8220;last&#8221;
 each point to the beginning of their respective tokens.  For example consider
 the <code class="docutils literal"><span class="pre">SourceRange</span></code> of the following statement:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">x</span> <span class="o">=</span> <span class="n">foo</span> <span class="o">+</span> <span class="n">bar</span><span class="p">;</span>
-<span class="o">^</span><span class="n">first</span>    <span class="o">^</span><span class="n">last</span>
+<div class="highlight-text"><div class="highlight"><pre>x = foo + bar;
+^first    ^last
 </pre></div>
 </div>
 <p>To map from this representation to a character-based representation, the &#8220;last&#8221;
@@ -865,7 +865,7 @@ typedefs.  For example, consider this code:</p>
 </div>
 <p>The code above is illegal, and thus we expect there to be diagnostics emitted
 on the annotated lines.  In this example, we expect to get:</p>
-<div class="highlight-c++"><div class="highlight"><pre>test.c:6:1: error: indirection requires pointer operand (&#39;foo&#39; invalid)
+<div class="highlight-text"><div class="highlight"><pre>test.c:6:1: error: indirection requires pointer operand (&#39;foo&#39; invalid)
   *X; // error
   ^~
 test.c:7:1: error: indirection requires pointer operand (&#39;foo&#39; invalid)
@@ -1362,36 +1362,36 @@ visualizing CFGs.  For example, the method <code class="docutils literal"><span 
 pretty-printed version of the CFG to standard error.  This is especially useful
 when one is using a debugger such as gdb.  For example, here is the output of
 <code class="docutils literal"><span class="pre">FooCFG-&gt;dump()</span></code>:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="p">[</span> <span class="n">B5</span> <span class="p">(</span><span class="n">ENTRY</span><span class="p">)</span> <span class="p">]</span>
-   <span class="n">Predecessors</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">:</span>
-   <span class="n">Successors</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">:</span> <span class="n">B4</span>
+<div class="highlight-text"><div class="highlight"><pre>[ B5 (ENTRY) ]
+   Predecessors (0):
+   Successors (1): B4
 
-<span class="p">[</span> <span class="n">B4</span> <span class="p">]</span>
-   <span class="mi">1</span><span class="o">:</span> <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
-   <span class="mi">2</span><span class="o">:</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span>
-   <span class="nl">T</span><span class="p">:</span> <span class="k">if</span> <span class="p">[</span><span class="n">B4</span><span class="mf">.2</span><span class="p">]</span>
-   <span class="n">Predecessors</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">:</span> <span class="n">B5</span>
-   <span class="n">Successors</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">:</span> <span class="n">B3</span> <span class="n">B2</span>
+[ B4 ]
+   1: x = x + 1
+   2: (x &gt; 2)
+   T: if [B4.2]
+   Predecessors (1): B5
+   Successors (2): B3 B2
 
-<span class="p">[</span> <span class="n">B3</span> <span class="p">]</span>
-   <span class="mi">1</span><span class="o">:</span> <span class="n">x</span><span class="o">++</span>
-   <span class="n">Predecessors</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">:</span> <span class="n">B4</span>
-   <span class="n">Successors</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">:</span> <span class="n">B1</span>
+[ B3 ]
+   1: x++
+   Predecessors (1): B4
+   Successors (1): B1
 
-<span class="p">[</span> <span class="n">B2</span> <span class="p">]</span>
-   <span class="mi">1</span><span class="o">:</span> <span class="n">x</span> <span class="o">+=</span> <span class="mi">2</span>
-   <span class="mi">2</span><span class="o">:</span> <span class="n">x</span> <span class="o">*=</span> <span class="mi">2</span>
-   <span class="n">Predecessors</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">:</span> <span class="n">B4</span>
-   <span class="n">Successors</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">:</span> <span class="n">B1</span>
+[ B2 ]
+   1: x += 2
+   2: x *= 2
+   Predecessors (1): B4
+   Successors (1): B1
 
-<span class="p">[</span> <span class="n">B1</span> <span class="p">]</span>
-   <span class="mi">1</span><span class="o">:</span> <span class="k">return</span> <span class="n">x</span><span class="p">;</span>
-   <span class="n">Predecessors</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">:</span> <span class="n">B2</span> <span class="n">B3</span>
-   <span class="n">Successors</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">:</span> <span class="n">B0</span>
+[ B1 ]
+   1: return x;
+   Predecessors (2): B2 B3
+   Successors (1): B0
 
-<span class="p">[</span> <span class="n">B0</span> <span class="p">(</span><span class="n">EXIT</span><span class="p">)</span> <span class="p">]</span>
-   <span class="n">Predecessors</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">:</span> <span class="n">B1</span>
-   <span class="n">Successors</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">:</span>
+[ B0 (EXIT) ]
+   Predecessors (1): B1
+   Successors (0):
 </pre></div>
 </div>
 <p>For each block, the pretty-printed output displays for each block the number of
@@ -1892,7 +1892,7 @@ expression.  This is needed for diagnostics and for IDE support.</li>
 <li>Make sure that <code class="docutils literal"><span class="pre">children()</span></code> visits all of the subexpressions.  This is
 important for a number of features (e.g., IDE support, C++ variadic
 templates).  If you have sub-types, you&#8217;ll also need to visit those
-sub-types in <code class="docutils literal"><span class="pre">RecursiveASTVisitor</span></code> and <code class="docutils literal"><span class="pre">DataRecursiveASTVisitor</span></code>.</li>
+sub-types in <code class="docutils literal"><span class="pre">RecursiveASTVisitor</span></code>.</li>
 <li>Add printing support (<code class="docutils literal"><span class="pre">StmtPrinter.cpp</span></code>) for your expression.</li>
 <li>Add profiling support (<code class="docutils literal"><span class="pre">StmtProfile.cpp</span></code>) for your AST node, noting the
 distinguishing (non-source location) characteristics of an instance of
@@ -2011,8 +2011,8 @@ as syntax highlighting, cross-referencing, and so on.  The
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

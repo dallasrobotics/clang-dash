@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Sanitizer special case list &mdash; Clang 3.7 documentation</title>
+    <title>Sanitizer special case list &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,19 +24,19 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="Control Flow Integrity" href="ControlFlowIntegrity.html" />
-    <link rel="prev" title="SanitizerCoverage" href="SanitizerCoverage.html" /> 
+    <link rel="prev" title="SanitizerStats" href="SanitizerStats.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>Sanitizer special case list</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="SanitizerCoverage.html">SanitizerCoverage</a>
+        «&#160;&#160;<a href="SanitizerStats.html">SanitizerStats</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -80,20 +80,20 @@ ignore, and pass it to clang at compile-time using
 </div>
 <div class="section" id="example">
 <h2><a class="toc-backref" href="#id3">Example</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>cat foo.c
-<span class="c">#include &lt;stdlib.h&gt;</span>
+<div class="highlight-bash"><div class="highlight"><pre>$ cat foo.c
+<span class="c1">#include &lt;stdlib.h&gt;</span>
 void bad_foo<span class="o">()</span> <span class="o">{</span>
   int *a <span class="o">=</span> <span class="o">(</span>int*<span class="o">)</span>malloc<span class="o">(</span>40<span class="o">)</span><span class="p">;</span>
   a<span class="o">[</span>10<span class="o">]</span> <span class="o">=</span> 1<span class="p">;</span>
 <span class="o">}</span>
 int main<span class="o">()</span> <span class="o">{</span> bad_foo<span class="o">()</span><span class="p">;</span> <span class="o">}</span>
-<span class="nv">$ </span>cat blacklist.txt
-<span class="c"># Ignore reports from bad_foo function.</span>
+$ cat blacklist.txt
+<span class="c1"># Ignore reports from bad_foo function.</span>
 fun:bad_foo
-<span class="nv">$ </span>clang -fsanitize<span class="o">=</span>address foo.c <span class="p">;</span> ./a.out
-<span class="c"># AddressSanitizer prints an error report.</span>
-<span class="nv">$ </span>clang -fsanitize<span class="o">=</span>address -fsanitize-blacklist<span class="o">=</span>blacklist.txt foo.c <span class="p">;</span> ./a.out
-<span class="c"># No error report here.</span>
+$ clang -fsanitize<span class="o">=</span>address foo.c <span class="p">;</span> ./a.out
+<span class="c1"># AddressSanitizer prints an error report.</span>
+$ clang -fsanitize<span class="o">=</span>address -fsanitize-blacklist<span class="o">=</span>blacklist.txt foo.c <span class="p">;</span> ./a.out
+<span class="c1"># No error report here.</span>
 </pre></div>
 </div>
 </div>
@@ -107,20 +107,20 @@ names is different - it is treated as in shell wildcarding. Two generic
 entity types are <code class="docutils literal"><span class="pre">src</span></code> and <code class="docutils literal"><span class="pre">fun</span></code>, which allow user to add, respectively,
 source files and functions to special case list. Some sanitizer tools may
 introduce custom entity types - refer to tool-specific docs.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Lines starting with # are ignored.</span>
-<span class="c"># Turn off checks for the source file (use absolute path or path relative</span>
-<span class="c"># to the current working directory):</span>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c1"># Lines starting with # are ignored.</span>
+<span class="c1"># Turn off checks for the source file (use absolute path or path relative</span>
+<span class="c1"># to the current working directory):</span>
 src:/path/to/source/file.c
-<span class="c"># Turn off checks for a particular functions (use mangled names):</span>
+<span class="c1"># Turn off checks for a particular functions (use mangled names):</span>
 fun:MyFooBar
 fun:_Z8MyFooBarv
-<span class="c"># Extended regular expressions are supported:</span>
+<span class="c1"># Extended regular expressions are supported:</span>
 fun:bad_<span class="o">(</span>foo<span class="p">|</span>bar<span class="o">)</span>
 src:bad_source<span class="o">[</span>1-9<span class="o">]</span>.c
-<span class="c"># Shell like usage of * is supported (* is treated as .*):</span>
+<span class="c1"># Shell like usage of * is supported (* is treated as .*):</span>
 src:bad/sources/*
 fun:*BadFunction*
-<span class="c"># Specific sanitizer tools may introduce categories.</span>
+<span class="c1"># Specific sanitizer tools may introduce categories.</span>
 src:/special/path/*<span class="o">=</span>special_sources
 </pre></div>
 </div>
@@ -132,7 +132,7 @@ src:/special/path/*<span class="o">=</span>special_sources
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="SanitizerCoverage.html">SanitizerCoverage</a>
+        «&#160;&#160;<a href="SanitizerStats.html">SanitizerStats</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -142,8 +142,8 @@ src:/special/path/*<span class="o">=</span>special_sources
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

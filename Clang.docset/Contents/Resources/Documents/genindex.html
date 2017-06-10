@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Index &mdash; Clang 3.7 documentation</title>
+    <title>Index &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,11 +25,11 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" /> 
+    <link rel="top" title="Clang 4 documentation" href="index.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>Index</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -112,6 +112,17 @@
       </dl></dd>
       
   <dt>
+    -cl-ext
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-cl-ext">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
     -D&lt;macroname&gt;=&lt;value&gt;
   </dt>
 
@@ -189,7 +200,7 @@
       </dl></dd>
       
   <dt>
-    -fcommon
+    -fcommon, -fno-common
   </dt>
 
       <dd><dl>
@@ -206,6 +217,17 @@
       <dd><dl>
         
   <dt><a href="UsersManual.html#cmdoption-fconstexpr-depth">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -fdenormal-fp-math=[values]
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-fdenormal-fp-math">command line option</a>
   </dt>
 
       </dl></dd>
@@ -255,6 +277,17 @@
       </dl></dd>
       
   <dt>
+    -femulated-tls
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-femulated-tls">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
     -ferror-limit=123
   </dt>
 
@@ -277,12 +310,45 @@
       </dl></dd>
       
   <dt>
+    -ffake-address-space-map
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-ffake-address-space-map">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -ffast-math
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-ffast-math">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
     -ffreestanding
   </dt>
 
       <dd><dl>
         
   <dt><a href="CommandGuide/clang.html#cmdoption-ffreestanding">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -finclude-default-header
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-finclude-default-header">command line option</a>
   </dt>
 
       </dl></dd>
@@ -299,12 +365,12 @@
       </dl></dd>
       
   <dt>
-    -flto, -emit-llvm
+    -flto, -flto=full, -flto=thin, -emit-llvm
   </dt>
 
       <dd><dl>
         
-  <dt><a href="CommandGuide/clang.html#cmdoption-flto">command line option</a>
+  <dt><a href="CommandGuide/clang.html#cmdoption-flto">command line option</a>, <a href="CommandGuide/clang.html#cmdoption-flto">[1]</a>, <a href="CommandGuide/clang.html#cmdoption-flto">[2]</a>
   </dt>
 
       </dl></dd>
@@ -387,6 +453,17 @@
       </dl></dd>
       
   <dt>
+    -fno-sanitize-blacklist
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-fno-sanitize-blacklist">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
     -fno-standalone-debug
   </dt>
 
@@ -409,29 +486,7 @@
       </dl></dd>
       
   <dt>
-    -fobjc-gc
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="CommandGuide/clang.html#cmdoption-fobjc-gc">command line option</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt>
-    -fobjc-gc-only
-  </dt>
-
-      <dd><dl>
-        
-  <dt><a href="CommandGuide/clang.html#cmdoption-fobjc-gc-only">command line option</a>
-  </dt>
-
-      </dl></dd>
-      
-  <dt>
-    -fobjc-nonfragile-abi
+    -fobjc-nonfragile-abi, -fno-objc-nonfragile-abi
   </dt>
 
       <dd><dl>
@@ -448,6 +503,17 @@
       <dd><dl>
         
   <dt><a href="CommandGuide/clang.html#cmdoption-fobjc-nonfragile-abi-version">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -fopenmp-use-tls
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-fopenmp-use-tls">command line option</a>
   </dt>
 
       </dl></dd>
@@ -508,6 +574,28 @@
       </dl></dd>
       
   <dt>
+    -fsanitize-blacklist=/path/to/blacklist/file
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-fsanitize-blacklist">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -fsanitize-cfi-cross-dso
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-fsanitize-cfi-cross-dso">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
     -fsanitize-undefined-trap-on-error
   </dt>
 
@@ -547,6 +635,17 @@
       <dd><dl>
         
   <dt><a href="CommandGuide/clang.html#cmdoption-fstandalone-debug">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -fstrict-vtable-pointers
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-fstrict-vtable-pointers">command line option</a>
   </dt>
 
       </dl></dd>
@@ -638,6 +737,8 @@
   </dt>
 
       </dl></dd>
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt>
     -fvisibility
@@ -646,6 +747,17 @@
       <dd><dl>
         
   <dt><a href="CommandGuide/clang.html#cmdoption-fvisibility">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -fwhole-program-vtables
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-fwhole-program-vtables">command line option</a>
   </dt>
 
       </dl></dd>
@@ -660,8 +772,6 @@
   </dt>
 
       </dl></dd>
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt>
     -g
@@ -669,7 +779,18 @@
 
       <dd><dl>
         
-  <dt><a href="CommandGuide/clang.html#cmdoption-g">command line option</a>, <a href="UsersManual.html#cmdoption-g">[1]</a>
+  <dt><a href="UsersManual.html#cmdoption-g">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -g, -gline-tables-only, -gmodules
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="CommandGuide/clang.html#cmdoption-g">command line option</a>
   </dt>
 
       </dl></dd>
@@ -681,6 +802,17 @@
       <dd><dl>
         
   <dt><a href="UsersManual.html#cmdoption-g0">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -ggdb, -glldb, -gsce
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-ggdb">command line option</a>
   </dt>
 
       </dl></dd>
@@ -747,6 +879,17 @@
       <dd><dl>
         
   <dt><a href="CommandGuide/clang.html#cmdoption-march">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -mcompact-branches=[values]
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="UsersManual.html#cmdoption-mcompact-branches">command line option</a>
   </dt>
 
       </dl></dd>
@@ -851,7 +994,7 @@
       </dl></dd>
       
   <dt>
-    -O0, -O1, -O2, -O3, -Ofast, -Os, -Oz, -O, -O4
+    -O0, -O1, -O2, -O3, -Ofast, -Os, -Oz, -Og, -O, -O4
   </dt>
 
       <dd><dl>
@@ -950,12 +1093,34 @@
       </dl></dd>
       
   <dt>
+    -rtlib=&lt;library&gt;
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="CommandGuide/clang.html#cmdoption-rtlib">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
     -S
   </dt>
 
       <dd><dl>
         
   <dt><a href="CommandGuide/clang.html#cmdoption-S">command line option</a>
+  </dt>
+
+      </dl></dd>
+      
+  <dt>
+    -save-stats, -save-stats=cwd, -save-stats=obj
+  </dt>
+
+      <dd><dl>
+        
+  <dt><a href="CommandGuide/clang.html#cmdoption-save-stats">command line option</a>, <a href="CommandGuide/clang.html#cmdoption-save-stats">[1]</a>, <a href="CommandGuide/clang.html#cmdoption-save-stats">[2]</a>
   </dt>
 
       </dl></dd>
@@ -1297,7 +1462,7 @@
   </dt>
 
         
-  <dt><a href="CommandGuide/clang.html#cmdoption-O0">-O0, -O1, -O2, -O3, -Ofast, -Os, -Oz, -O, -O4</a>
+  <dt><a href="CommandGuide/clang.html#cmdoption-O0">-O0, -O1, -O2, -O3, -Ofast, -Os, -Oz, -Og, -O, -O4</a>
   </dt>
 
         
@@ -1401,6 +1566,10 @@
   </dt>
 
         
+  <dt><a href="UsersManual.html#cmdoption-cl-ext">-cl-ext</a>
+  </dt>
+
+        
   <dt><a href="CommandGuide/clang.html#cmdoption-fblocks">-fblocks</a>
   </dt>
 
@@ -1417,11 +1586,15 @@
   </dt>
 
         
-  <dt><a href="CommandGuide/clang.html#cmdoption-fcommon">-fcommon</a>
+  <dt><a href="CommandGuide/clang.html#cmdoption-fcommon">-fcommon, -fno-common</a>
   </dt>
 
         
   <dt><a href="UsersManual.html#cmdoption-fconstexpr-depth">-fconstexpr-depth=N</a>
+  </dt>
+
+        
+  <dt><a href="UsersManual.html#cmdoption-fdenormal-fp-math">-fdenormal-fp-math=[values]</a>
   </dt>
 
         
@@ -1441,6 +1614,10 @@
   </dt>
 
         
+  <dt><a href="UsersManual.html#cmdoption-femulated-tls">-femulated-tls</a>
+  </dt>
+
+        
   <dt><a href="UsersManual.html#cmdoption-ferror-limit">-ferror-limit=123</a>
   </dt>
 
@@ -1449,7 +1626,19 @@
   </dt>
 
         
+  <dt><a href="UsersManual.html#cmdoption-ffake-address-space-map">-ffake-address-space-map</a>
+  </dt>
+
+        
+  <dt><a href="UsersManual.html#cmdoption-ffast-math">-ffast-math</a>
+  </dt>
+
+        
   <dt><a href="CommandGuide/clang.html#cmdoption-ffreestanding">-ffreestanding</a>
+  </dt>
+
+        
+  <dt><a href="UsersManual.html#cmdoption-finclude-default-header">-finclude-default-header</a>
   </dt>
 
         
@@ -1457,7 +1646,7 @@
   </dt>
 
         
-  <dt><a href="CommandGuide/clang.html#cmdoption-flto">-flto, -emit-llvm</a>
+  <dt><a href="CommandGuide/clang.html#cmdoption-flto">-flto, -flto=full, -flto=thin, -emit-llvm</a>, <a href="CommandGuide/clang.html#cmdoption-flto">[1]</a>, <a href="CommandGuide/clang.html#cmdoption-flto">[2]</a>
   </dt>
 
         
@@ -1489,6 +1678,10 @@
   </dt>
 
         
+  <dt><a href="UsersManual.html#cmdoption-fno-sanitize-blacklist">-fno-sanitize-blacklist</a>
+  </dt>
+
+        
   <dt><a href="UsersManual.html#cmdoption-fno-standalone-debug">-fno-standalone-debug</a>
   </dt>
 
@@ -1497,19 +1690,15 @@
   </dt>
 
         
-  <dt><a href="CommandGuide/clang.html#cmdoption-fobjc-gc">-fobjc-gc</a>
-  </dt>
-
-        
-  <dt><a href="CommandGuide/clang.html#cmdoption-fobjc-gc-only">-fobjc-gc-only</a>
-  </dt>
-
-        
-  <dt><a href="CommandGuide/clang.html#cmdoption-fobjc-nonfragile-abi">-fobjc-nonfragile-abi</a>
+  <dt><a href="CommandGuide/clang.html#cmdoption-fobjc-nonfragile-abi">-fobjc-nonfragile-abi, -fno-objc-nonfragile-abi</a>
   </dt>
 
         
   <dt><a href="CommandGuide/clang.html#cmdoption-fobjc-nonfragile-abi-version">-fobjc-nonfragile-abi-version=&lt;version&gt;</a>
+  </dt>
+
+        
+  <dt><a href="UsersManual.html#cmdoption-fopenmp-use-tls">-fopenmp-use-tls</a>
   </dt>
 
         
@@ -1533,6 +1722,14 @@
   </dt>
 
         
+  <dt><a href="UsersManual.html#cmdoption-fsanitize-blacklist">-fsanitize-blacklist=/path/to/blacklist/file</a>
+  </dt>
+
+        
+  <dt><a href="UsersManual.html#cmdoption-fsanitize-cfi-cross-dso">-fsanitize-cfi-cross-dso</a>
+  </dt>
+
+        
   <dt><a href="UsersManual.html#cmdoption-fsanitize-undefined-trap-on-error">-fsanitize-undefined-trap-on-error</a>
   </dt>
 
@@ -1546,6 +1743,10 @@
 
         
   <dt><a href="CommandGuide/clang.html#cmdoption-fstandalone-debug">-fstandalone-debug -fno-standalone-debug</a>
+  </dt>
+
+        
+  <dt><a href="UsersManual.html#cmdoption-fstrict-vtable-pointers">-fstrict-vtable-pointers</a>
   </dt>
 
         
@@ -1585,15 +1786,27 @@
   </dt>
 
         
+  <dt><a href="UsersManual.html#cmdoption-fwhole-program-vtables">-fwhole-program-vtables</a>
+  </dt>
+
+        
   <dt><a href="CommandGuide/clang.html#cmdoption-fwritable-strings">-fwritable-strings</a>
   </dt>
 
         
-  <dt><a href="CommandGuide/clang.html#cmdoption-g">-g</a>, <a href="UsersManual.html#cmdoption-g">[1]</a>
+  <dt><a href="UsersManual.html#cmdoption-g">-g</a>
+  </dt>
+
+        
+  <dt><a href="CommandGuide/clang.html#cmdoption-g">-g, -gline-tables-only, -gmodules</a>
   </dt>
 
         
   <dt><a href="UsersManual.html#cmdoption-g0">-g0</a>
+  </dt>
+
+        
+  <dt><a href="UsersManual.html#cmdoption-ggdb">-ggdb, -glldb, -gsce</a>
   </dt>
 
         
@@ -1614,6 +1827,10 @@
 
         
   <dt><a href="CommandGuide/clang.html#cmdoption-march">-march=&lt;cpu&gt;</a>
+  </dt>
+
+        
+  <dt><a href="UsersManual.html#cmdoption-mcompact-branches">-mcompact-branches=[values]</a>
   </dt>
 
         
@@ -1670,6 +1887,14 @@
 
         
   <dt><a href="CommandGuide/clang.html#cmdoption-print-search-dirs">-print-search-dirs</a>
+  </dt>
+
+        
+  <dt><a href="CommandGuide/clang.html#cmdoption-rtlib">-rtlib=&lt;library&gt;</a>
+  </dt>
+
+        
+  <dt><a href="CommandGuide/clang.html#cmdoption-save-stats">-save-stats, -save-stats=cwd, -save-stats=obj</a>, <a href="CommandGuide/clang.html#cmdoption-save-stats">[1]</a>, <a href="CommandGuide/clang.html#cmdoption-save-stats">[2]</a>
   </dt>
 
         
@@ -1776,8 +2001,8 @@
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Modules &mdash; Clang 3.7 documentation</title>
+    <title>Modules &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,19 +24,19 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="MSVC compatibility" href="MSVCCompatibility.html" />
-    <link rel="prev" title="SafeStack" href="SafeStack.html" /> 
+    <link rel="prev" title="Source-based Code Coverage" href="SourceBasedCodeCoverage.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>Modules</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="SafeStack.html">SafeStack</a>
+        «&#160;&#160;<a href="SourceBasedCodeCoverage.html">Source-based Code Coverage</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -96,7 +96,7 @@
 <div class="section" id="introduction">
 <h2><a class="toc-backref" href="#id9">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Most software is built using a number of software libraries, including libraries supplied by the platform, internal libraries built as part of the software itself to provide structure, and third-party libraries. For each library, one needs to access both its interface (API) and its implementation. In the C family of languages, the interface to a library is accessed by including the appropriate header files(s):</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="cp">#include &lt;SomeLib.h&gt;</span>
+<div class="highlight-c"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;SomeLib.h&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <p>The implementation is handled separately by linking against the appropriate library. For example, by passing <code class="docutils literal"><span class="pre">-lSomeLib</span></code> to the linker.</p>
@@ -197,7 +197,7 @@ will track the modules proposal in the C++ committee. See the section
 <div class="section" id="includes-as-imports">
 <h3><a class="toc-backref" href="#id15">Includes as imports</a><a class="headerlink" href="#includes-as-imports" title="Permalink to this headline">¶</a></h3>
 <p>The primary user-level feature of modules is the import operation, which provides access to the API of software libraries. However, today&#8217;s programs make extensive use of <code class="docutils literal"><span class="pre">#include</span></code>, and it is unrealistic to assume that all of this code will change overnight. Instead, modules automatically translate <code class="docutils literal"><span class="pre">#include</span></code> directives into the corresponding module import. For example, the include directive</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="cp">#include &lt;stdio.h&gt;</span>
+<div class="highlight-c"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
 <p>will be automatically mapped to an import of the module <code class="docutils literal"><span class="pre">std.io</span></code>. Even with specific <code class="docutils literal"><span class="pre">import</span></code> syntax in the language, this particular feature is important for both adoption and backward compatibility: automatic translation of <code class="docutils literal"><span class="pre">#include</span></code> to <code class="docutils literal"><span class="pre">import</span></code> allows an application to get the benefits of modules (for all modules-enabled libraries) without any changes to the application itself. Thus, users can easily use modules with one compiler while falling back to the preprocessor-inclusion mechanism with other compilers.</p>
@@ -239,6 +239,8 @@ directive.``</p>
 <dl class="docutils">
 <dt><code class="docutils literal"><span class="pre">-fmodules</span></code></dt>
 <dd>Enable the modules feature.</dd>
+<dt><code class="docutils literal"><span class="pre">-fbuiltin-module-map</span></code></dt>
+<dd>Load the Clang builtins module map file. (Equivalent to <code class="docutils literal"><span class="pre">-fmodule-map-file=&lt;resource</span> <span class="pre">dir&gt;/include/module.modulemap</span></code>)</dd>
 <dt><code class="docutils literal"><span class="pre">-fimplicit-module-maps</span></code></dt>
 <dd>Enable implicit search for module map files named <code class="docutils literal"><span class="pre">module.modulemap</span></code> and similar. This option is implied by <code class="docutils literal"><span class="pre">-fmodules</span></code>. If this is disabled with <code class="docutils literal"><span class="pre">-fno-implicit-module-maps</span></code>, module map files will only be loaded if they are explicitly specified via <code class="docutils literal"><span class="pre">-fmodule-map-file</span></code> or transitively used by another module map file.</dd>
 <dt><code class="docutils literal"><span class="pre">-fmodules-cache-path=&lt;directory&gt;</span></code></dt>
@@ -265,6 +267,8 @@ directive.``</p>
 <dd>All modules used by the build must be specified with <code class="docutils literal"><span class="pre">-fmodule-file</span></code>.</dd>
 <dt><code class="docutils literal"><span class="pre">-fmodule-file=&lt;file&gt;</span></code></dt>
 <dd>Load the given precompiled module file.</dd>
+<dt><code class="docutils literal"><span class="pre">-fprebuilt-module-path=&lt;directory&gt;</span></code></dt>
+<dd>Specify the path to the prebuilt modules. If specified, we will look for modules in this directory for a given top-level module name. We don&#8217;t need a module map for loading prebuilt modules in this directory and the compiler will not try to rebuild these modules. This can be specified multiple times.</dd>
 </dl>
 </div>
 </div>
@@ -275,7 +279,7 @@ directive.``</p>
 <p class="first admonition-title">Note</p>
 <p class="last">This behavior is currently only approximated when building a module with submodules. Entities within a submodule that has already been built are visible when building later submodules in that module. This can lead to fragile modules that depend on the build order used for the submodules of the module, and should not be relied upon. This behavior is subject to change.</p>
 </div>
-<p>As an example, in C, this implies that if two structs are defined in different submodules with the same name, those two types are distinct types (but may be <em>compatible</em> types if their definitions match. In C++, two structs defined with the same name in different submodules are the <em>same</em> type, and must be equivalent under C++&#8217;s One Definition Rule.</p>
+<p>As an example, in C, this implies that if two structs are defined in different submodules with the same name, those two types are distinct types (but may be <em>compatible</em> types if their definitions match). In C++, two structs defined with the same name in different submodules are the <em>same</em> type, and must be equivalent under C++&#8217;s One Definition Rule.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Clang currently only performs minimal checking for violations of the One Definition Rule.</p>
@@ -397,6 +401,7 @@ remove it.</p>
 </div>
 <p>The <code class="docutils literal"><span class="pre">system</span></code> attribute specifies that the module is a system module. When a system module is rebuilt, all of the module&#8217;s headers will be considered system headers, which suppresses warnings. This is equivalent to placing <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">GCC</span> <span class="pre">system_header</span></code> in each of the module&#8217;s headers. The form of attributes is described in the section <a class="reference internal" href="#attributes">Attributes</a>, below.</p>
 <p>The <code class="docutils literal"><span class="pre">extern_c</span></code> attribute specifies that the module contains C code that can be used from within C++. When such a module is built for use in C++ code, all of the module&#8217;s headers will be treated as if they were contained within an implicit <code class="docutils literal"><span class="pre">extern</span> <span class="pre">&quot;C&quot;</span></code> block. An import for a module with this attribute can appear within an <code class="docutils literal"><span class="pre">extern</span> <span class="pre">&quot;C&quot;</span></code> block. No other restrictions are lifted, however: the module currently cannot be imported within an <code class="docutils literal"><span class="pre">extern</span> <span class="pre">&quot;C&quot;</span></code> block in a namespace.</p>
+<p>The <code class="docutils literal"><span class="pre">no_undeclared_includes</span></code> attribute specifies that the module can only reach non-modular headers and headers from used modules. Since some headers could be present in more than one search path and map to different modules in each path, this mechanism helps clang to find the right header, i.e., prefer the one for the current module or in a submodule instead of the first usual match in the search paths.</p>
 <p>Modules can have a number of different kinds of members, each of which is described below:</p>
 <pre class="literal-block">
 <em>module-member</em>:
@@ -435,6 +440,10 @@ remove it.</p>
 <dd>C++ support is available.</dd>
 <dt>cplusplus11</dt>
 <dd>C++11 support is available.</dd>
+<dt>freestanding</dt>
+<dd>A freestanding environment is available.</dd>
+<dt>gnuinlineasm</dt>
+<dd>GNU inline ASM is available.</dd>
 <dt>objc</dt>
 <dd>Objective-C support is available.</dd>
 <dt>objc_arc</dt>
@@ -874,7 +883,7 @@ typedef __SIZE_TYPE__ size_t;
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="SafeStack.html">SafeStack</a>
+        «&#160;&#160;<a href="SourceBasedCodeCoverage.html">Source-based Code Coverage</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -884,8 +893,8 @@ typedef __SIZE_TYPE__ size_t;
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

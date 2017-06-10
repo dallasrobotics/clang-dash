@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Thread Safety Analysis &mdash; Clang 3.7 documentation</title>
+    <title>Thread Safety Analysis &mdash; Clang 4 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.7',
+        VERSION:     '4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,13 +24,13 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 3.7 documentation" href="index.html" />
+    <link rel="top" title="Clang 4 documentation" href="index.html" />
     <link rel="next" title="AddressSanitizer" href="AddressSanitizer.html" />
     <link rel="prev" title="Cross-compilation using Clang" href="CrossCompilation.html" /> 
   </head>
   <body role="document">
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 3.7 documentation</span></a></h1>
+          <span>Clang 4 documentation</span></a></h1>
         <h2 class="heading"><span>Thread Safety Analysis</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -68,7 +68,7 @@ the GUI thread, then the analysis will warn if other threads call those
 routines.</p>
 <div class="section" id="getting-started">
 <h3>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &quot;mutex.h&quot;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;mutex.h&quot;</span><span class="cp"></span>
 
 <span class="k">class</span> <span class="nc">BankAccount</span> <span class="p">{</span>
 <span class="k">private</span><span class="o">:</span>
@@ -322,7 +322,7 @@ thread-safe, but too complicated for the analysis to understand.  Reasons for
   <span class="n">Mutex</span> <span class="n">mu</span><span class="p">;</span>
   <span class="kt">int</span> <span class="n">a</span> <span class="nf">GUARDED_BY</span><span class="p">(</span><span class="n">mu</span><span class="p">);</span>
 
-  <span class="kt">void</span> <span class="n">unsafeIncrement</span><span class="p">()</span> <span class="n">NO_THREAD_SAFETY_ANALYSIS</span> <span class="p">{</span> <span class="n">a</span><span class="o">++</span><span class="p">;</span> <span class="p">}</span>
+  <span class="kt">void</span> <span class="nf">unsafeIncrement</span><span class="p">()</span> <span class="n">NO_THREAD_SAFETY_ANALYSIS</span> <span class="p">{</span> <span class="n">a</span><span class="o">++</span><span class="p">;</span> <span class="p">}</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -778,25 +778,25 @@ implementation.</p>
   <span class="c1">// threads may acquire the mutex simultaneously as readers, but a writer</span>
   <span class="c1">// must wait for all of them to release the mutex before it can acquire it</span>
   <span class="c1">// exclusively.</span>
-  <span class="kt">void</span> <span class="nf">ReaderLock</span><span class="p">()</span> <span class="n">ACQUIRE_SHARED</span><span class="p">();</span>
+  <span class="kt">void</span> <span class="n">ReaderLock</span><span class="p">()</span> <span class="n">ACQUIRE_SHARED</span><span class="p">();</span>
 
   <span class="c1">// Release/unlock an exclusive mutex.</span>
-  <span class="kt">void</span> <span class="nf">Unlock</span><span class="p">()</span> <span class="n">RELEASE</span><span class="p">();</span>
+  <span class="kt">void</span> <span class="n">Unlock</span><span class="p">()</span> <span class="n">RELEASE</span><span class="p">();</span>
 
   <span class="c1">// Release/unlock a shared mutex.</span>
-  <span class="kt">void</span> <span class="nf">ReaderUnlock</span><span class="p">()</span> <span class="n">RELEASE_SHARED</span><span class="p">();</span>
+  <span class="kt">void</span> <span class="n">ReaderUnlock</span><span class="p">()</span> <span class="n">RELEASE_SHARED</span><span class="p">();</span>
 
   <span class="c1">// Try to acquire the mutex.  Returns true on success, and false on failure.</span>
-  <span class="kt">bool</span> <span class="nf">TryLock</span><span class="p">()</span> <span class="n">TRY_ACQUIRE</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="n">TryLock</span><span class="p">()</span> <span class="n">TRY_ACQUIRE</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
 
   <span class="c1">// Try to acquire the mutex for read operations.</span>
-  <span class="kt">bool</span> <span class="nf">ReaderTryLock</span><span class="p">()</span> <span class="n">TRY_ACQUIRE_SHARED</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="n">ReaderTryLock</span><span class="p">()</span> <span class="n">TRY_ACQUIRE_SHARED</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
 
   <span class="c1">// Assert that this mutex is currently held by the calling thread.</span>
-  <span class="kt">void</span> <span class="nf">AssertHeld</span><span class="p">()</span> <span class="n">ASSERT_CAPABILITY</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="n">AssertHeld</span><span class="p">()</span> <span class="n">ASSERT_CAPABILITY</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
 
   <span class="c1">// Assert that is mutex is currently held for read operations.</span>
-  <span class="kt">void</span> <span class="nf">AssertReaderHeld</span><span class="p">()</span> <span class="n">ASSERT_SHARED_CAPABILITY</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="n">AssertReaderHeld</span><span class="p">()</span> <span class="n">ASSERT_SHARED_CAPABILITY</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
 
   <span class="c1">// For negative capabilities.</span>
   <span class="k">const</span> <span class="n">Mutex</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">!</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span> <span class="p">}</span>
@@ -907,8 +907,8 @@ implementation.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2015, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+        &copy; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

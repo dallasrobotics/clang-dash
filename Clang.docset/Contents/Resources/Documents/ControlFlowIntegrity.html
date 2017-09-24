@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Control Flow Integrity &mdash; Clang 4 documentation</title>
-    
+    <title>Control Flow Integrity &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Control Flow Integrity Design Documentation" href="ControlFlowIntegrityDesign.html" />
     <link rel="prev" title="Sanitizer special case list" href="SanitizerSpecialCaseList.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>Control Flow Integrity</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -80,10 +79,10 @@
 <p>Clang includes an implementation of a number of control flow integrity (CFI)
 schemes, which are designed to abort the program upon detecting certain forms
 of undefined behavior that can potentially allow attackers to subvert the
-program&#8217;s control flow. These schemes have been optimized for performance,
+program’s control flow. These schemes have been optimized for performance,
 allowing developers to enable them in release builds.</p>
-<p>To enable Clang&#8217;s available CFI schemes, use the flag <code class="docutils literal"><span class="pre">-fsanitize=cfi</span></code>.
-You can also enable a subset of available <a class="reference internal" href="#cfi-schemes"><span>schemes</span></a>.
+<p>To enable Clang’s available CFI schemes, use the flag <code class="docutils literal"><span class="pre">-fsanitize=cfi</span></code>.
+You can also enable a subset of available <a class="reference internal" href="#cfi-schemes"><span class="std std-ref">schemes</span></a>.
 As currently implemented, all schemes rely on link-time optimization (LTO);
 so it is required to specify <code class="docutils literal"><span class="pre">-flto</span></code>, and the linker used must support LTO,
 for example via the <a class="reference external" href="http://llvm.org/docs/GoldPlugin.html">gold plugin</a>.</p>
@@ -94,13 +93,13 @@ the use of shared libraries in some cases.</p>
 <p>The compiler will only produce CFI checks for a class if it can infer hidden
 LTO visibility for that class. LTO visibility is a property of a class that
 is inferred from flags and attributes. For more details, see the documentation
-for <a class="reference internal" href="LTOVisibility.html"><em>LTO visibility</em></a>.</p>
+for <a class="reference internal" href="LTOVisibility.html"><span class="doc">LTO visibility</span></a>.</p>
 <p>The <code class="docutils literal"><span class="pre">-fsanitize=cfi-{vcall,nvcall,derived-cast,unrelated-cast}</span></code> flags
 require that a <code class="docutils literal"><span class="pre">-fvisibility=</span></code> flag also be specified. This is because the
 default visibility setting is <code class="docutils literal"><span class="pre">-fvisibility=default</span></code>, which would disable
 CFI checks for classes without visibility attributes. Most users will want
 to specify <code class="docutils literal"><span class="pre">-fvisibility=hidden</span></code>, which enables CFI checks for such classes.</p>
-<p>Experimental support for <a class="reference internal" href="#cfi-cross-dso"><span>cross-DSO control flow integrity</span></a> exists that does not require classes to have hidden LTO
+<p>Experimental support for <a class="reference internal" href="#cfi-cross-dso"><span class="std std-ref">cross-DSO control flow integrity</span></a> exists that does not require classes to have hidden LTO
 visibility. This cross-DSO support has unstable ABI at this time.</p>
 </div>
 <div class="section" id="available-schemes">
@@ -108,7 +107,7 @@ visibility. This cross-DSO support has unstable ABI at this time.</p>
 <p>Available schemes are:</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">-fsanitize=cfi-cast-strict</span></code>: Enables <a class="reference internal" href="#cfi-strictness"><span>strict cast checks</span></a>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=cfi-cast-strict</span></code>: Enables <a class="reference internal" href="#cfi-strictness"><span class="std std-ref">strict cast checks</span></a>.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=cfi-derived-cast</span></code>: Base-to-derived cast to the wrong
 dynamic type.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=cfi-unrelated-cast</span></code>: Cast from <code class="docutils literal"><span class="pre">void*</span></code> or another
@@ -133,16 +132,16 @@ enabled.</p>
 <div class="section" id="trapping-and-diagnostics">
 <h2><a class="toc-backref" href="#id3">Trapping and Diagnostics</a><a class="headerlink" href="#trapping-and-diagnostics" title="Permalink to this headline">¶</a></h2>
 <p>By default, CFI will abort the program immediately upon detecting a control
-flow integrity violation. You can use the <a class="reference internal" href="UsersManual.html#controlling-code-generation"><span>-fno-sanitize-trap=</span></a> flag to cause CFI to print a diagnostic
+flow integrity violation. You can use the <a class="reference internal" href="UsersManual.html#controlling-code-generation"><span class="std std-ref">-fno-sanitize-trap=</span></a> flag to cause CFI to print a diagnostic
 similar to the one below before the program aborts.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">bad-cast.cpp:109:7: runtime error: control flow integrity check for type &#39;B&#39; failed during base-to-derived cast (vtable address 0x000000425a50)</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">bad-cast.cpp:109:7: runtime error: control flow integrity check for type &#39;B&#39; failed during base-to-derived cast (vtable address 0x000000425a50)</span>
 <span class="go">0x000000425a50: note: vtable is of type &#39;A&#39;</span>
 <span class="go"> 00 00 00 00  f0 f1 41 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  20 5a 42 00</span>
 <span class="go">              ^</span>
 </pre></div>
 </div>
 <p>If diagnostics are enabled, you can also configure CFI to continue program
-execution instead of aborting by using the <a class="reference internal" href="UsersManual.html#controlling-code-generation"><span>-fsanitize-recover=</span></a> flag.</p>
+execution instead of aborting by using the <a class="reference internal" href="UsersManual.html#controlling-code-generation"><span class="std std-ref">-fsanitize-recover=</span></a> flag.</p>
 </div>
 <div class="section" id="forward-edge-cfi-for-virtual-calls">
 <h2><a class="toc-backref" href="#id4">Forward-Edge CFI for Virtual Calls</a><a class="headerlink" href="#forward-edge-cfi-for-virtual-calls" title="Permalink to this headline">¶</a></h2>
@@ -152,7 +151,7 @@ derived class of the static type of the object used to make the call.
 This CFI scheme can be enabled on its own using <code class="docutils literal"><span class="pre">-fsanitize=cfi-vcall</span></code>.</p>
 <p>For this scheme to work, all translation units containing the definition
 of a virtual member function (whether inline or not), other than members
-of <a class="reference internal" href="#cfi-blacklist"><span>blacklisted</span></a> types, must be compiled with
+of <a class="reference internal" href="#cfi-blacklist"><span class="std std-ref">blacklisted</span></a> types, must be compiled with
 <code class="docutils literal"><span class="pre">-fsanitize=cfi-vcall</span></code> enabled and be statically linked into the program.</p>
 <div class="section" id="performance">
 <h3><a class="toc-backref" href="#id5">Performance</a><a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h3>
@@ -187,10 +186,10 @@ to its original type) unless the object is uninitialized and the cast is a
 restriction can normally be enforced. However it may in some cases be necessary
 for a function to perform a forbidden cast to conform with an external API
 (e.g. the <code class="docutils literal"><span class="pre">allocate</span></code> member function of a standard library allocator). Such
-functions may be <a class="reference internal" href="#cfi-blacklist"><span>blacklisted</span></a>.</p>
+functions may be <a class="reference internal" href="#cfi-blacklist"><span class="std std-ref">blacklisted</span></a>.</p>
 <p>For this scheme to work, all translation units containing the definition
 of a virtual member function (whether inline or not), other than members
-of <a class="reference internal" href="#cfi-blacklist"><span>blacklisted</span></a> types, must be compiled with
+of <a class="reference internal" href="#cfi-blacklist"><span class="std std-ref">blacklisted</span></a> types, must be compiled with
 <code class="docutils literal"><span class="pre">-fsanitize=cfi-derived-cast</span></code> or <code class="docutils literal"><span class="pre">-fsanitize=cfi-unrelated-cast</span></code> enabled
 and be statically linked into the program.</p>
 </div>
@@ -204,7 +203,7 @@ polymorphic class type.  This CFI scheme can be enabled on its own using
 <code class="docutils literal"><span class="pre">-fsanitize=cfi-nvcall</span></code>.</p>
 <p>For this scheme to work, all translation units containing the definition
 of a virtual member function (whether inline or not), other than members
-of <a class="reference internal" href="#cfi-blacklist"><span>blacklisted</span></a> types, must be compiled with
+of <a class="reference internal" href="#cfi-blacklist"><span class="std std-ref">blacklisted</span></a> types, must be compiled with
 <code class="docutils literal"><span class="pre">-fsanitize=cfi-nvcall</span></code> enabled and be statically linked into the program.</p>
 <div class="section" id="strictness">
 <span id="cfi-strictness"></span><h3><a class="toc-backref" href="#id8">Strictness</a><a class="headerlink" href="#strictness" title="Permalink to this headline">¶</a></h3>
@@ -227,7 +226,7 @@ correct dynamic type; that is, the dynamic type of the function must match
 the static type used at the call. This CFI scheme can be enabled on its own
 using <code class="docutils literal"><span class="pre">-fsanitize=cfi-icall</span></code>.</p>
 <p>For this scheme to work, each indirect function call in the program, other
-than calls in <a class="reference internal" href="#cfi-blacklist"><span>blacklisted</span></a> functions, must call a
+than calls in <a class="reference internal" href="#cfi-blacklist"><span class="std std-ref">blacklisted</span></a> functions, must call a
 function which was either compiled with <code class="docutils literal"><span class="pre">-fsanitize=cfi-icall</span></code> enabled,
 or whose address was taken by a function in a translation unit compiled with
 <code class="docutils literal"><span class="pre">-fsanitize=cfi-icall</span></code>.</p>
@@ -262,10 +261,10 @@ shared library.</p>
 </div>
 <div class="section" id="blacklist">
 <span id="cfi-blacklist"></span><h2><a class="toc-backref" href="#id11">Blacklist</a><a class="headerlink" href="#blacklist" title="Permalink to this headline">¶</a></h2>
-<p>A <a class="reference internal" href="SanitizerSpecialCaseList.html"><em>Sanitizer special case list</em></a> can be used to relax CFI checks for certain
+<p>A <a class="reference internal" href="SanitizerSpecialCaseList.html"><span class="doc">Sanitizer special case list</span></a> can be used to relax CFI checks for certain
 source files, functions and types using the <code class="docutils literal"><span class="pre">src</span></code>, <code class="docutils literal"><span class="pre">fun</span></code> and <code class="docutils literal"><span class="pre">type</span></code>
 entity types.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c1"># Suppress checking for code in a file.</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Suppress checking for code in a file.</span>
 src:bad_file.cpp
 src:bad_header.h
 <span class="c1"># Ignore all functions with names containing MyFooBar.</span>
@@ -288,7 +287,7 @@ or which use a <code class="docutils literal"><span class="pre">no_sanitize</spa
 </div>
 <div class="section" id="design">
 <h2><a class="toc-backref" href="#id13">Design</a><a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h2>
-<p>Please refer to the <a class="reference internal" href="ControlFlowIntegrityDesign.html"><em>design document</em></a>.</p>
+<p>Please refer to the <a class="reference internal" href="ControlFlowIntegrityDesign.html"><span class="doc">design document</span></a>.</p>
 </div>
 <div class="section" id="publications">
 <h2><a class="toc-backref" href="#id14">Publications</a><a class="headerlink" href="#publications" title="Permalink to this headline">¶</a></h2>
@@ -315,8 +314,8 @@ Caroline Tice, Tom Roeder, Peter Collingbourne, Stephen Checkoway,
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

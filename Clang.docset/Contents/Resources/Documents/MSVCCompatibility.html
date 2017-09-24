@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>MSVC compatibility &mdash; Clang 4 documentation</title>
-    
+    <title>MSVC compatibility &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="ThinLTO" href="ThinLTO.html" />
     <link rel="prev" title="Modules" href="Modules.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>MSVC compatibility</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -57,26 +56,26 @@
 MSVC.  There are multiple dimensions to compatibility.</p>
 <p>First, Clang attempts to be ABI-compatible, meaning that Clang-compiled code
 should be able to link against MSVC-compiled code successfully.  However, C++
-ABIs are particularly large and complicated, and Clang&#8217;s support for MSVC&#8217;s C++
-ABI is a work in progress.  If you don&#8217;t require MSVC ABI compatibility or don&#8217;t
-want to use Microsoft&#8217;s C and C++ runtimes, the mingw32 toolchain might be a
+ABIs are particularly large and complicated, and Clang’s support for MSVC’s C++
+ABI is a work in progress.  If you don’t require MSVC ABI compatibility or don’t
+want to use Microsoft’s C and C++ runtimes, the mingw32 toolchain might be a
 better fit for your project.</p>
 <p>Second, Clang implements many MSVC language extensions, such as
 <code class="docutils literal"><span class="pre">__declspec(dllexport)</span></code> and a handful of pragmas.  These are typically
 controlled by <code class="docutils literal"><span class="pre">-fms-extensions</span></code>.</p>
 <p>Third, MSVC accepts some C++ code that Clang will typically diagnose as
 invalid.  When these constructs are present in widely included system headers,
-Clang attempts to recover and continue compiling the user&#8217;s program.  Most
+Clang attempts to recover and continue compiling the user’s program.  Most
 parsing and semantic compatibility tweaks are controlled by
 <code class="docutils literal"><span class="pre">-fms-compatibility</span></code> and <code class="docutils literal"><span class="pre">-fdelayed-template-parsing</span></code>, and they are a work
 in progress.</p>
-<p>Finally, there is <a class="reference internal" href="UsersManual.html#clang-cl"><span>clang-cl</span></a>, a driver program for clang that attempts to
-be compatible with MSVC&#8217;s cl.exe.</p>
+<p>Finally, there is <a class="reference internal" href="UsersManual.html#clang-cl"><span class="std std-ref">clang-cl</span></a>, a driver program for clang that attempts to
+be compatible with MSVC’s cl.exe.</p>
 <div class="section" id="abi-features">
 <h2>ABI features<a class="headerlink" href="#abi-features" title="Permalink to this headline">¶</a></h2>
 <p>The status of major ABI-impacting C++ features:</p>
 <ul class="simple">
-<li>Record layout: <span class="good">Complete</span>.  We&#8217;ve tested this with a fuzzer and have
+<li>Record layout: <span class="good">Complete</span>.  We’ve tested this with a fuzzer and have
 fixed all known bugs.</li>
 <li>Class inheritance: <span class="good">Mostly complete</span>.  This covers all of the standard
 OO features you would expect: virtual method inheritance, multiple
@@ -99,7 +98,7 @@ base class</a>.  Clang does not yet support this.</li>
 </ul>
 <ul class="simple">
 <li>Debug info: <span class="good">Mostly complete</span>.  Clang emits relatively complete CodeView
-debug information if <code class="docutils literal"><span class="pre">/Z7</span></code> or <code class="docutils literal"><span class="pre">/Zi</span></code> is passed. Microsoft&#8217;s link.exe will
+debug information if <code class="docutils literal"><span class="pre">/Z7</span></code> or <code class="docutils literal"><span class="pre">/Zi</span></code> is passed. Microsoft’s link.exe will
 transform the CodeView debug information into a PDB that works in Windows
 debuggers and other tools that consume PDB files like ETW. Work to teach lld
 about CodeView and PDBs is ongoing.</li>
@@ -124,9 +123,9 @@ added support for thread-safe initialization of such variables by taking an
 ABI break.
 We are ABI compatible with both the MSVC 2013 and 2015 ABI for static local
 variables.</li>
-<li>Lambdas: <span class="good">Mostly complete</span>.  Clang is compatible with Microsoft&#8217;s
+<li>Lambdas: <span class="good">Mostly complete</span>.  Clang is compatible with Microsoft’s
 implementation of lambdas except for providing overloads for conversion to
-function pointer for different calling conventions.  However, Microsoft&#8217;s
+function pointer for different calling conventions.  However, Microsoft’s
 extension is non-conforming.</li>
 </ul>
 </div>
@@ -153,7 +152,7 @@ follow the normal lookup rules, but if lookup fails, it will assume that the
 user intended to find the name in a dependent base.  While parsing the
 following program, Clang will recover as if the user had written the
 commented-out code:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
 <span class="k">struct</span> <span class="nl">Foo</span> <span class="p">:</span> <span class="n">T</span> <span class="p">{</span>
   <span class="kt">void</span> <span class="n">f</span><span class="p">()</span> <span class="p">{</span>
     <span class="cm">/*typename*/</span> <span class="n">T</span><span class="o">::</span><span class="n">UnknownType</span> <span class="n">x</span> <span class="o">=</span>  <span class="cm">/*this-&gt;*/</span><span class="n">unknownMember</span><span class="p">;</span>
@@ -184,8 +183,8 @@ apps, but they should be addressed soon.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

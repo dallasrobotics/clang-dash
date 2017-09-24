@@ -1,37 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Block Implementation Specification &mdash; Clang 4 documentation</title>
-    
+    <title>Block Implementation Specification &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
-    <link rel="up" title="Clang Language Extensions" href="LanguageExtensions.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Objective-C Automatic Reference Counting (ARC)" href="AutomaticReferenceCounting.html" />
     <link rel="prev" title="Language Specification for Blocks" href="BlockLanguageSpec.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>Block Implementation Specification</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -91,7 +89,7 @@
 <li>2008/10/1 - revise block layout to use a <code class="docutils literal"><span class="pre">static</span></code> descriptor structure.</li>
 <li>2008/10/6 - revise block layout to use an unsigned long int flags.</li>
 <li>2008/10/28 - specify use of <code class="docutils literal"><span class="pre">_Block_object_assign</span></code> and
-<code class="docutils literal"><span class="pre">_Block_object_dispose</span></code> for all &#8220;Object&#8221; types in helper functions.</li>
+<code class="docutils literal"><span class="pre">_Block_object_dispose</span></code> for all “Object” types in helper functions.</li>
 <li>2008/10/30 - revise new layout to have invoke function in same place.</li>
 <li>2008/10/30 - add <code class="docutils literal"><span class="pre">__weak</span></code> support.</li>
 <li>2010/3/16 - rev for stret return, signature field.</li>
@@ -110,7 +108,7 @@ attempt to use this ABI on systems prior to SnowLeopard is undefined.</p>
 <h2><a class="toc-backref" href="#id2">High Level</a><a class="headerlink" href="#high-level" title="Permalink to this headline">¶</a></h2>
 <p>The ABI of <code class="docutils literal"><span class="pre">Blocks</span></code> consist of their layout and the runtime functions required
 by the compiler.  A <code class="docutils literal"><span class="pre">Block</span></code> consists of a structure of the following form:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">Block_literal_1</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">Block_literal_1</span> <span class="p">{</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span> <span class="c1">// initialized to &amp;_NSConcreteStackBlock or &amp;_NSConcreteGlobalBlock</span>
     <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">reserved</span><span class="p">;</span>
@@ -129,7 +127,7 @@ by the compiler.  A <code class="docutils literal"><span class="pre">Block</span
 </pre></div>
 </div>
 <p>The following flags bits are in use thusly for a possible ABI.2010.3.16:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">enum</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="p">{</span>
     <span class="n">BLOCK_HAS_COPY_DISPOSE</span> <span class="o">=</span>  <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">25</span><span class="p">),</span>
     <span class="n">BLOCK_HAS_CTOR</span> <span class="o">=</span>          <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">26</span><span class="p">),</span> <span class="c1">// helpers have C++ code</span>
     <span class="n">BLOCK_IS_GLOBAL</span> <span class="o">=</span>         <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">28</span><span class="p">),</span>
@@ -143,7 +141,7 @@ it had been a transitional marker that did not get deleted after the
 transition. This bit is now paired with (1&lt;&lt;30), and represented as the pair
 (3&lt;&lt;30), for the following combinations of valid bit settings, and their
 meanings:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">switch</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">3</span><span class="o">&lt;&lt;</span><span class="mi">29</span><span class="p">))</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">switch</span> <span class="p">(</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">3</span><span class="o">&lt;&lt;</span><span class="mi">29</span><span class="p">))</span> <span class="p">{</span>
   <span class="k">case</span> <span class="p">(</span><span class="mi">0</span><span class="o">&lt;&lt;</span><span class="mi">29</span><span class="p">)</span><span class="o">:</span>      <span class="mf">10.6</span><span class="p">.</span><span class="n">ABI</span><span class="p">,</span> <span class="n">no</span> <span class="n">signature</span> <span class="n">field</span> <span class="n">available</span>
   <span class="k">case</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">29</span><span class="p">)</span><span class="o">:</span>      <span class="mf">10.6</span><span class="p">.</span><span class="n">ABI</span><span class="p">,</span> <span class="n">no</span> <span class="n">signature</span> <span class="n">field</span> <span class="n">available</span>
   <span class="k">case</span> <span class="p">(</span><span class="mi">2</span><span class="o">&lt;&lt;</span><span class="mi">29</span><span class="p">)</span><span class="o">:</span> <span class="n">ABI</span><span class="mf">.2010.3.16</span><span class="p">,</span> <span class="n">regular</span> <span class="n">calling</span> <span class="n">convention</span><span class="p">,</span> <span class="n">presence</span> <span class="n">of</span> <span class="n">signature</span> <span class="n">field</span>
@@ -184,11 +182,11 @@ into the <code class="docutils literal"><span class="pre">Block</span></code> th
 </li>
 </ol>
 <p>As an example, the <code class="docutils literal"><span class="pre">Block</span></code> literal expression:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="o">^</span> <span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="p">}</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="o">^</span> <span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>would cause the following to be created on a 32-bit system:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">__block_literal_1</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">__block_literal_1</span> <span class="p">{</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">reserved</span><span class="p">;</span>
@@ -207,7 +205,7 @@ into the <code class="docutils literal"><span class="pre">Block</span></code> th
 </pre></div>
 </div>
 <p>and where the <code class="docutils literal"><span class="pre">Block</span></code> literal itself appears:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">__block_literal_1</span> <span class="n">_block_literal</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">__block_literal_1</span> <span class="n">_block_literal</span> <span class="o">=</span> <span class="p">{</span>
      <span class="o">&amp;</span><span class="n">_NSConcreteStackBlock</span><span class="p">,</span>
      <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">29</span><span class="p">),</span> <span class="o">&lt;</span><span class="n">uninitialized</span><span class="o">&gt;</span><span class="p">,</span>
      <span class="n">__block_invoke_1</span><span class="p">,</span>
@@ -220,7 +218,7 @@ variables, and variables marked <code class="docutils literal"><span class="pre"
 additionally be objects.</p>
 <p>When a <code class="docutils literal"><span class="pre">Block</span></code> literal expression is used as the initial value of a global
 or <code class="docutils literal"><span class="pre">static</span></code> local variable, it is initialized as follows:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">__block_literal_1</span> <span class="n">__block_literal_1</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">__block_literal_1</span> <span class="n">__block_literal_1</span> <span class="o">=</span> <span class="p">{</span>
       <span class="o">&amp;</span><span class="n">_NSConcreteGlobalBlock</span><span class="p">,</span>
       <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">28</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">29</span><span class="p">),</span> <span class="o">&lt;</span><span class="n">uninitialized</span><span class="o">&gt;</span><span class="p">,</span>
       <span class="n">__block_invoke_1</span><span class="p">,</span>
@@ -245,14 +243,14 @@ imported.</p>
 <p>Automatic storage variables not marked with <code class="docutils literal"><span class="pre">__block</span></code> are imported as
 <code class="docutils literal"><span class="pre">const</span></code> copies.</p>
 <p>The simplest example is that of importing a variable of type <code class="docutils literal"><span class="pre">int</span></code>:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
 <span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">vv</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span> <span class="o">^</span><span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;x is %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span> <span class="p">}</span>
 <span class="n">x</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
 <span class="n">vv</span><span class="p">();</span>
 </pre></div>
 </div>
 <p>which would be compiled to:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">__block_literal_2</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">__block_literal_2</span> <span class="p">{</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">reserved</span><span class="p">;</span>
@@ -272,7 +270,7 @@ imported.</p>
 </pre></div>
 </div>
 <p>and:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">__block_literal_2</span> <span class="n">__block_literal_2</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">__block_literal_2</span> <span class="n">__block_literal_2</span> <span class="o">=</span> <span class="p">{</span>
       <span class="o">&amp;</span><span class="n">_NSConcreteStackBlock</span><span class="p">,</span>
       <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">29</span><span class="p">),</span> <span class="o">&lt;</span><span class="n">uninitialized</span><span class="o">&gt;</span><span class="p">,</span>
       <span class="n">__block_invoke_2</span><span class="p">,</span>
@@ -292,9 +290,9 @@ case of when a <code class="docutils literal"><span class="pre">Block</span></co
 <code class="docutils literal"><span class="pre">copy_helper</span></code> function is passed both the existing stack based pointer and the
 pointer to the new heap version and should call back into the runtime to
 actually do the copy operation on the imported fields within the <code class="docutils literal"><span class="pre">Block</span></code>. The
-runtime functions are all described in <a class="reference internal" href="#runtimehelperfunctions"><span>Runtime Helper Functions</span></a>.</p>
+runtime functions are all described in <a class="reference internal" href="#runtimehelperfunctions"><span class="std std-ref">Runtime Helper Functions</span></a>.</p>
 <p>A quick example:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">existingBlock</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span> <span class="p">...;</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">existingBlock</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span> <span class="p">...;</span>
 <span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">vv</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span> <span class="o">^</span><span class="p">{</span> <span class="n">existingBlock</span><span class="p">();</span> <span class="p">}</span>
 <span class="n">vv</span><span class="p">();</span>
 
@@ -338,7 +336,7 @@ runtime functions are all described in <a class="reference internal" href="#runt
 </pre></div>
 </div>
 <p>and where said <code class="docutils literal"><span class="pre">Block</span></code> is used:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">__block_literal_4</span> <span class="n">_block_literal</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">__block_literal_4</span> <span class="n">_block_literal</span> <span class="o">=</span> <span class="p">{</span>
       <span class="o">&amp;</span><span class="n">_NSConcreteStackBlock</span><span class="p">,</span>
       <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">25</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">29</span><span class="p">),</span> <span class="o">&lt;</span><span class="n">uninitialized</span><span class="o">&gt;</span>
       <span class="n">__block_invoke_4</span><span class="p">,</span>
@@ -349,8 +347,8 @@ runtime functions are all described in <a class="reference internal" href="#runt
 </div>
 <div class="section" id="importing-attribute-nsobject-variables">
 <h4><a class="toc-backref" href="#id6">Importing <code class="docutils literal"><span class="pre">__attribute__((NSObject))</span></code> variables</a><a class="headerlink" href="#importing-attribute-nsobject-variables" title="Permalink to this headline">¶</a></h4>
-<p>GCC introduces <code class="docutils literal"><span class="pre">__attribute__((NSObject))</span></code> on structure pointers to mean &#8220;this
-is an object&#8221;.  This is useful because many low level data structures are
+<p>GCC introduces <code class="docutils literal"><span class="pre">__attribute__((NSObject))</span></code> on structure pointers to mean “this
+is an object”.  This is useful because many low level data structures are
 declared as opaque structure pointers, e.g. <code class="docutils literal"><span class="pre">CFStringRef</span></code>, <code class="docutils literal"><span class="pre">CFArrayRef</span></code>,
 etc.  When used from C, however, these are still really objects and are the
 second case where that requires copy and dispose helper functions to be
@@ -358,13 +356,13 @@ generated.  The copy helper functions generated by the compiler should use the
 <code class="docutils literal"><span class="pre">_Block_object_assign</span></code> runtime helper function and in the dispose helper the
 <code class="docutils literal"><span class="pre">_Block_object_dispose</span></code> runtime helper function should be called.</p>
 <p>For example, <code class="docutils literal"><span class="pre">Block</span></code> foo in the following:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">Opaque</span> <span class="o">*</span><span class="nf">__attribute__</span><span class="p">((</span><span class="n">NSObject</span><span class="p">))</span> <span class="n">objectPointer</span> <span class="o">=</span> <span class="p">...;</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">Opaque</span> <span class="o">*</span><span class="nf">__attribute__</span><span class="p">((</span><span class="n">NSObject</span><span class="p">))</span> <span class="n">objectPointer</span> <span class="o">=</span> <span class="p">...;</span>
 <span class="p">...</span>
 <span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">foo</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span> <span class="o">^</span><span class="p">{</span>  <span class="n">CFPrint</span><span class="p">(</span><span class="n">objectPointer</span><span class="p">);</span> <span class="p">};</span>
 </pre></div>
 </div>
 <p>would have the following helper functions generated:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">__block_copy_foo</span><span class="p">(</span><span class="k">struct</span> <span class="n">__block_literal_5</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="k">struct</span> <span class="n">__block_literal_5</span> <span class="o">*</span><span class="n">src</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">__block_copy_foo</span><span class="p">(</span><span class="k">struct</span> <span class="n">__block_literal_5</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="k">struct</span> <span class="n">__block_literal_5</span> <span class="o">*</span><span class="n">src</span><span class="p">)</span> <span class="p">{</span>
      <span class="n">_Block_object_assign</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dst</span><span class="o">-&gt;</span><span class="n">objectPointer</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span> <span class="n">objectPointer</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_OBJECT</span><span class="p">);</span>
 <span class="p">}</span>
 
@@ -381,7 +379,7 @@ generated.  The copy helper functions generated by the compiler should use the
 <h4><a class="toc-backref" href="#id8">Layout of <code class="docutils literal"><span class="pre">__block</span></code> marked variables</a><a class="headerlink" href="#layout-of-block-marked-variables" title="Permalink to this headline">¶</a></h4>
 <p>The compiler must embed variables that are marked <code class="docutils literal"><span class="pre">__block</span></code> in a specialized
 structure of the form:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">_block_byref_foo</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">_block_byref_foo</span> <span class="p">{</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">Block_byref</span> <span class="o">*</span><span class="n">forwarding</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>   <span class="c1">//refcount;</span>
@@ -391,12 +389,12 @@ structure of the form:</p>
 </pre></div>
 </div>
 <p>Variables of certain types require helper functions for when <code class="docutils literal"><span class="pre">Block_copy()</span></code>
-and <code class="docutils literal"><span class="pre">Block_release()</span></code> are performed upon a referencing <code class="docutils literal"><span class="pre">Block</span></code>.  At the &#8220;C&#8221;
+and <code class="docutils literal"><span class="pre">Block_release()</span></code> are performed upon a referencing <code class="docutils literal"><span class="pre">Block</span></code>.  At the “C”
 level only variables that are of type <code class="docutils literal"><span class="pre">Block</span></code> or ones that have
 <code class="docutils literal"><span class="pre">__attribute__((NSObject))</span></code> marked require helper functions.  In Objective-C
 objects require helper functions and in C++ stack based objects require helper
 functions. Variables that require helper functions use the form:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">_block_byref_foo</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">_block_byref_foo</span> <span class="p">{</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">_block_byref_foo</span> <span class="o">*</span><span class="n">forwarding</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>   <span class="c1">//refcount;</span>
@@ -425,15 +423,15 @@ or (1&lt;&lt;25) if they are.</p>
 </div>
 <div class="section" id="access-to-block-variables-from-within-its-lexical-scope">
 <h4><a class="toc-backref" href="#id9">Access to <code class="docutils literal"><span class="pre">__block</span></code> variables from within its lexical scope</a><a class="headerlink" href="#access-to-block-variables-from-within-its-lexical-scope" title="Permalink to this headline">¶</a></h4>
-<p>In order to &#8220;move&#8221; the variable to the heap upon a <code class="docutils literal"><span class="pre">copy_helper</span></code> operation the
+<p>In order to “move” the variable to the heap upon a <code class="docutils literal"><span class="pre">copy_helper</span></code> operation the
 compiler must rewrite access to such a variable to be indirect through the
 structures <code class="docutils literal"><span class="pre">forwarding</span></code> pointer.  For example:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="kt">int</span> <span class="n">__block</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">__block</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
 <span class="n">i</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>would be rewritten to be:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">_block_byref_i</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">_block_byref_i</span> <span class="p">{</span>
   <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span>
   <span class="k">struct</span> <span class="n">_block_byref_i</span> <span class="o">*</span><span class="n">forwarding</span><span class="p">;</span>
   <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>   <span class="c1">//refcount;</span>
@@ -448,12 +446,12 @@ structures <code class="docutils literal"><span class="pre">forwarding</span></c
 helper code generated must use the <code class="docutils literal"><span class="pre">_Block_object_assign</span></code> and
 <code class="docutils literal"><span class="pre">_Block_object_dispose</span></code> routines supplied by the runtime to make the
 copies. For example:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">__block</span> <span class="nf">void</span> <span class="p">(</span><span class="n">voidBlock</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span> <span class="n">blockA</span><span class="p">;</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">__block</span> <span class="nf">void</span> <span class="p">(</span><span class="n">voidBlock</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span> <span class="n">blockA</span><span class="p">;</span>
 <span class="n">voidBlock</span> <span class="o">=</span> <span class="n">blockB</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>would translate into:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">_block_byref_voidBlock</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">_block_byref_voidBlock</span> <span class="p">{</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span>
     <span class="k">struct</span> <span class="n">_block_byref_voidBlock</span> <span class="o">*</span><span class="n">forwarding</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>   <span class="c1">//refcount;</span>
@@ -474,7 +472,7 @@ copies. For example:</p>
 </pre></div>
 </div>
 <p>and:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">_block_byref_voidBlock</span> <span class="n">voidBlock</span> <span class="o">=</span> <span class="p">{(</span> <span class="p">.</span><span class="n">forwarding</span><span class="o">=&amp;</span><span class="n">voidBlock</span><span class="p">,</span> <span class="p">.</span><span class="n">flags</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">25</span><span class="p">),</span> <span class="p">.</span><span class="n">size</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">_block_byref_voidBlock</span> <span class="o">*</span><span class="p">),</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">_block_byref_voidBlock</span> <span class="n">voidBlock</span> <span class="o">=</span> <span class="p">{(</span> <span class="p">.</span><span class="n">forwarding</span><span class="o">=&amp;</span><span class="n">voidBlock</span><span class="p">,</span> <span class="p">.</span><span class="n">flags</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">25</span><span class="p">),</span> <span class="p">.</span><span class="n">size</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">_block_byref_voidBlock</span> <span class="o">*</span><span class="p">),</span>
     <span class="p">.</span><span class="n">byref_keep</span><span class="o">=</span><span class="n">_block_byref_keep_helper</span><span class="p">,</span> <span class="p">.</span><span class="n">byref_dispose</span><span class="o">=</span><span class="n">_block_byref_dispose_helper</span><span class="p">,</span>
     <span class="p">.</span><span class="n">captured_voidBlock</span><span class="o">=</span><span class="n">blockA</span> <span class="p">)};</span>
 
@@ -490,12 +488,12 @@ functions that, in turn, call back into the runtime to actually copy or release
 the <code class="docutils literal"><span class="pre">byref</span></code> data block using the functions <code class="docutils literal"><span class="pre">_Block_object_assign</span></code> and
 <code class="docutils literal"><span class="pre">_Block_object_dispose</span></code>.</p>
 <p>For example:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="kt">int</span> <span class="n">__block</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">__block</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
 <span class="n">functioncall</span><span class="p">(</span><span class="o">^</span><span class="p">{</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span> <span class="p">});</span>
 </pre></div>
 </div>
 <p>would translate to:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">_block_byref_i</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">_block_byref_i</span> <span class="p">{</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span>  <span class="c1">// set to NULL</span>
     <span class="k">struct</span> <span class="n">_block_byref_voidBlock</span> <span class="o">*</span><span class="n">forwarding</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>   <span class="c1">//refcount;</span>
@@ -538,7 +536,7 @@ the <code class="docutils literal"><span class="pre">byref</span></code> data bl
 </pre></div>
 </div>
 <p>and:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">_block_byref_i</span> <span class="n">i</span> <span class="o">=</span> <span class="p">{(</span> <span class="p">.</span><span class="n">isa</span><span class="o">=</span><span class="nb">NULL</span><span class="p">,</span> <span class="p">.</span><span class="n">forwarding</span><span class="o">=&amp;</span><span class="n">i</span><span class="p">,</span> <span class="p">.</span><span class="n">flags</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">size</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">_block_byref_i</span><span class="p">),</span> <span class="p">.</span><span class="n">captured_i</span><span class="o">=</span><span class="mi">2</span> <span class="p">)};</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">_block_byref_i</span> <span class="n">i</span> <span class="o">=</span> <span class="p">{(</span> <span class="p">.</span><span class="n">isa</span><span class="o">=</span><span class="nb">NULL</span><span class="p">,</span> <span class="p">.</span><span class="n">forwarding</span><span class="o">=&amp;</span><span class="n">i</span><span class="p">,</span> <span class="p">.</span><span class="n">flags</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">size</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">_block_byref_i</span><span class="p">),</span> <span class="p">.</span><span class="n">captured_i</span><span class="o">=</span><span class="mi">2</span> <span class="p">)};</span>
 <span class="k">struct</span> <span class="n">__block_literal_5</span> <span class="n">_block_literal</span> <span class="o">=</span> <span class="p">{</span>
       <span class="o">&amp;</span><span class="n">_NSConcreteStackBlock</span><span class="p">,</span>
       <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">25</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">29</span><span class="p">),</span> <span class="o">&lt;</span><span class="n">uninitialized</span><span class="o">&gt;</span><span class="p">,</span>
@@ -564,7 +562,7 @@ used is the garbage collected one and no further action is required.  Otherwise
 the compiler must issue a call to potentially release any heap storage for
 <code class="docutils literal"><span class="pre">__block</span></code> variables at all escapes or terminations of their scope.  The call
 should be:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">_Block_object_dispose</span><span class="p">(</span><span class="o">&amp;</span><span class="n">_block_byref_foo</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_BYREF</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">_Block_object_dispose</span><span class="p">(</span><span class="o">&amp;</span><span class="n">_block_byref_foo</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_BYREF</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -602,35 +600,35 @@ variables.  Under normal circumstances the compiler uses the Objective-C runtime
 helper support functions <code class="docutils literal"><span class="pre">objc_assign_weak</span></code> and <code class="docutils literal"><span class="pre">objc_read_weak</span></code>.  Both
 should continue to be used for all reads and writes of <code class="docutils literal"><span class="pre">__weak</span> <span class="pre">__block</span></code>
 variables:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">objc_read_weak</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="o">-&gt;</span><span class="n">byref_i</span><span class="o">-&gt;</span><span class="n">forwarding</span><span class="o">-&gt;</span><span class="n">i</span><span class="p">)</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">objc_read_weak</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="o">-&gt;</span><span class="n">byref_i</span><span class="o">-&gt;</span><span class="n">forwarding</span><span class="o">-&gt;</span><span class="n">i</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal"><span class="pre">__weak</span></code> variable is stored in a <code class="docutils literal"><span class="pre">_block_byref_foo</span></code> structure and the
 <code class="docutils literal"><span class="pre">Block</span></code> has copy and dispose helpers for this structure that call:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">_Block_object_assign</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dest</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span> <span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_WEAK</span> <span class="o">|</span> <span class="n">BLOCK_FIELD_IS_BYREF</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">_Block_object_assign</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dest</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span> <span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_WEAK</span> <span class="o">|</span> <span class="n">BLOCK_FIELD_IS_BYREF</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>and:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">_Block_object_dispose</span><span class="p">(</span><span class="n">src</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_WEAK</span> <span class="o">|</span> <span class="n">BLOCK_FIELD_IS_BYREF</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">_Block_object_dispose</span><span class="p">(</span><span class="n">src</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_WEAK</span> <span class="o">|</span> <span class="n">BLOCK_FIELD_IS_BYREF</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>In turn, the <code class="docutils literal"><span class="pre">block_byref</span></code> copy support helpers distinguish between whether
 the <code class="docutils literal"><span class="pre">__block</span></code> variable is a <code class="docutils literal"><span class="pre">Block</span></code> or not and should either call:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">_Block_object_assign</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dest</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_WEAK</span> <span class="o">|</span> <span class="n">BLOCK_FIELD_IS_OBJECT</span> <span class="o">|</span> <span class="n">BLOCK_BYREF_CALLER</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">_Block_object_assign</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dest</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_WEAK</span> <span class="o">|</span> <span class="n">BLOCK_FIELD_IS_OBJECT</span> <span class="o">|</span> <span class="n">BLOCK_BYREF_CALLER</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>for something declared as an object or:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">_Block_object_assign</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dest</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_WEAK</span> <span class="o">|</span> <span class="n">BLOCK_FIELD_IS_BLOCK</span> <span class="o">|</span> <span class="n">BLOCK_BYREF_CALLER</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">_Block_object_assign</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dest</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">_block_byref_i</span><span class="p">,</span> <span class="n">BLOCK_FIELD_IS_WEAK</span> <span class="o">|</span> <span class="n">BLOCK_FIELD_IS_BLOCK</span> <span class="o">|</span> <span class="n">BLOCK_BYREF_CALLER</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>for something declared as a <code class="docutils literal"><span class="pre">Block</span></code>.</p>
 <p>A full example follows:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">__block</span> <span class="n">__weak</span> <span class="n">id</span> <span class="n">obj</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">initialization</span> <span class="n">expression</span><span class="o">&gt;</span><span class="p">;</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">__block</span> <span class="n">__weak</span> <span class="n">id</span> <span class="n">obj</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">initialization</span> <span class="n">expression</span><span class="o">&gt;</span><span class="p">;</span>
 <span class="n">functioncall</span><span class="p">(</span><span class="o">^</span><span class="p">{</span> <span class="p">[</span><span class="n">obj</span> <span class="n">somemessage</span><span class="p">];</span> <span class="p">});</span>
 </pre></div>
 </div>
 <p>would translate to:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">_block_byref_obj</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">_block_byref_obj</span> <span class="p">{</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span>  <span class="c1">// uninitialized</span>
     <span class="k">struct</span> <span class="n">_block_byref_obj</span> <span class="o">*</span><span class="n">forwarding</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>   <span class="c1">//refcount;</span>
@@ -652,7 +650,7 @@ the <code class="docutils literal"><span class="pre">__block</span></code> varia
 </pre></div>
 </div>
 <p>for the block <code class="docutils literal"><span class="pre">byref</span></code> part and:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">struct</span> <span class="n">__block_literal_5</span> <span class="p">{</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">__block_literal_5</span> <span class="p">{</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">reserved</span><span class="p">;</span>
@@ -684,7 +682,7 @@ the <code class="docutils literal"><span class="pre">__block</span></code> varia
 </pre></div>
 </div>
 <p>and within the compound statement:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">truct</span> <span class="n">_block_byref_obj</span> <span class="n">obj</span> <span class="o">=</span> <span class="p">{(</span> <span class="p">.</span><span class="n">forwarding</span><span class="o">=&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="p">.</span><span class="n">flags</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">25</span><span class="p">),</span> <span class="p">.</span><span class="n">size</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">_block_byref_obj</span><span class="p">),</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">truct</span> <span class="n">_block_byref_obj</span> <span class="n">obj</span> <span class="o">=</span> <span class="p">{(</span> <span class="p">.</span><span class="n">forwarding</span><span class="o">=&amp;</span><span class="n">obj</span><span class="p">,</span> <span class="p">.</span><span class="n">flags</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">25</span><span class="p">),</span> <span class="p">.</span><span class="n">size</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">_block_byref_obj</span><span class="p">),</span>
                  <span class="p">.</span><span class="n">byref_keep</span><span class="o">=</span><span class="n">_block_byref_obj_keep</span><span class="p">,</span> <span class="p">.</span><span class="n">byref_dispose</span><span class="o">=</span><span class="n">_block_byref_obj_dispose</span><span class="p">,</span>
                  <span class="p">.</span><span class="n">captured_obj</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">initialization</span> <span class="n">expression</span><span class="o">&gt;</span> <span class="p">)};</span>
 
@@ -716,14 +714,14 @@ should call the destructor in the destroy routine.</p>
 <p>As an example, suppose a C++ class <code class="docutils literal"><span class="pre">FOO</span></code> existed with a copy constructor.
 Within a code block a stack version of a <code class="docutils literal"><span class="pre">FOO</span></code> object is declared and used
 within a <code class="docutils literal"><span class="pre">Block</span></code> literal expression:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="n">FOO</span> <span class="n">foo</span><span class="p">;</span>
     <span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">block</span><span class="p">)(</span><span class="kt">void</span><span class="p">)</span> <span class="o">=</span> <span class="o">^</span><span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">foo</span><span class="p">.</span><span class="n">value</span><span class="p">());</span> <span class="p">};</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>The compiler would synthesize:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">struct</span> <span class="n">__block_literal_10</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">__block_literal_10</span> <span class="p">{</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">isa</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">flags</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">reserved</span><span class="p">;</span>
@@ -753,7 +751,7 @@ within a <code class="docutils literal"><span class="pre">Block</span></code> li
 </pre></div>
 </div>
 <p>and the code would be:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="n">FOO</span> <span class="n">foo</span><span class="p">;</span>
   <span class="n">comp_ctor</span><span class="p">(</span><span class="o">&amp;</span><span class="n">foo</span><span class="p">);</span> <span class="c1">// default constructor</span>
   <span class="k">struct</span> <span class="n">__block_literal_10</span> <span class="n">_block_literal</span> <span class="o">=</span> <span class="p">{</span>
@@ -779,21 +777,21 @@ constructor based on the initial stack <code class="docutils literal"><span clas
 also set the (1&lt;&lt;26) bit in addition to the (1&lt;&lt;25) bit.  The destroy helper
 will have code to do the destructor on the object stored within the supplied
 <code class="docutils literal"><span class="pre">block_byref</span></code> heap data structure.  For example,</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">__block</span> <span class="n">FOO</span> <span class="n">blockStorageFoo</span><span class="p">;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">__block</span> <span class="n">FOO</span> <span class="n">blockStorageFoo</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>requires the normal constructor for the embedded <code class="docutils literal"><span class="pre">blockStorageFoo</span></code> object:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">FOO_ctor</span><span class="p">(</span><span class="o">&amp;</span> <span class="n">_block_byref_blockStorageFoo</span><span class="o">-&gt;</span><span class="n">blockStorageFoo</span><span class="p">);</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">FOO_ctor</span><span class="p">(</span><span class="o">&amp;</span> <span class="n">_block_byref_blockStorageFoo</span><span class="o">-&gt;</span><span class="n">blockStorageFoo</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>and at scope termination the destructor:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">FOO_dtor</span><span class="p">(</span><span class="o">&amp;</span> <span class="n">_block_byref_blockStorageFoo</span><span class="o">-&gt;</span><span class="n">blockStorageFoo</span><span class="p">);</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">FOO_dtor</span><span class="p">(</span><span class="o">&amp;</span> <span class="n">_block_byref_blockStorageFoo</span><span class="o">-&gt;</span><span class="n">blockStorageFoo</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Note that the forwarding indirection is <em>NOT</em> used.</p>
 <p>The compiler would need to generate (if used from a block literal) the following
 copy/dispose helpers:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">_block_byref_obj_keep</span><span class="p">(</span><span class="k">struct</span> <span class="n">_block_byref_blockStorageFoo</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="k">struct</span> <span class="n">_block_byref_blockStorageFoo</span> <span class="o">*</span><span class="n">src</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">_block_byref_obj_keep</span><span class="p">(</span><span class="k">struct</span> <span class="n">_block_byref_blockStorageFoo</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="k">struct</span> <span class="n">_block_byref_blockStorageFoo</span> <span class="o">*</span><span class="n">src</span><span class="p">)</span> <span class="p">{</span>
      <span class="n">FOO_ctor</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dst</span><span class="o">-&gt;</span><span class="n">blockStorageFoo</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">src</span><span class="o">-&gt;</span><span class="n">blockStorageFoo</span><span class="p">);</span>
 <span class="p">}</span>
 
@@ -817,15 +815,15 @@ copied objects with constructor/destructors.  The (1&lt;&lt;26) bit is set and
 functions are generated.</p>
 <p>The block copy helper function should, for each of the variables of the type
 mentioned above, call:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">_Block_object_assign</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dst</span><span class="o">-&gt;</span><span class="n">target</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">target</span><span class="p">,</span> <span class="n">BLOCK_FIELD_</span><span class="o">&lt;</span><span class="n">appropo</span><span class="o">&gt;</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">_Block_object_assign</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dst</span><span class="o">-&gt;</span><span class="n">target</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">target</span><span class="p">,</span> <span class="n">BLOCK_FIELD_</span><span class="o">&lt;</span><span class="n">apropos</span><span class="o">&gt;</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>in the copy helper and:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">_Block_object_dispose</span><span class="p">(</span><span class="o">-&gt;</span><span class="n">target</span><span class="p">,</span> <span class="n">BLOCK_FIELD_</span><span class="o">&lt;</span><span class="n">appropo</span><span class="o">&gt;</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">_Block_object_dispose</span><span class="p">(</span><span class="o">-&gt;</span><span class="n">target</span><span class="p">,</span> <span class="n">BLOCK_FIELD_</span><span class="o">&lt;</span><span class="n">apropos</span><span class="o">&gt;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>in the dispose helper where <code class="docutils literal"><span class="pre">&lt;appropo&gt;</span></code> is:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">enum</span> <span class="p">{</span>
+<p>in the dispose helper where <code class="docutils literal"><span class="pre">&lt;apropos&gt;</span></code> is:</p>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="p">{</span>
     <span class="n">BLOCK_FIELD_IS_OBJECT</span>   <span class="o">=</span>  <span class="mi">3</span><span class="p">,</span>  <span class="c1">// id, NSObject, __attribute__((NSObject)), block, ...</span>
     <span class="n">BLOCK_FIELD_IS_BLOCK</span>    <span class="o">=</span>  <span class="mi">7</span><span class="p">,</span>  <span class="c1">// a block variable</span>
     <span class="n">BLOCK_FIELD_IS_BYREF</span>    <span class="o">=</span>  <span class="mi">8</span><span class="p">,</span>  <span class="c1">// the on stack structure holding the __block variable</span>
@@ -844,10 +842,10 @@ and functions are generated in the same manner.</p>
 <p>Under ObjC we allow <code class="docutils literal"><span class="pre">__weak</span></code> as an attribute on <code class="docutils literal"><span class="pre">__block</span></code> variables, and
 this causes the addition of <code class="docutils literal"><span class="pre">BLOCK_FIELD_IS_WEAK</span></code> orred onto the
 <code class="docutils literal"><span class="pre">BLOCK_FIELD_IS_BYREF</span></code> flag when copying the <code class="docutils literal"><span class="pre">block_byref</span></code> structure in the
-<code class="docutils literal"><span class="pre">Block</span></code> copy helper, and onto the <code class="docutils literal"><span class="pre">BLOCK_FIELD_&lt;appropo&gt;</span></code> field within the
+<code class="docutils literal"><span class="pre">Block</span></code> copy helper, and onto the <code class="docutils literal"><span class="pre">BLOCK_FIELD_&lt;apropos&gt;</span></code> field within the
 <code class="docutils literal"><span class="pre">block_byref</span></code> copy/dispose helper calls.</p>
 <p>The prototypes, and summary, of the helper functions are:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="cm">/* Certain field types require runtime assistance when being copied to the</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="cm">/* Certain field types require runtime assistance when being copied to the</span>
 <span class="cm">   heap.  The following function is used to copy fields of types: blocks,</span>
 <span class="cm">   pointers to byref structures, and objects (including</span>
 <span class="cm">   __attribute__((NSObject)) pointers.  BLOCK_FIELD_IS_WEAK is orthogonal to</span>
@@ -870,14 +868,14 @@ this causes the addition of <code class="docutils literal"><span class="pre">BLO
 <h2><a class="toc-backref" href="#id20">Copyright</a><a class="headerlink" href="#copyright" title="Permalink to this headline">¶</a></h2>
 <p>Copyright 2008-2010 Apple, Inc.
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the &#8220;Software&#8221;), to deal
+of this software and associated documentation files (the “Software”), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:</p>
 <p>The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.</p>
-<p>THE SOFTWARE IS PROVIDED &#8220;AS IS&#8221;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -902,8 +900,8 @@ THE SOFTWARE.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

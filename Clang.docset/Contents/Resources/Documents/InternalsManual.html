@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>“Clang” CFE Internals Manual &mdash; Clang 4 documentation</title>
-    
+    <title>“Clang” CFE Internals Manual &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Driver Design &amp; Internals" href="DriverInternals.html" />
     <link rel="prev" title="Clang-Format Style Options" href="ClangFormatStyleOptions.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>“Clang” CFE Internals Manual</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -48,12 +47,12 @@
         
         
   <div class="section" id="clang-cfe-internals-manual">
-<h1>&#8220;Clang&#8221; CFE Internals Manual<a class="headerlink" href="#clang-cfe-internals-manual" title="Permalink to this headline">¶</a></h1>
+<h1>“Clang” CFE Internals Manual<a class="headerlink" href="#clang-cfe-internals-manual" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
 <li><a class="reference internal" href="#introduction" id="id3">Introduction</a></li>
 <li><a class="reference internal" href="#llvm-support-library" id="id4">LLVM Support Library</a></li>
-<li><a class="reference internal" href="#the-clang-basic-library" id="id5">The Clang &#8220;Basic&#8221; Library</a><ul>
+<li><a class="reference internal" href="#the-clang-basic-library" id="id5">The Clang “Basic” Library</a><ul>
 <li><a class="reference internal" href="#the-diagnostics-subsystem" id="id6">The Diagnostics Subsystem</a><ul>
 <li><a class="reference internal" href="#the-diagnostic-kinds-td-files" id="id7">The <code class="docutils literal"><span class="pre">Diagnostic*Kinds.td</span></code> files</a></li>
 <li><a class="reference internal" href="#the-format-string" id="id8">The Format String</a></li>
@@ -146,8 +145,8 @@ command line option processing, various containers and a system abstraction
 layer, which is used for file system access.</p>
 </div>
 <div class="section" id="the-clang-basic-library">
-<h2><a class="toc-backref" href="#id5">The Clang &#8220;Basic&#8221; Library</a><a class="headerlink" href="#the-clang-basic-library" title="Permalink to this headline">¶</a></h2>
-<p>This library certainly needs a better name.  The &#8220;basic&#8221; library contains a
+<h2><a class="toc-backref" href="#id5">The Clang “Basic” Library</a><a class="headerlink" href="#the-clang-basic-library" title="Permalink to this headline">¶</a></h2>
+<p>This library certainly needs a better name.  The “basic” library contains a
 number of low-level utilities for tracking and manipulating source buffers,
 locations within the source buffers, diagnostics, tokens, target abstraction,
 and information about the subset of the language being compiled for.</p>
@@ -164,22 +163,22 @@ some other solution.</p>
 communicates with the human.  Diagnostics are the warnings and errors produced
 when the code is incorrect or dubious.  In Clang, each diagnostic produced has
 (at the minimum) a unique ID, an English translation associated with it, a
-<a class="reference internal" href="#sourcelocation"><span>SourceLocation</span></a> to &#8220;put the caret&#8221;, and a severity
+<a class="reference internal" href="#sourcelocation"><span class="std std-ref">SourceLocation</span></a> to “put the caret”, and a severity
 (e.g., <code class="docutils literal"><span class="pre">WARNING</span></code> or <code class="docutils literal"><span class="pre">ERROR</span></code>).  They can also optionally include a number of
-arguments to the dianostic (which fill in &#8220;%0&#8220;&#8216;s in the string) as well as a
+arguments to the dianostic (which fill in “%0“‘s in the string) as well as a
 number of source ranges that related to the diagnostic.</p>
-<p>In this section, we&#8217;ll be giving examples produced by the Clang command line
-driver, but diagnostics can be <a class="reference internal" href="#diagnosticclient"><span>rendered in many different ways</span></a> depending on how the <code class="docutils literal"><span class="pre">DiagnosticClient</span></code> interface is
+<p>In this section, we’ll be giving examples produced by the Clang command line
+driver, but diagnostics can be <a class="reference internal" href="#diagnosticclient"><span class="std std-ref">rendered in many different ways</span></a> depending on how the <code class="docutils literal"><span class="pre">DiagnosticClient</span></code> interface is
 implemented.  A representative example of a diagnostic is:</p>
-<div class="highlight-text"><div class="highlight"><pre>t.c:38:15: error: invalid operands to binary expression (&#39;int *&#39; and &#39;_Complex float&#39;)
+<div class="highlight-text"><div class="highlight"><pre><span></span>t.c:38:15: error: invalid operands to binary expression (&#39;int *&#39; and &#39;_Complex float&#39;)
 P = (P-42) + Gamma*4;
     ~~~~~~ ^ ~~~~~~~
 </pre></div>
 </div>
 <p>In this example, you can see the English translation, the severity (error), you
-can see the source location (the caret (&#8220;<code class="docutils literal"><span class="pre">^</span></code>&#8221;) and file/line/column info),
-the source ranges &#8220;<code class="docutils literal"><span class="pre">~~~~</span></code>&#8221;, arguments to the diagnostic (&#8220;<code class="docutils literal"><span class="pre">int*</span></code>&#8221; and
-&#8220;<code class="docutils literal"><span class="pre">_Complex</span> <span class="pre">float</span></code>&#8221;).  You&#8217;ll have to believe me that there is a unique ID
+can see the source location (the caret (“<code class="docutils literal"><span class="pre">^</span></code>”) and file/line/column info),
+the source ranges “<code class="docutils literal"><span class="pre">~~~~</span></code>”, arguments to the diagnostic (“<code class="docutils literal"><span class="pre">int*</span></code>” and
+“<code class="docutils literal"><span class="pre">_Complex</span> <span class="pre">float</span></code>”).  You’ll have to believe me that there is a unique ID
 backing the diagnostic :).</p>
 <p>Getting all of this to happen has several steps and involves many moving
 pieces, this section describes them and talks about best practices when adding
@@ -191,7 +190,7 @@ a new diagnostic.</p>
 using it.  From this file, <strong class="program">tblgen</strong> generates the unique ID of the
 diagnostic, the severity of the diagnostic and the English translation + format
 string.</p>
-<p>There is little sanity with the naming of the unique ID&#8217;s right now.  Some
+<p>There is little sanity with the naming of the unique ID’s right now.  Some
 start with <code class="docutils literal"><span class="pre">err_</span></code>, <code class="docutils literal"><span class="pre">warn_</span></code>, <code class="docutils literal"><span class="pre">ext_</span></code> to encode the severity into the name.
 Since the enum is referenced in the C++ code that produces the diagnostic, it
 is somewhat useful for it to be reasonably short.</p>
@@ -224,7 +223,7 @@ example).</p>
 <code class="docutils literal"><span class="pre">-pedantic-errors</span></code>, it turns into <code class="docutils literal"><span class="pre">Error</span></code>.  This is used to implement
 options like <code class="docutils literal"><span class="pre">-Wunused_macros</span></code>, <code class="docutils literal"><span class="pre">-Wundef</span></code> etc.</p>
 <p>Mapping to <code class="docutils literal"><span class="pre">Fatal</span></code> should only be used for diagnostics that are considered so
-severe that error recovery won&#8217;t be able to recover sensibly from them (thus
+severe that error recovery won’t be able to recover sensibly from them (thus
 spewing a ton of bogus errors).  One example of this class of error are failure
 to <code class="docutils literal"><span class="pre">#include</span></code> a file.</p>
 </div>
@@ -234,7 +233,7 @@ to <code class="docutils literal"><span class="pre">#include</span></code> a fil
 takes the form of a string in English with markers that indicate where and how
 arguments to the diagnostic are inserted and formatted.  For example, here are
 some simple format strings:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="s">&quot;binary integer literals are an extension&quot;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="s">&quot;binary integer literals are an extension&quot;</span>
 <span class="s">&quot;format string contains &#39;</span><span class="se">\\</span><span class="s">0&#39; within the string body&quot;</span>
 <span class="s">&quot;more &#39;%%&#39; conversions than data arguments&quot;</span>
 <span class="s">&quot;invalid operands to binary expression (%0 and %1)&quot;</span>
@@ -243,43 +242,43 @@ some simple format strings:</p>
 </pre></div>
 </div>
 <p>These examples show some important points of format strings.  You can use any
-plain ASCII character in the diagnostic string except &#8220;<code class="docutils literal"><span class="pre">%</span></code>&#8221; without a
+plain ASCII character in the diagnostic string except “<code class="docutils literal"><span class="pre">%</span></code>” without a
 problem, but these are C strings, so you have to use and be aware of all the C
-escape sequences (as in the second example).  If you want to produce a &#8220;<code class="docutils literal"><span class="pre">%</span></code>&#8221;
-in the output, use the &#8220;<code class="docutils literal"><span class="pre">%%</span></code>&#8221; escape sequence, like the third diagnostic.
-Finally, Clang uses the &#8220;<code class="docutils literal"><span class="pre">%...[digit]</span></code>&#8221; sequences to specify where and how
+escape sequences (as in the second example).  If you want to produce a “<code class="docutils literal"><span class="pre">%</span></code>”
+in the output, use the “<code class="docutils literal"><span class="pre">%%</span></code>” escape sequence, like the third diagnostic.
+Finally, Clang uses the “<code class="docutils literal"><span class="pre">%...[digit]</span></code>” sequences to specify where and how
 arguments to the diagnostic are formatted.</p>
 <p>Arguments to the diagnostic are numbered according to how they are specified by
-the C++ code that <a class="reference internal" href="#internals-producing-diag"><span>produces them</span></a>, and are
+the C++ code that <a class="reference internal" href="#internals-producing-diag"><span class="std std-ref">produces them</span></a>, and are
 referenced by <code class="docutils literal"><span class="pre">%0</span></code> .. <code class="docutils literal"><span class="pre">%9</span></code>.  If you have more than 10 arguments to your
 diagnostic, you are doing something wrong :).  Unlike <code class="docutils literal"><span class="pre">printf</span></code>, there is no
 requirement that arguments to the diagnostic end up in the output in the same
-order as they are specified, you could have a format string with &#8220;<code class="docutils literal"><span class="pre">%1</span> <span class="pre">%0</span></code>&#8221;
+order as they are specified, you could have a format string with “<code class="docutils literal"><span class="pre">%1</span> <span class="pre">%0</span></code>”
 that swaps them, for example.  The text in between the percent and digit are
 formatting instructions.  If there are no instructions, the argument is just
 turned into a string and substituted in.</p>
-<p>Here are some &#8220;best practices&#8221; for writing the English format string:</p>
+<p>Here are some “best practices” for writing the English format string:</p>
 <ul class="simple">
 <li>Keep the string short.  It should ideally fit in the 80 column limit of the
 <code class="docutils literal"><span class="pre">DiagnosticKinds.td</span></code> file.  This avoids the diagnostic wrapping when
 printed, and forces you to think about the important point you are conveying
 with the diagnostic.</li>
 <li>Take advantage of location information.  The user will be able to see the
-line and location of the caret, so you don&#8217;t need to tell them that the
+line and location of the caret, so you don’t need to tell them that the
 problem is with the 4th argument to the function: just point to it.</li>
 <li>Do not capitalize the diagnostic string, and do not end it with a period.</li>
 <li>If you need to quote something in the diagnostic string, use single quotes.</li>
 </ul>
 <p>Diagnostics should never take random English strings as arguments: you
-shouldn&#8217;t use &#8220;<code class="docutils literal"><span class="pre">you</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">problem</span> <span class="pre">with</span> <span class="pre">%0</span></code>&#8221; and pass in things like &#8220;<code class="docutils literal"><span class="pre">your</span>
-<span class="pre">argument</span></code>&#8221; or &#8220;<code class="docutils literal"><span class="pre">your</span> <span class="pre">return</span> <span class="pre">value</span></code>&#8221; as arguments.  Doing this prevents
-<a class="reference internal" href="#internals-diag-translation"><span>translating</span></a> the Clang diagnostics to other
-languages (because they&#8217;ll get random English words in their otherwise
+shouldn’t use “<code class="docutils literal"><span class="pre">you</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">problem</span> <span class="pre">with</span> <span class="pre">%0</span></code>” and pass in things like “<code class="docutils literal"><span class="pre">your</span>
+<span class="pre">argument</span></code>” or “<code class="docutils literal"><span class="pre">your</span> <span class="pre">return</span> <span class="pre">value</span></code>” as arguments.  Doing this prevents
+<a class="reference internal" href="#internals-diag-translation"><span class="std std-ref">translating</span></a> the Clang diagnostics to other
+languages (because they’ll get random English words in their otherwise
 localized diagnostic).  The exceptions to this are C/C++ language keywords
 (e.g., <code class="docutils literal"><span class="pre">auto</span></code>, <code class="docutils literal"><span class="pre">const</span></code>, <code class="docutils literal"><span class="pre">mutable</span></code>, etc) and C/C++ operators (<code class="docutils literal"><span class="pre">/=</span></code>).
-Note that things like &#8220;pointer&#8221; and &#8220;reference&#8221; are not keywords.  On the other
-hand, you <em>can</em> include anything that comes from the user&#8217;s source code,
-including variable names, types, labels, etc.  The &#8220;<code class="docutils literal"><span class="pre">select</span></code>&#8221; format can be
+Note that things like “pointer” and “reference” are not keywords.  On the other
+hand, you <em>can</em> include anything that comes from the user’s source code,
+including variable names, types, labels, etc.  The “<code class="docutils literal"><span class="pre">select</span></code>” format can be
 used to achieve this sort of thing in a localizable way, see below.</p>
 </div>
 <div class="section" id="formatting-a-diagnostic-argument">
@@ -292,7 +291,7 @@ without requiring it to use a specific presentation (consider this MVC for
 Clang :).</p>
 <p>Here are the different diagnostic argument formats currently supported by
 Clang:</p>
-<p><strong>&#8220;s&#8221; format</strong></p>
+<p><strong>“s” format</strong></p>
 <dl class="docutils">
 <dt>Example:</dt>
 <dd><code class="docutils literal"><span class="pre">&quot;requires</span> <span class="pre">%1</span> <span class="pre">parameter%s1&quot;</span></code></dd>
@@ -301,11 +300,11 @@ Clang:</p>
 <dt>Description:</dt>
 <dd>This is a simple formatter for integers that is useful when producing English
 diagnostics.  When the integer is 1, it prints as nothing.  When the integer
-is not 1, it prints as &#8220;<code class="docutils literal"><span class="pre">s</span></code>&#8221;.  This allows some simple grammatical forms to
+is not 1, it prints as “<code class="docutils literal"><span class="pre">s</span></code>”.  This allows some simple grammatical forms to
 be to be handled correctly, and eliminates the need to use gross things like
 <code class="docutils literal"><span class="pre">&quot;requires</span> <span class="pre">%1</span> <span class="pre">parameter(s)&quot;</span></code>.</dd>
 </dl>
-<p><strong>&#8220;select&#8221; format</strong></p>
+<p><strong>“select” format</strong></p>
 <dl class="docutils">
 <dt>Example:</dt>
 <dd><code class="docutils literal"><span class="pre">&quot;must</span> <span class="pre">be</span> <span class="pre">a</span> <span class="pre">%select{unary|binary|unary</span> <span class="pre">or</span> <span class="pre">binary}2</span> <span class="pre">operator&quot;</span></code></dd>
@@ -316,14 +315,14 @@ be to be handled correctly, and eliminates the need to use gross things like
 into one common one, without requiring the difference to be specified as an
 English string argument.  Instead of specifying the string, the diagnostic
 gets an integer argument and the format string selects the numbered option.
-In this case, the &#8220;<code class="docutils literal"><span class="pre">%2</span></code>&#8221; value must be an integer in the range [0..2].  If
-it is 0, it prints &#8220;unary&#8221;, if it is 1 it prints &#8220;binary&#8221; if it is 2, it
-prints &#8220;unary or binary&#8221;.  This allows other language translations to
+In this case, the “<code class="docutils literal"><span class="pre">%2</span></code>” value must be an integer in the range [0..2].  If
+it is 0, it prints “unary”, if it is 1 it prints “binary” if it is 2, it
+prints “unary or binary”.  This allows other language translations to
 substitute reasonable words (or entire phrases) based on the semantics of the
 diagnostic instead of having to do things textually.  The selected string
 does undergo formatting.</dd>
 </dl>
-<p><strong>&#8220;plural&#8221; format</strong></p>
+<p><strong>“plural” format</strong></p>
 <dl class="docutils">
 <dt>Example:</dt>
 <dd><code class="docutils literal"><span class="pre">&quot;you</span> <span class="pre">have</span> <span class="pre">%1</span> <span class="pre">%plural{1:mouse|:mice}1</span> <span class="pre">connected</span> <span class="pre">to</span> <span class="pre">your</span> <span class="pre">computer&quot;</span></code></dd>
@@ -333,11 +332,11 @@ does undergo formatting.</dd>
 <dd><p class="first">This is a formatter for complex plural forms.  It is designed to handle even
 the requirements of languages with very complex plural forms, as many Baltic
 languages have.  The argument consists of a series of expression/form pairs,
-separated by &#8221;:&#8221;, where the first form whose expression evaluates to true is
+separated by “:”, where the first form whose expression evaluates to true is
 the result of the modifier.</p>
 <p>An expression can be empty, in which case it is always true.  See the example
 at the top.  Otherwise, it is a series of one or more numeric conditions,
-separated by &#8221;,&#8221;.  If any condition matches, the expression matches.  Each
+separated by “,”.  If any condition matches, the expression matches.  Each
 numeric condition can take one of three forms.</p>
 <ul class="simple">
 <li>number: A simple decimal number matches if the argument is the same as the
@@ -354,7 +353,7 @@ and ranges, but the argument is taken modulo the number first.  Example:
 as will a failure to match the argument against any expression.</p>
 </dd>
 </dl>
-<p><strong>&#8220;ordinal&#8221; format</strong></p>
+<p><strong>“ordinal” format</strong></p>
 <dl class="docutils">
 <dt>Example:</dt>
 <dd><code class="docutils literal"><span class="pre">&quot;ambiguity</span> <span class="pre">in</span> <span class="pre">%ordinal0</span> <span class="pre">argument&quot;</span></code></dd>
@@ -366,7 +365,7 @@ value <code class="docutils literal"><span class="pre">1</span></code> becomes <
 than <code class="docutils literal"><span class="pre">1</span></code> are not supported.  This formatter is currently hard-coded to use
 English ordinals.</dd>
 </dl>
-<p><strong>&#8220;objcclass&#8221; format</strong></p>
+<p><strong>“objcclass” format</strong></p>
 <dl class="docutils">
 <dt>Example:</dt>
 <dd><code class="docutils literal"><span class="pre">&quot;method</span> <span class="pre">%objcclass0</span> <span class="pre">not</span> <span class="pre">found&quot;</span></code></dd>
@@ -375,9 +374,9 @@ English ordinals.</dd>
 <dt>Description:</dt>
 <dd>This is a simple formatter that indicates the <code class="docutils literal"><span class="pre">DeclarationName</span></code> corresponds
 to an Objective-C class method selector.  As such, it prints the selector
-with a leading &#8220;<code class="docutils literal"><span class="pre">+</span></code>&#8221;.</dd>
+with a leading “<code class="docutils literal"><span class="pre">+</span></code>”.</dd>
 </dl>
-<p><strong>&#8220;objcinstance&#8221; format</strong></p>
+<p><strong>“objcinstance” format</strong></p>
 <dl class="docutils">
 <dt>Example:</dt>
 <dd><code class="docutils literal"><span class="pre">&quot;method</span> <span class="pre">%objcinstance0</span> <span class="pre">not</span> <span class="pre">found&quot;</span></code></dd>
@@ -386,9 +385,9 @@ with a leading &#8220;<code class="docutils literal"><span class="pre">+</span><
 <dt>Description:</dt>
 <dd>This is a simple formatter that indicates the <code class="docutils literal"><span class="pre">DeclarationName</span></code> corresponds
 to an Objective-C instance method selector.  As such, it prints the selector
-with a leading &#8220;<code class="docutils literal"><span class="pre">-</span></code>&#8221;.</dd>
+with a leading “<code class="docutils literal"><span class="pre">-</span></code>“.</dd>
 </dl>
-<p><strong>&#8220;q&#8221; format</strong></p>
+<p><strong>“q” format</strong></p>
 <dl class="docutils">
 <dt>Example:</dt>
 <dd><code class="docutils literal"><span class="pre">&quot;candidate</span> <span class="pre">found</span> <span class="pre">by</span> <span class="pre">name</span> <span class="pre">lookup</span> <span class="pre">is</span> <span class="pre">%q0&quot;</span></code></dd>
@@ -396,9 +395,9 @@ with a leading &#8220;<code class="docutils literal"><span class="pre">-</span><
 <dd><code class="docutils literal"><span class="pre">NamedDecl</span> <span class="pre">*</span></code></dd>
 <dt>Description:</dt>
 <dd>This formatter indicates that the fully-qualified name of the declaration
-should be printed, e.g., &#8220;<code class="docutils literal"><span class="pre">std::vector</span></code>&#8221; rather than &#8220;<code class="docutils literal"><span class="pre">vector</span></code>&#8221;.</dd>
+should be printed, e.g., “<code class="docutils literal"><span class="pre">std::vector</span></code>” rather than “<code class="docutils literal"><span class="pre">vector</span></code>”.</dd>
 </dl>
-<p><strong>&#8220;diff&#8221; format</strong></p>
+<p><strong>“diff” format</strong></p>
 <dl class="docutils">
 <dt>Example:</dt>
 <dd><code class="docutils literal"><span class="pre">&quot;no</span> <span class="pre">known</span> <span class="pre">conversion</span> <span class="pre">%diff{from</span> <span class="pre">$</span> <span class="pre">to</span> <span class="pre">$|from</span> <span class="pre">argument</span> <span class="pre">type</span> <span class="pre">to</span> <span class="pre">parameter</span> <span class="pre">type}1,2&quot;</span></code></dd>
@@ -418,20 +417,20 @@ it up on the cfe-dev mailing list.</p>
 </div>
 <div class="section" id="producing-the-diagnostic">
 <span id="internals-producing-diag"></span><h4><a class="toc-backref" href="#id10">Producing the Diagnostic</a><a class="headerlink" href="#producing-the-diagnostic" title="Permalink to this headline">¶</a></h4>
-<p>Now that you&#8217;ve created the diagnostic in the <code class="docutils literal"><span class="pre">Diagnostic*Kinds.td</span></code> file, you
+<p>Now that you’ve created the diagnostic in the <code class="docutils literal"><span class="pre">Diagnostic*Kinds.td</span></code> file, you
 need to write the code that detects the condition in question and emits the new
 diagnostic.  Various components of Clang (e.g., the preprocessor, <code class="docutils literal"><span class="pre">Sema</span></code>,
-etc.) provide a helper function named &#8220;<code class="docutils literal"><span class="pre">Diag</span></code>&#8221;.  It creates a diagnostic and
+etc.) provide a helper function named “<code class="docutils literal"><span class="pre">Diag</span></code>”.  It creates a diagnostic and
 accepts the arguments, ranges, and other information that goes along with it.</p>
 <p>For example, the binary expression error comes from code like this:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="n">various</span> <span class="n">things</span> <span class="n">that</span> <span class="n">are</span> <span class="n">bad</span><span class="p">)</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">various</span> <span class="n">things</span> <span class="n">that</span> <span class="n">are</span> <span class="n">bad</span><span class="p">)</span>
   <span class="n">Diag</span><span class="p">(</span><span class="n">Loc</span><span class="p">,</span> <span class="n">diag</span><span class="o">::</span><span class="n">err_typecheck_invalid_operands</span><span class="p">)</span>
     <span class="o">&lt;&lt;</span> <span class="n">lex</span><span class="o">-&gt;</span><span class="n">getType</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">rex</span><span class="o">-&gt;</span><span class="n">getType</span><span class="p">()</span>
     <span class="o">&lt;&lt;</span> <span class="n">lex</span><span class="o">-&gt;</span><span class="n">getSourceRange</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">rex</span><span class="o">-&gt;</span><span class="n">getSourceRange</span><span class="p">();</span>
 </pre></div>
 </div>
 <p>This shows that use of the <code class="docutils literal"><span class="pre">Diag</span></code> method: it takes a location (a
-<a class="reference internal" href="#sourcelocation"><span>SourceLocation</span></a> object) and a diagnostic enum value
+<a class="reference internal" href="#sourcelocation"><span class="std std-ref">SourceLocation</span></a> object) and a diagnostic enum value
 (which matches the name from <code class="docutils literal"><span class="pre">Diagnostic*Kinds.td</span></code>).  If the diagnostic takes
 arguments, they are specified with the <code class="docutils literal"><span class="pre">&lt;&lt;</span></code> operator: the first argument
 becomes <code class="docutils literal"><span class="pre">%0</span></code>, the second becomes <code class="docutils literal"><span class="pre">%1</span></code>, etc.  The diagnostic interface
@@ -455,13 +454,13 @@ semicolon at the end of a statement or a use of deprecated syntax that is
 easily rewritten into a more modern form.  Clang tries very hard to emit the
 diagnostic and recover gracefully in these and other cases.</p>
 <p>However, for these cases where the fix is obvious, the diagnostic can be
-annotated with a hint (referred to as a &#8220;fix-it hint&#8221;) that describes how to
+annotated with a hint (referred to as a “fix-it hint”) that describes how to
 change the code referenced by the diagnostic to fix the problem.  For example,
 it might add the missing semicolon at the end of the statement or rewrite the
 use of a deprecated construct into something more palatable.  Here is one such
 example from the C++ front end, where we warn about the right-shift operator
 changing meaning from C++98 to C++11:</p>
-<div class="highlight-text"><div class="highlight"><pre>test.cpp:3:7: warning: use of right-shift operator (&#39;&gt;&gt;&#39;) in template argument
+<div class="highlight-text"><div class="highlight"><pre><span></span>test.cpp:3:7: warning: use of right-shift operator (&#39;&gt;&gt;&#39;) in template argument
                        will require parentheses in C++11
 A&lt;100 &gt;&gt; 2&gt; *a;
       ^
@@ -472,17 +471,17 @@ A&lt;100 &gt;&gt; 2&gt; *a;
 exactly where those parentheses would be inserted into the source code.  The
 fix-it hints themselves describe what changes to make to the source code in an
 abstract manner, which the text diagnostic printer renders as a line of
-&#8220;insertions&#8221; below the caret line.  <a class="reference internal" href="#diagnosticclient"><span>Other diagnostic clients</span></a> might choose to render the code differently (e.g., as
+“insertions” below the caret line.  <a class="reference internal" href="#diagnosticclient"><span class="std std-ref">Other diagnostic clients</span></a> might choose to render the code differently (e.g., as
 markup inline) or even give the user the ability to automatically fix the
 problem.</p>
 <p>Fix-it hints on errors and warnings need to obey these rules:</p>
 <ul class="simple">
 <li>Since they are automatically applied if <code class="docutils literal"><span class="pre">-Xclang</span> <span class="pre">-fixit</span></code> is passed to the
-driver, they should only be used when it&#8217;s very likely they match the user&#8217;s
+driver, they should only be used when it’s very likely they match the user’s
 intent.</li>
 <li>Clang must recover from errors as if the fix-it had been applied.</li>
 </ul>
-<p>If a fix-it can&#8217;t obey these rules, put the fix-it on a note.  Fix-its on notes
+<p>If a fix-it can’t obey these rules, put the fix-it on a note.  Fix-its on notes
 are not applied automatically.</p>
 <p>All fix-it hints are described by the <code class="docutils literal"><span class="pre">FixItHint</span></code> class, instances of which
 should be attached to the diagnostic using the <code class="docutils literal"><span class="pre">&lt;&lt;</span></code> operator in the same way
@@ -514,14 +513,14 @@ and replaced with the given <code class="docutils literal"><span class="pre">Cod
 relevant information, Clang needs to know what to do with it.  As previously
 mentioned, the diagnostic machinery goes through some filtering to map a
 severity onto a diagnostic level, then (assuming the diagnostic is not mapped
-to &#8220;<code class="docutils literal"><span class="pre">Ignore</span></code>&#8221;) it invokes an object that implements the <code class="docutils literal"><span class="pre">DiagnosticClient</span></code>
+to “<code class="docutils literal"><span class="pre">Ignore</span></code>”) it invokes an object that implements the <code class="docutils literal"><span class="pre">DiagnosticClient</span></code>
 interface with the information.</p>
 <p>It is possible to implement this interface in many different ways.  For
 example, the normal Clang <code class="docutils literal"><span class="pre">DiagnosticClient</span></code> (named
 <code class="docutils literal"><span class="pre">TextDiagnosticPrinter</span></code>) turns the arguments into strings (according to the
 various formatting rules), prints out the file/line/column information and the
 string, then prints out the line of code, the source ranges, and the caret.
-However, this behavior isn&#8217;t required.</p>
+However, this behavior isn’t required.</p>
 <p>Another implementation of the <code class="docutils literal"><span class="pre">DiagnosticClient</span></code> interface is the
 <code class="docutils literal"><span class="pre">TextDiagnosticBuffer</span></code> class, which is used when Clang is in <code class="docutils literal"><span class="pre">-verify</span></code>
 mode.  Instead of formatting and printing out the diagnostics, this
@@ -575,20 +574,20 @@ the token and the location where the token was used (i.e., the macro
 instantiation point or the location of the <code class="docutils literal"><span class="pre">_Pragma</span></code> itself).</p>
 <p>The Clang front-end inherently depends on the location of a token being tracked
 correctly.  If it is ever incorrect, the front-end may get confused and die.
-The reason for this is that the notion of the &#8220;spelling&#8221; of a <code class="docutils literal"><span class="pre">Token</span></code> in
+The reason for this is that the notion of the “spelling” of a <code class="docutils literal"><span class="pre">Token</span></code> in
 Clang depends on being able to find the original input characters for the
-token.  This concept maps directly to the &#8220;spelling location&#8221; for the token.</p>
+token.  This concept maps directly to the “spelling location” for the token.</p>
 </div>
 <div class="section" id="sourcerange-and-charsourcerange">
 <h3><a class="toc-backref" href="#id15"><code class="docutils literal"><span class="pre">SourceRange</span></code> and <code class="docutils literal"><span class="pre">CharSourceRange</span></code></a><a class="headerlink" href="#sourcerange-and-charsourcerange" title="Permalink to this headline">¶</a></h3>
-<p>Clang represents most source ranges by [first, last], where &#8220;first&#8221; and &#8220;last&#8221;
+<p>Clang represents most source ranges by [first, last], where “first” and “last”
 each point to the beginning of their respective tokens.  For example consider
 the <code class="docutils literal"><span class="pre">SourceRange</span></code> of the following statement:</p>
-<div class="highlight-text"><div class="highlight"><pre>x = foo + bar;
+<div class="highlight-text"><div class="highlight"><pre><span></span>x = foo + bar;
 ^first    ^last
 </pre></div>
 </div>
-<p>To map from this representation to a character-based representation, the &#8220;last&#8221;
+<p>To map from this representation to a character-based representation, the “last”
 location needs to be adjusted to point to (or past) the end of that token with
 either <code class="docutils literal"><span class="pre">Lexer::MeasureTokenLength()</span></code> or <code class="docutils literal"><span class="pre">Lexer::getLocForEndOfToken()</span></code>.  For
 the rare cases where character-level source ranges information is needed we use
@@ -597,15 +596,15 @@ the <code class="docutils literal"><span class="pre">CharSourceRange</span></cod
 </div>
 <div class="section" id="the-driver-library">
 <h2><a class="toc-backref" href="#id16">The Driver Library</a><a class="headerlink" href="#the-driver-library" title="Permalink to this headline">¶</a></h2>
-<p>The clang Driver and library are documented <a class="reference internal" href="DriverInternals.html"><em>here</em></a>.</p>
+<p>The clang Driver and library are documented <a class="reference internal" href="DriverInternals.html"><span class="doc">here</span></a>.</p>
 </div>
 <div class="section" id="precompiled-headers">
 <h2><a class="toc-backref" href="#id17">Precompiled Headers</a><a class="headerlink" href="#precompiled-headers" title="Permalink to this headline">¶</a></h2>
 <p>Clang supports two implementations of precompiled headers.  The default
-implementation, precompiled headers (<a class="reference internal" href="PCHInternals.html"><em>PCH</em></a>) uses a
-serialized representation of Clang&#8217;s internal data structures, encoded with the
+implementation, precompiled headers (<a class="reference internal" href="PCHInternals.html"><span class="doc">PCH</span></a>) uses a
+serialized representation of Clang’s internal data structures, encoded with the
 <a class="reference external" href="http://llvm.org/docs/BitCodeFormat.html">LLVM bitstream format</a>.
-Pretokenized headers (<a class="reference internal" href="PTHInternals.html"><em>PTH</em></a>), on the other hand, contain a
+Pretokenized headers (<a class="reference internal" href="PTHInternals.html"><span class="doc">PTH</span></a>), on the other hand, contain a
 serialized representation of the tokens encountered when preprocessing a header
 (and anything that header includes).</p>
 </div>
@@ -622,11 +621,11 @@ interface to this library for outside clients is the large <code class="docutils
 class.  It contains the various pieces of state that are required to coherently
 read tokens out of a translation unit.</p>
 <p>The core interface to the <code class="docutils literal"><span class="pre">Preprocessor</span></code> object (once it is set up) is the
-<code class="docutils literal"><span class="pre">Preprocessor::Lex</span></code> method, which returns the next <a class="reference internal" href="#token"><span>Token</span></a> from
+<code class="docutils literal"><span class="pre">Preprocessor::Lex</span></code> method, which returns the next <a class="reference internal" href="#token"><span class="std std-ref">Token</span></a> from
 the preprocessor stream.  There are two types of token providers that the
 preprocessor is capable of reading from: a buffer lexer (provided by the
-<a class="reference internal" href="#lexer"><span>Lexer</span></a> class) and a buffered token stream (provided by the
-<a class="reference internal" href="#tokenlexer"><span>TokenLexer</span></a> class).</p>
+<a class="reference internal" href="#lexer"><span class="std std-ref">Lexer</span></a> class) and a buffered token stream (provided by the
+<a class="reference internal" href="#tokenlexer"><span class="std std-ref">TokenLexer</span></a> class).</p>
 <div class="section" id="the-token-class">
 <span id="token"></span><h3><a class="toc-backref" href="#id20">The Token class</a><a class="headerlink" href="#the-token-class" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">Token</span></code> class is used to represent a single lexed token.  Tokens are
@@ -638,93 +637,93 @@ example, macro definitions are stored as a series of tokens, and the C++
 front-end periodically needs to buffer tokens up for tentative parsing and
 various pieces of look-ahead.  As such, the size of a <code class="docutils literal"><span class="pre">Token</span></code> matters.  On a
 32-bit system, <code class="docutils literal"><span class="pre">sizeof(Token)</span></code> is currently 16 bytes.</p>
-<p>Tokens occur in two forms: <a class="reference internal" href="#annotationtoken"><span>annotation tokens</span></a> and
+<p>Tokens occur in two forms: <a class="reference internal" href="#annotationtoken"><span class="std std-ref">annotation tokens</span></a> and
 normal tokens.  Normal tokens are those returned by the lexer, annotation
 tokens represent semantic information and are produced by the parser, replacing
 normal tokens in the token stream.  Normal tokens contain the following
 information:</p>
 <ul class="simple">
-<li><strong>A SourceLocation</strong> &#8212; This indicates the location of the start of the
+<li><strong>A SourceLocation</strong> — This indicates the location of the start of the
 token.</li>
-<li><strong>A length</strong> &#8212; This stores the length of the token as stored in the
+<li><strong>A length</strong> — This stores the length of the token as stored in the
 <code class="docutils literal"><span class="pre">SourceBuffer</span></code>.  For tokens that include them, this length includes
 trigraphs and escaped newlines which are ignored by later phases of the
 compiler.  By pointing into the original source buffer, it is always possible
 to get the original spelling of a token completely accurately.</li>
-<li><strong>IdentifierInfo</strong> &#8212; If a token takes the form of an identifier, and if
+<li><strong>IdentifierInfo</strong> — If a token takes the form of an identifier, and if
 identifier lookup was enabled when the token was lexed (e.g., the lexer was
-not reading in &#8220;raw&#8221; mode) this contains a pointer to the unique hash value
+not reading in “raw” mode) this contains a pointer to the unique hash value
 for the identifier.  Because the lookup happens before keyword
-identification, this field is set even for language keywords like &#8220;<code class="docutils literal"><span class="pre">for</span></code>&#8221;.</li>
-<li><strong>TokenKind</strong> &#8212; This indicates the kind of token as classified by the
-lexer.  This includes things like <code class="docutils literal"><span class="pre">tok::starequal</span></code> (for the &#8220;<code class="docutils literal"><span class="pre">*=</span></code>&#8221;
-operator), <code class="docutils literal"><span class="pre">tok::ampamp</span></code> for the &#8220;<code class="docutils literal"><span class="pre">&amp;&amp;</span></code>&#8221; token, and keyword values (e.g.,
+identification, this field is set even for language keywords like “<code class="docutils literal"><span class="pre">for</span></code>”.</li>
+<li><strong>TokenKind</strong> — This indicates the kind of token as classified by the
+lexer.  This includes things like <code class="docutils literal"><span class="pre">tok::starequal</span></code> (for the “<code class="docutils literal"><span class="pre">*=</span></code>”
+operator), <code class="docutils literal"><span class="pre">tok::ampamp</span></code> for the “<code class="docutils literal"><span class="pre">&amp;&amp;</span></code>” token, and keyword values (e.g.,
 <code class="docutils literal"><span class="pre">tok::kw_for</span></code>) for identifiers that correspond to keywords.  Note that
 some tokens can be spelled multiple ways.  For example, C++ supports
-&#8220;operator keywords&#8221;, where things like &#8220;<code class="docutils literal"><span class="pre">and</span></code>&#8221; are treated exactly like the
-&#8220;<code class="docutils literal"><span class="pre">&amp;&amp;</span></code>&#8221; operator.  In these cases, the kind value is set to <code class="docutils literal"><span class="pre">tok::ampamp</span></code>,
-which is good for the parser, which doesn&#8217;t have to consider both forms.  For
+“operator keywords”, where things like “<code class="docutils literal"><span class="pre">and</span></code>” are treated exactly like the
+“<code class="docutils literal"><span class="pre">&amp;&amp;</span></code>” operator.  In these cases, the kind value is set to <code class="docutils literal"><span class="pre">tok::ampamp</span></code>,
+which is good for the parser, which doesn’t have to consider both forms.  For
 something that cares about which form is used (e.g., the preprocessor
-&#8220;stringize&#8221; operator) the spelling indicates the original form.</li>
-<li><strong>Flags</strong> &#8212; There are currently four flags tracked by the
+“stringize” operator) the spelling indicates the original form.</li>
+<li><strong>Flags</strong> — There are currently four flags tracked by the
 lexer/preprocessor system on a per-token basis:<ol class="arabic">
-<li><strong>StartOfLine</strong> &#8212; This was the first token that occurred on its input
+<li><strong>StartOfLine</strong> — This was the first token that occurred on its input
 source line.</li>
-<li><strong>LeadingSpace</strong> &#8212; There was a space character either immediately before
+<li><strong>LeadingSpace</strong> — There was a space character either immediately before
 the token or transitively before the token as it was expanded through a
 macro.  The definition of this flag is very closely defined by the
 stringizing requirements of the preprocessor.</li>
-<li><strong>DisableExpand</strong> &#8212; This flag is used internally to the preprocessor to
+<li><strong>DisableExpand</strong> — This flag is used internally to the preprocessor to
 represent identifier tokens which have macro expansion disabled.  This
 prevents them from being considered as candidates for macro expansion ever
 in the future.</li>
-<li><strong>NeedsCleaning</strong> &#8212; This flag is set if the original spelling for the
+<li><strong>NeedsCleaning</strong> — This flag is set if the original spelling for the
 token includes a trigraph or escaped newline.  Since this is uncommon,
 many pieces of code can fast-path on tokens that did not need cleaning.</li>
 </ol>
 </li>
 </ul>
 <p>One interesting (and somewhat unusual) aspect of normal tokens is that they
-don&#8217;t contain any semantic information about the lexed value.  For example, if
+don’t contain any semantic information about the lexed value.  For example, if
 the token was a pp-number token, we do not represent the value of the number
 that was lexed (this is left for later pieces of code to decide).
 Additionally, the lexer library has no notion of typedef names vs variable
 names: both are returned as identifiers, and the parser is left to decide
 whether a specific identifier is a typedef or a variable (tracking this
 requires scope information among other things).  The parser can do this
-translation by replacing tokens returned by the preprocessor with &#8220;Annotation
-Tokens&#8221;.</p>
+translation by replacing tokens returned by the preprocessor with “Annotation
+Tokens”.</p>
 </div>
 <div class="section" id="annotation-tokens">
 <span id="annotationtoken"></span><h3><a class="toc-backref" href="#id21">Annotation Tokens</a><a class="headerlink" href="#annotation-tokens" title="Permalink to this headline">¶</a></h3>
 <p>Annotation tokens are tokens that are synthesized by the parser and injected
-into the preprocessor&#8217;s token stream (replacing existing tokens) to record
-semantic information found by the parser.  For example, if &#8220;<code class="docutils literal"><span class="pre">foo</span></code>&#8221; is found
-to be a typedef, the &#8220;<code class="docutils literal"><span class="pre">foo</span></code>&#8221; <code class="docutils literal"><span class="pre">tok::identifier</span></code> token is replaced with an
+into the preprocessor’s token stream (replacing existing tokens) to record
+semantic information found by the parser.  For example, if “<code class="docutils literal"><span class="pre">foo</span></code>” is found
+to be a typedef, the “<code class="docutils literal"><span class="pre">foo</span></code>” <code class="docutils literal"><span class="pre">tok::identifier</span></code> token is replaced with an
 <code class="docutils literal"><span class="pre">tok::annot_typename</span></code>.  This is useful for a couple of reasons: 1) this makes
-it easy to handle qualified type names (e.g., &#8220;<code class="docutils literal"><span class="pre">foo::bar::baz&lt;42&gt;::t</span></code>&#8221;) in
-C++ as a single &#8220;token&#8221; in the parser.  2) if the parser backtracks, the
+it easy to handle qualified type names (e.g., “<code class="docutils literal"><span class="pre">foo::bar::baz&lt;42&gt;::t</span></code>”) in
+C++ as a single “token” in the parser.  2) if the parser backtracks, the
 reparse does not need to redo semantic analysis to determine whether a token
 sequence is a variable, type, template, etc.</p>
-<p>Annotation tokens are created by the parser and reinjected into the parser&#8217;s
+<p>Annotation tokens are created by the parser and reinjected into the parser’s
 token stream (when backtracking is enabled).  Because they can only exist in
-tokens that the preprocessor-proper is done with, it doesn&#8217;t need to keep
-around flags like &#8220;start of line&#8221; that the preprocessor uses to do its job.
-Additionally, an annotation token may &#8220;cover&#8221; a sequence of preprocessor tokens
-(e.g., &#8220;<code class="docutils literal"><span class="pre">a::b::c</span></code>&#8221; is five preprocessor tokens).  As such, the valid fields
+tokens that the preprocessor-proper is done with, it doesn’t need to keep
+around flags like “start of line” that the preprocessor uses to do its job.
+Additionally, an annotation token may “cover” a sequence of preprocessor tokens
+(e.g., “<code class="docutils literal"><span class="pre">a::b::c</span></code>” is five preprocessor tokens).  As such, the valid fields
 of an annotation token are different than the fields for a normal token (but
 they are multiplexed into the normal <code class="docutils literal"><span class="pre">Token</span></code> fields):</p>
 <ul class="simple">
-<li><strong>SourceLocation &#8220;Location&#8221;</strong> &#8212; The <code class="docutils literal"><span class="pre">SourceLocation</span></code> for the annotation
+<li><strong>SourceLocation “Location”</strong> — The <code class="docutils literal"><span class="pre">SourceLocation</span></code> for the annotation
 token indicates the first token replaced by the annotation token.  In the
-example above, it would be the location of the &#8220;<code class="docutils literal"><span class="pre">a</span></code>&#8221; identifier.</li>
-<li><strong>SourceLocation &#8220;AnnotationEndLoc&#8221;</strong> &#8212; This holds the location of the last
+example above, it would be the location of the “<code class="docutils literal"><span class="pre">a</span></code>” identifier.</li>
+<li><strong>SourceLocation “AnnotationEndLoc”</strong> — This holds the location of the last
 token replaced with the annotation token.  In the example above, it would be
-the location of the &#8220;<code class="docutils literal"><span class="pre">c</span></code>&#8221; identifier.</li>
-<li><strong>void* &#8220;AnnotationValue&#8221;</strong> &#8212; This contains an opaque object that the
+the location of the “<code class="docutils literal"><span class="pre">c</span></code>” identifier.</li>
+<li><strong>void* “AnnotationValue”</strong> — This contains an opaque object that the
 parser gets from <code class="docutils literal"><span class="pre">Sema</span></code>.  The parser merely preserves the information for
 <code class="docutils literal"><span class="pre">Sema</span></code> to later interpret based on the annotation token kind.</li>
-<li><strong>TokenKind &#8220;Kind&#8221;</strong> &#8212; This indicates the kind of Annotation token this is.
+<li><strong>TokenKind “Kind”</strong> — This indicates the kind of Annotation token this is.
 See below for the different valid kinds.</li>
 </ul>
 <p>Annotation tokens currently come in three kinds:</p>
@@ -734,21 +733,21 @@ typename token that is potentially qualified.  The <code class="docutils literal
 contains the <code class="docutils literal"><span class="pre">QualType</span></code> returned by <code class="docutils literal"><span class="pre">Sema::getTypeName()</span></code>, possibly with
 source location information attached.</li>
 <li><strong>tok::annot_cxxscope</strong>: This annotation token represents a C++ scope
-specifier, such as &#8220;<code class="docutils literal"><span class="pre">A::B::</span></code>&#8221;.  This corresponds to the grammar
-productions &#8220;<em>::</em>&#8221; and &#8220;<em>:: [opt] nested-name-specifier</em>&#8221;.  The
+specifier, such as “<code class="docutils literal"><span class="pre">A::B::</span></code>”.  This corresponds to the grammar
+productions “<em>::</em>” and “<em>:: [opt] nested-name-specifier</em>”.  The
 <code class="docutils literal"><span class="pre">AnnotationValue</span></code> pointer is a <code class="docutils literal"><span class="pre">NestedNameSpecifier</span> <span class="pre">*</span></code> returned by the
 <code class="docutils literal"><span class="pre">Sema::ActOnCXXGlobalScopeSpecifier</span></code> and
 <code class="docutils literal"><span class="pre">Sema::ActOnCXXNestedNameSpecifier</span></code> callbacks.</li>
 <li><strong>tok::annot_template_id</strong>: This annotation token represents a C++
-template-id such as &#8220;<code class="docutils literal"><span class="pre">foo&lt;int,</span> <span class="pre">4&gt;</span></code>&#8221;, where &#8220;<code class="docutils literal"><span class="pre">foo</span></code>&#8221; is the name of a
-template.  The <code class="docutils literal"><span class="pre">AnnotationValue</span></code> pointer is a pointer to a <code class="docutils literal"><span class="pre">malloc</span></code>&#8216;d
+template-id such as “<code class="docutils literal"><span class="pre">foo&lt;int,</span> <span class="pre">4&gt;</span></code>”, where “<code class="docutils literal"><span class="pre">foo</span></code>” is the name of a
+template.  The <code class="docutils literal"><span class="pre">AnnotationValue</span></code> pointer is a pointer to a <code class="docutils literal"><span class="pre">malloc</span></code>’d
 <code class="docutils literal"><span class="pre">TemplateIdAnnotation</span></code> object.  Depending on the context, a parsed
 template-id that names a type might become a typename annotation token (if
 all we care about is the named type, e.g., because it occurs in a type
 specifier) or might remain a template-id token (if we want to retain more
 source location information or produce a new type, e.g., in a declaration of
 a class template specialization).  template-id annotation tokens that refer
-to a type can be &#8220;upgraded&#8221; to typename annotation tokens by the parser.</li>
+to a type can be “upgraded” to typename annotation tokens by the parser.</li>
 </ol>
 <p>As mentioned above, annotation tokens are not returned by the preprocessor,
 they are formed on demand by the parser.  This means that the parser has to be
@@ -763,7 +762,7 @@ wherever the grammar indicates that a string literal can occur.</p>
 <code class="docutils literal"><span class="pre">TryAnnotateCXXScopeToken</span></code> methods to form the annotation token.  These
 methods will maximally form the specified annotation tokens and replace the
 current token with them, if applicable.  If the current tokens is not valid for
-an annotation token, it will remain an identifier or &#8220;<code class="docutils literal"><span class="pre">::</span></code>&#8221; token.</p>
+an annotation token, it will remain an identifier or “<code class="docutils literal"><span class="pre">::</span></code>” token.</p>
 </div>
 <div class="section" id="the-lexer-class">
 <span id="lexer"></span><h3><a class="toc-backref" href="#id22">The <code class="docutils literal"><span class="pre">Lexer</span></code> class</a><a class="headerlink" href="#the-lexer-class" title="Permalink to this headline">¶</a></h3>
@@ -775,18 +774,18 @@ coding as well as standard performance techniques (for example, the comment
 handling code is vectorized on X86 and PowerPC hosts).</p>
 <p>The lexer has a couple of interesting modal features:</p>
 <ul class="simple">
-<li>The lexer can operate in &#8220;raw&#8221; mode.  This mode has several features that
+<li>The lexer can operate in “raw” mode.  This mode has several features that
 make it possible to quickly lex the file (e.g., it stops identifier lookup,
-doesn&#8217;t specially handle preprocessor tokens, handles EOF differently, etc).
-This mode is used for lexing within an &#8220;<code class="docutils literal"><span class="pre">#if</span> <span class="pre">0</span></code>&#8221; block, for example.</li>
+doesn’t specially handle preprocessor tokens, handles EOF differently, etc).
+This mode is used for lexing within an “<code class="docutils literal"><span class="pre">#if</span> <span class="pre">0</span></code>” block, for example.</li>
 <li>The lexer can capture and return comments as tokens.  This is required to
 support the <code class="docutils literal"><span class="pre">-C</span></code> preprocessor mode, which passes comments through, and is
 used by the diagnostic checker to identifier expect-error annotations.</li>
 <li>The lexer can be in <code class="docutils literal"><span class="pre">ParsingFilename</span></code> mode, which happens when
 preprocessing after reading a <code class="docutils literal"><span class="pre">#include</span></code> directive.  This mode changes the
-parsing of &#8220;<code class="docutils literal"><span class="pre">&lt;</span></code>&#8221; to return an &#8220;angled string&#8221; instead of a bunch of tokens
+parsing of “<code class="docutils literal"><span class="pre">&lt;</span></code>” to return an “angled string” instead of a bunch of tokens
 for each thing within the filename.</li>
-<li>When parsing a preprocessor directive (after &#8220;<code class="docutils literal"><span class="pre">#</span></code>&#8221;) the
+<li>When parsing a preprocessor directive (after “<code class="docutils literal"><span class="pre">#</span></code>”) the
 <code class="docutils literal"><span class="pre">ParsingPreprocessorDirective</span></code> mode is entered.  This changes the parser to
 return EOD at a newline.</li>
 <li>The <code class="docutils literal"><span class="pre">Lexer</span></code> uses a <code class="docutils literal"><span class="pre">LangOptions</span></code> object to know whether trigraphs are
@@ -798,13 +797,13 @@ that are local to a lexed buffer, which change as the buffer is lexed:</p>
 <li>The <code class="docutils literal"><span class="pre">Lexer</span></code> uses <code class="docutils literal"><span class="pre">BufferPtr</span></code> to keep track of the current character being
 lexed.</li>
 <li>The <code class="docutils literal"><span class="pre">Lexer</span></code> uses <code class="docutils literal"><span class="pre">IsAtStartOfLine</span></code> to keep track of whether the next
-lexed token will start with its &#8220;start of line&#8221; bit set.</li>
-<li>The <code class="docutils literal"><span class="pre">Lexer</span></code> keeps track of the current &#8220;<code class="docutils literal"><span class="pre">#if</span></code>&#8221; directives that are active
+lexed token will start with its “start of line” bit set.</li>
+<li>The <code class="docutils literal"><span class="pre">Lexer</span></code> keeps track of the current “<code class="docutils literal"><span class="pre">#if</span></code>” directives that are active
 (which can be nested).</li>
-<li>The <code class="docutils literal"><span class="pre">Lexer</span></code> keeps track of an <a class="reference internal" href="#multipleincludeopt"><span>MultipleIncludeOpt</span></a> object, which is used to detect whether the buffer uses
-the standard &#8220;<code class="docutils literal"><span class="pre">#ifndef</span> <span class="pre">XX</span></code> / <code class="docutils literal"><span class="pre">#define</span> <span class="pre">XX</span></code>&#8221; idiom to prevent multiple
+<li>The <code class="docutils literal"><span class="pre">Lexer</span></code> keeps track of an <a class="reference internal" href="#multipleincludeopt"><span class="std std-ref">MultipleIncludeOpt</span></a> object, which is used to detect whether the buffer uses
+the standard “<code class="docutils literal"><span class="pre">#ifndef</span> <span class="pre">XX</span></code> / <code class="docutils literal"><span class="pre">#define</span> <span class="pre">XX</span></code>” idiom to prevent multiple
 inclusion.  If a buffer does, subsequent includes can be ignored if the
-&#8220;<code class="docutils literal"><span class="pre">XX</span></code>&#8221; macro is defined.</li>
+“<code class="docutils literal"><span class="pre">XX</span></code>” macro is defined.</li>
 </ul>
 </div>
 <div class="section" id="the-tokenlexer-class">
@@ -819,9 +818,9 @@ C++ parser.</p>
 <div class="section" id="the-multipleincludeopt-class">
 <span id="multipleincludeopt"></span><h3><a class="toc-backref" href="#id24">The <code class="docutils literal"><span class="pre">MultipleIncludeOpt</span></code> class</a><a class="headerlink" href="#the-multipleincludeopt-class" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">MultipleIncludeOpt</span></code> class implements a really simple little state
-machine that is used to detect the standard &#8220;<code class="docutils literal"><span class="pre">#ifndef</span> <span class="pre">XX</span></code> / <code class="docutils literal"><span class="pre">#define</span> <span class="pre">XX</span></code>&#8221;
+machine that is used to detect the standard “<code class="docutils literal"><span class="pre">#ifndef</span> <span class="pre">XX</span></code> / <code class="docutils literal"><span class="pre">#define</span> <span class="pre">XX</span></code>”
 idiom that people typically use to prevent multiple inclusion of headers.  If a
-buffer uses this idiom and is subsequently <code class="docutils literal"><span class="pre">#include</span></code>&#8216;d, the preprocessor can
+buffer uses this idiom and is subsequently <code class="docutils literal"><span class="pre">#include</span></code>’d, the preprocessor can
 simply check to see whether the guarding condition is defined or not.  If so,
 the preprocessor can completely ignore the include of the header.</p>
 </div>
@@ -832,10 +831,10 @@ the preprocessor can completely ignore the include of the header.</p>
 preprocessor and notifies a client of the parsing progress.</p>
 <p>Historically, the parser used to talk to an abstract <code class="docutils literal"><span class="pre">Action</span></code> interface that
 had virtual methods for parse events, for example <code class="docutils literal"><span class="pre">ActOnBinOp()</span></code>.  When Clang
-grew C++ support, the parser stopped supporting general <code class="docutils literal"><span class="pre">Action</span></code> clients &#8211;
-it now always talks to the <a class="reference internal" href="#sema"><span>Sema libray</span></a>.  However, the Parser
+grew C++ support, the parser stopped supporting general <code class="docutils literal"><span class="pre">Action</span></code> clients –
+it now always talks to the <a class="reference internal" href="#sema"><span class="std std-ref">Sema libray</span></a>.  However, the Parser
 still accesses AST objects only through opaque types like <code class="docutils literal"><span class="pre">ExprResult</span></code> and
-<code class="docutils literal"><span class="pre">StmtResult</span></code>.  Only <a class="reference internal" href="#sema"><span>Sema</span></a> looks at the AST node contents of these
+<code class="docutils literal"><span class="pre">StmtResult</span></code>.  Only <a class="reference internal" href="#sema"><span class="std std-ref">Sema</span></a> looks at the AST node contents of these
 wrappers.</p>
 </div>
 <div class="section" id="the-ast-library">
@@ -846,13 +845,13 @@ wrappers.</p>
 Types are accessed through the <code class="docutils literal"><span class="pre">ASTContext</span></code> class, which implicitly creates
 and uniques them as they are needed.  Types have a couple of non-obvious
 features: 1) they do not capture type qualifiers like <code class="docutils literal"><span class="pre">const</span></code> or <code class="docutils literal"><span class="pre">volatile</span></code>
-(see <a class="reference internal" href="#qualtype"><span>QualType</span></a>), and 2) they implicitly capture typedef
+(see <a class="reference internal" href="#qualtype"><span class="std std-ref">QualType</span></a>), and 2) they implicitly capture typedef
 information.  Once created, types are immutable (unlike decls).</p>
 <p>Typedefs in C make semantic analysis a bit more complex than it would be without
 them.  The issue is that we want to capture typedef information and represent it
-in the AST perfectly, but the semantics of operations need to &#8220;see through&#8221;
+in the AST perfectly, but the semantics of operations need to “see through”
 typedefs.  For example, consider this code:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">func</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">func</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">typedef</span> <span class="kt">int</span> <span class="n">foo</span><span class="p">;</span>
   <span class="n">foo</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="n">Y</span><span class="p">;</span>
   <span class="k">typedef</span> <span class="n">foo</span> <span class="o">*</span><span class="n">bar</span><span class="p">;</span>
@@ -865,7 +864,7 @@ typedefs.  For example, consider this code:</p>
 </div>
 <p>The code above is illegal, and thus we expect there to be diagnostics emitted
 on the annotated lines.  In this example, we expect to get:</p>
-<div class="highlight-text"><div class="highlight"><pre>test.c:6:1: error: indirection requires pointer operand (&#39;foo&#39; invalid)
+<div class="highlight-text"><div class="highlight"><pre><span></span>test.c:6:1: error: indirection requires pointer operand (&#39;foo&#39; invalid)
   *X; // error
   ^~
 test.c:7:1: error: indirection requires pointer operand (&#39;foo&#39; invalid)
@@ -878,13 +877,13 @@ test.c:8:1: error: indirection requires pointer operand (&#39;foo&#39; invalid)
 </div>
 <p>While this example is somewhat silly, it illustrates the point: we want to
 retain typedef information where possible, so that we can emit errors about
-&#8220;<code class="docutils literal"><span class="pre">std::string</span></code>&#8221; instead of &#8220;<code class="docutils literal"><span class="pre">std::basic_string&lt;char,</span> <span class="pre">std:...</span></code>&#8221;.  Doing this
+“<code class="docutils literal"><span class="pre">std::string</span></code>” instead of “<code class="docutils literal"><span class="pre">std::basic_string&lt;char,</span> <span class="pre">std:...</span></code>”.  Doing this
 requires properly keeping typedef information (for example, the type of <code class="docutils literal"><span class="pre">X</span></code>
-is &#8220;<code class="docutils literal"><span class="pre">foo</span></code>&#8221;, not &#8220;<code class="docutils literal"><span class="pre">int</span></code>&#8221;), and requires properly propagating it through the
-various operators (for example, the type of <code class="docutils literal"><span class="pre">*Y</span></code> is &#8220;<code class="docutils literal"><span class="pre">foo</span></code>&#8221;, not
-&#8220;<code class="docutils literal"><span class="pre">int</span></code>&#8221;).  In order to retain this information, the type of these expressions
+is “<code class="docutils literal"><span class="pre">foo</span></code>”, not “<code class="docutils literal"><span class="pre">int</span></code>”), and requires properly propagating it through the
+various operators (for example, the type of <code class="docutils literal"><span class="pre">*Y</span></code> is “<code class="docutils literal"><span class="pre">foo</span></code>”, not
+“<code class="docutils literal"><span class="pre">int</span></code>”).  In order to retain this information, the type of these expressions
 is an instance of the <code class="docutils literal"><span class="pre">TypedefType</span></code> class, which indicates that the type of
-these expressions is a typedef for &#8220;<code class="docutils literal"><span class="pre">foo</span></code>&#8221;.</p>
+these expressions is a typedef for “<code class="docutils literal"><span class="pre">foo</span></code>”.</p>
 <p>Representing types like this is great for diagnostics, because the
 user-specified type is always immediately available.  There are two problems
 with this: first, various semantic checks need to make judgements about the
@@ -895,27 +894,27 @@ canonical types.</p>
 <div class="section" id="canonical-types">
 <h4><a class="toc-backref" href="#id28">Canonical Types</a><a class="headerlink" href="#canonical-types" title="Permalink to this headline">¶</a></h4>
 <p>Every instance of the <code class="docutils literal"><span class="pre">Type</span></code> class contains a canonical type pointer.  For
-simple types with no typedefs involved (e.g., &#8220;<code class="docutils literal"><span class="pre">int</span></code>&#8221;, &#8220;<code class="docutils literal"><span class="pre">int*</span></code>&#8221;,
-&#8220;<code class="docutils literal"><span class="pre">int**</span></code>&#8221;), the type just points to itself.  For types that have a typedef
-somewhere in their structure (e.g., &#8220;<code class="docutils literal"><span class="pre">foo</span></code>&#8221;, &#8220;<code class="docutils literal"><span class="pre">foo*</span></code>&#8221;, &#8220;<code class="docutils literal"><span class="pre">foo**</span></code>&#8221;,
-&#8220;<code class="docutils literal"><span class="pre">bar</span></code>&#8221;), the canonical type pointer points to their structurally equivalent
-type without any typedefs (e.g., &#8220;<code class="docutils literal"><span class="pre">int</span></code>&#8221;, &#8220;<code class="docutils literal"><span class="pre">int*</span></code>&#8221;, &#8220;<code class="docutils literal"><span class="pre">int**</span></code>&#8221;, and
-&#8220;<code class="docutils literal"><span class="pre">int*</span></code>&#8221; respectively).</p>
+simple types with no typedefs involved (e.g., “<code class="docutils literal"><span class="pre">int</span></code>”, “<code class="docutils literal"><span class="pre">int*</span></code>”,
+“<code class="docutils literal"><span class="pre">int**</span></code>”), the type just points to itself.  For types that have a typedef
+somewhere in their structure (e.g., “<code class="docutils literal"><span class="pre">foo</span></code>”, “<code class="docutils literal"><span class="pre">foo*</span></code>”, “<code class="docutils literal"><span class="pre">foo**</span></code>”,
+“<code class="docutils literal"><span class="pre">bar</span></code>”), the canonical type pointer points to their structurally equivalent
+type without any typedefs (e.g., “<code class="docutils literal"><span class="pre">int</span></code>”, “<code class="docutils literal"><span class="pre">int*</span></code>”, “<code class="docutils literal"><span class="pre">int**</span></code>”, and
+“<code class="docutils literal"><span class="pre">int*</span></code>” respectively).</p>
 <p>This design provides a constant time operation (dereferencing the canonical type
 pointer) that gives us access to the structure of types.  For example, we can
-trivially tell that &#8220;<code class="docutils literal"><span class="pre">bar</span></code>&#8221; and &#8220;<code class="docutils literal"><span class="pre">foo*</span></code>&#8221; are the same type by dereferencing
+trivially tell that “<code class="docutils literal"><span class="pre">bar</span></code>” and “<code class="docutils literal"><span class="pre">foo*</span></code>” are the same type by dereferencing
 their canonical type pointers and doing a pointer comparison (they both point
-to the single &#8220;<code class="docutils literal"><span class="pre">int*</span></code>&#8221; type).</p>
+to the single “<code class="docutils literal"><span class="pre">int*</span></code>” type).</p>
 <p>Canonical types and typedef types bring up some complexities that must be
 carefully managed.  Specifically, the <code class="docutils literal"><span class="pre">isa</span></code>/<code class="docutils literal"><span class="pre">cast</span></code>/<code class="docutils literal"><span class="pre">dyn_cast</span></code> operators
-generally shouldn&#8217;t be used in code that is inspecting the AST.  For example,
-when type checking the indirection operator (unary &#8220;<code class="docutils literal"><span class="pre">*</span></code>&#8221; on a pointer), the
+generally shouldn’t be used in code that is inspecting the AST.  For example,
+when type checking the indirection operator (unary “<code class="docutils literal"><span class="pre">*</span></code>” on a pointer), the
 type checker must verify that the operand has a pointer type.  It would not be
-correct to check that with &#8220;<code class="docutils literal"><span class="pre">isa&lt;PointerType&gt;(SubExpr-&gt;getType())</span></code>&#8221;, because
+correct to check that with “<code class="docutils literal"><span class="pre">isa&lt;PointerType&gt;(SubExpr-&gt;getType())</span></code>”, because
 this predicate would fail if the subexpression had a typedef type.</p>
 <p>The solution to this problem are a set of helper methods on <code class="docutils literal"><span class="pre">Type</span></code>, used to
 check their properties.  In this case, it would be correct to use
-&#8220;<code class="docutils literal"><span class="pre">SubExpr-&gt;getType()-&gt;isPointerType()</span></code>&#8221; to do the check.  This predicate will
+“<code class="docutils literal"><span class="pre">SubExpr-&gt;getType()-&gt;isPointerType()</span></code>” to do the check.  This predicate will
 return true if the <em>canonical type is a pointer</em>, which is true any time the
 type is structurally a pointer type.  The only hard part here is remembering
 not to use the <code class="docutils literal"><span class="pre">isa</span></code>/<code class="docutils literal"><span class="pre">cast</span></code>/<code class="docutils literal"><span class="pre">dyn_cast</span></code> operations.</p>
@@ -926,9 +925,9 @@ type, we need to get the instance of <code class="docutils literal"><span class=
 typedef information in the program.  If the type of the expression is literally
 a <code class="docutils literal"><span class="pre">PointerType</span></code>, we can return that, otherwise we have to dig through the
 typedefs to find the pointer type.  For example, if the subexpression had type
-&#8220;<code class="docutils literal"><span class="pre">foo*</span></code>&#8221;, we could return that type as the result.  If the subexpression had
-type &#8220;<code class="docutils literal"><span class="pre">bar</span></code>&#8221;, we want to return &#8220;<code class="docutils literal"><span class="pre">foo*</span></code>&#8221; (note that we do <em>not</em> want
-&#8220;<code class="docutils literal"><span class="pre">int*</span></code>&#8221;).  In order to provide all of this, <code class="docutils literal"><span class="pre">Type</span></code> has a
+“<code class="docutils literal"><span class="pre">foo*</span></code>”, we could return that type as the result.  If the subexpression had
+type “<code class="docutils literal"><span class="pre">bar</span></code>”, we want to return “<code class="docutils literal"><span class="pre">foo*</span></code>” (note that we do <em>not</em> want
+“<code class="docutils literal"><span class="pre">int*</span></code>”).  In order to provide all of this, <code class="docutils literal"><span class="pre">Type</span></code> has a
 <code class="docutils literal"><span class="pre">getAsPointerType()</span></code> method that checks whether the type is structurally a
 <code class="docutils literal"><span class="pre">PointerType</span></code> and, if so, returns the best one.  If not, it returns a null
 pointer.</p>
@@ -942,7 +941,7 @@ sense to you :).</p>
 passed by-value and is efficient to query.  The idea of <code class="docutils literal"><span class="pre">QualType</span></code> is that it
 stores the type qualifiers (<code class="docutils literal"><span class="pre">const</span></code>, <code class="docutils literal"><span class="pre">volatile</span></code>, <code class="docutils literal"><span class="pre">restrict</span></code>, plus some
 extended qualifiers required by language extensions) separately from the types
-themselves.  <code class="docutils literal"><span class="pre">QualType</span></code> is conceptually a pair of &#8220;<code class="docutils literal"><span class="pre">Type*</span></code>&#8221; and the bits
+themselves.  <code class="docutils literal"><span class="pre">QualType</span></code> is conceptually a pair of “<code class="docutils literal"><span class="pre">Type*</span></code>” and the bits
 for these type qualifiers.</p>
 <p>By storing the type qualifiers as bits in the conceptual pair, it is extremely
 efficient to get the set of qualifiers on a <code class="docutils literal"><span class="pre">QualType</span></code> (just return the field
@@ -951,10 +950,10 @@ that sets a bit), and remove one or more type qualifiers (just return a
 <code class="docutils literal"><span class="pre">QualType</span></code> with the bitfield set to empty).</p>
 <p>Further, because the bits are stored outside of the type itself, we do not need
 to create duplicates of types with different sets of qualifiers (i.e. there is
-only a single heap allocated &#8220;<code class="docutils literal"><span class="pre">int</span></code>&#8221; type: &#8220;<code class="docutils literal"><span class="pre">const</span> <span class="pre">int</span></code>&#8221; and &#8220;<code class="docutils literal"><span class="pre">volatile</span>
-<span class="pre">const</span> <span class="pre">int</span></code>&#8221; both point to the same heap allocated &#8220;<code class="docutils literal"><span class="pre">int</span></code>&#8221; type).  This
+only a single heap allocated “<code class="docutils literal"><span class="pre">int</span></code>” type: “<code class="docutils literal"><span class="pre">const</span> <span class="pre">int</span></code>” and “<code class="docutils literal"><span class="pre">volatile</span>
+<span class="pre">const</span> <span class="pre">int</span></code>” both point to the same heap allocated “<code class="docutils literal"><span class="pre">int</span></code>” type).  This
 reduces the heap size used to represent bits and also means we do not have to
-consider qualifiers when uniquing types (<a class="reference internal" href="#type"><span>Type</span></a> does not even
+consider qualifiers when uniquing types (<a class="reference internal" href="#type"><span class="std std-ref">Type</span></a> does not even
 contain qualifiers).</p>
 <p>In practice, the two most common type qualifiers (<code class="docutils literal"><span class="pre">const</span></code> and <code class="docutils literal"><span class="pre">restrict</span></code>)
 are stored in the low bits of the pointer to the <code class="docutils literal"><span class="pre">Type</span></code> object, together with
@@ -966,16 +965,16 @@ pointer.</p>
 <span id="declarationname"></span><h3><a class="toc-backref" href="#id30">Declaration names</a><a class="headerlink" href="#declaration-names" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal"><span class="pre">DeclarationName</span></code> class represents the name of a declaration in Clang.
 Declarations in the C family of languages can take several different forms.
-Most declarations are named by simple identifiers, e.g., &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221; and &#8220;<code class="docutils literal"><span class="pre">x</span></code>&#8221; in
+Most declarations are named by simple identifiers, e.g., “<code class="docutils literal"><span class="pre">f</span></code>” and “<code class="docutils literal"><span class="pre">x</span></code>” in
 the function declaration <code class="docutils literal"><span class="pre">f(int</span> <span class="pre">x)</span></code>.  In C++, declaration names can also name
-class constructors (&#8220;<code class="docutils literal"><span class="pre">Class</span></code>&#8221; in <code class="docutils literal"><span class="pre">struct</span> <span class="pre">Class</span> <span class="pre">{</span> <span class="pre">Class();</span> <span class="pre">}</span></code>), class
-destructors (&#8220;<code class="docutils literal"><span class="pre">~Class</span></code>&#8221;), overloaded operator names (&#8220;<code class="docutils literal"><span class="pre">operator+</span></code>&#8221;), and
-conversion functions (&#8220;<code class="docutils literal"><span class="pre">operator</span> <span class="pre">void</span> <span class="pre">const</span> <span class="pre">*</span></code>&#8221;).  In Objective-C,
+class constructors (“<code class="docutils literal"><span class="pre">Class</span></code>” in <code class="docutils literal"><span class="pre">struct</span> <span class="pre">Class</span> <span class="pre">{</span> <span class="pre">Class();</span> <span class="pre">}</span></code>), class
+destructors (“<code class="docutils literal"><span class="pre">~Class</span></code>”), overloaded operator names (“<code class="docutils literal"><span class="pre">operator+</span></code>”), and
+conversion functions (“<code class="docutils literal"><span class="pre">operator</span> <span class="pre">void</span> <span class="pre">const</span> <span class="pre">*</span></code>”).  In Objective-C,
 declaration names can refer to the names of Objective-C methods, which involve
 the method name and the parameters, collectively called a <em>selector</em>, e.g.,
-&#8220;<code class="docutils literal"><span class="pre">setWidth:height:</span></code>&#8221;.  Since all of these kinds of entities &#8212; variables,
+“<code class="docutils literal"><span class="pre">setWidth:height:</span></code>”.  Since all of these kinds of entities — variables,
 functions, Objective-C methods, C++ constructors, destructors, and operators
-&#8212; are represented as subclasses of Clang&#8217;s common <code class="docutils literal"><span class="pre">NamedDecl</span></code> class,
+— are represented as subclasses of Clang’s common <code class="docutils literal"><span class="pre">NamedDecl</span></code> class,
 <code class="docutils literal"><span class="pre">DeclarationName</span></code> is designed to efficiently represent any kind of name.</p>
 <p>Given a <code class="docutils literal"><span class="pre">DeclarationName</span></code> <code class="docutils literal"><span class="pre">N</span></code>, <code class="docutils literal"><span class="pre">N.getNameKind()</span></code> will produce a value
 that describes what kind of name <code class="docutils literal"><span class="pre">N</span></code> stores.  There are 10 options (all of
@@ -996,31 +995,31 @@ selectors (which use a different structure).</div></blockquote>
 <p><code class="docutils literal"><span class="pre">CXXConstructorName</span></code></p>
 <blockquote>
 <div>The name is a C++ constructor name.  Use <code class="docutils literal"><span class="pre">N.getCXXNameType()</span></code> to retrieve
-the <a class="reference internal" href="#qualtype"><span>type</span></a> that this constructor is meant to construct.  The
+the <a class="reference internal" href="#qualtype"><span class="std std-ref">type</span></a> that this constructor is meant to construct.  The
 type is always the canonical type, since all constructors for a given type
 have the same name.</div></blockquote>
 <p><code class="docutils literal"><span class="pre">CXXDestructorName</span></code></p>
 <blockquote>
 <div>The name is a C++ destructor name.  Use <code class="docutils literal"><span class="pre">N.getCXXNameType()</span></code> to retrieve
-the <a class="reference internal" href="#qualtype"><span>type</span></a> whose destructor is being named.  This type is
+the <a class="reference internal" href="#qualtype"><span class="std std-ref">type</span></a> whose destructor is being named.  This type is
 always a canonical type.</div></blockquote>
 <p><code class="docutils literal"><span class="pre">CXXConversionFunctionName</span></code></p>
 <blockquote>
 <div>The name is a C++ conversion function.  Conversion functions are named
-according to the type they convert to, e.g., &#8220;<code class="docutils literal"><span class="pre">operator</span> <span class="pre">void</span> <span class="pre">const</span> <span class="pre">*</span></code>&#8221;.
+according to the type they convert to, e.g., “<code class="docutils literal"><span class="pre">operator</span> <span class="pre">void</span> <span class="pre">const</span> <span class="pre">*</span></code>”.
 Use <code class="docutils literal"><span class="pre">N.getCXXNameType()</span></code> to retrieve the type that this conversion function
 converts to.  This type is always a canonical type.</div></blockquote>
 <p><code class="docutils literal"><span class="pre">CXXOperatorName</span></code></p>
 <blockquote>
 <div>The name is a C++ overloaded operator name.  Overloaded operators are named
-according to their spelling, e.g., &#8220;<code class="docutils literal"><span class="pre">operator+</span></code>&#8221; or &#8220;<code class="docutils literal"><span class="pre">operator</span> <span class="pre">new</span> <span class="pre">[]</span></code>&#8221;.
+according to their spelling, e.g., “<code class="docutils literal"><span class="pre">operator+</span></code>” or “<code class="docutils literal"><span class="pre">operator</span> <span class="pre">new</span> <span class="pre">[]</span></code>”.
 Use <code class="docutils literal"><span class="pre">N.getCXXOverloadedOperator()</span></code> to retrieve the overloaded operator (a
 value of type <code class="docutils literal"><span class="pre">OverloadedOperatorKind</span></code>).</div></blockquote>
 <p><code class="docutils literal"><span class="pre">CXXLiteralOperatorName</span></code></p>
 <blockquote>
 <div>The name is a C++11 user defined literal operator.  User defined
 Literal operators are named according to the suffix they define,
-e.g., &#8220;<code class="docutils literal"><span class="pre">_foo</span></code>&#8221; for &#8220;<code class="docutils literal"><span class="pre">operator</span> <span class="pre">&quot;&quot;</span> <span class="pre">_foo</span></code>&#8221;.  Use
+e.g., “<code class="docutils literal"><span class="pre">_foo</span></code>” for “<code class="docutils literal"><span class="pre">operator</span> <span class="pre">&quot;&quot;</span> <span class="pre">_foo</span></code>”.  Use
 <code class="docutils literal"><span class="pre">N.getCXXLiteralIdentifier()</span></code> to retrieve the corresponding
 <code class="docutils literal"><span class="pre">IdentifierInfo*</span></code> pointing to the identifier.</div></blockquote>
 <p><code class="docutils literal"><span class="pre">CXXUsingDirective</span></code></p>
@@ -1030,7 +1029,7 @@ NamedDecls, in that they all have the same name, but they are
 implemented as such in order to store them in DeclContext
 effectively.</div></blockquote>
 <p><code class="docutils literal"><span class="pre">DeclarationName</span></code>s are cheap to create, copy, and compare.  They require
-only a single pointer&#8217;s worth of storage in the common cases (identifiers,
+only a single pointer’s worth of storage in the common cases (identifiers,
 zero- and one-argument Objective-C selectors) and use dense, uniqued storage
 for the other kinds of names.  Two <code class="docutils literal"><span class="pre">DeclarationName</span></code>s can be compared for
 equality (<code class="docutils literal"><span class="pre">==</span></code>, <code class="docutils literal"><span class="pre">!=</span></code>) using a simple bitwise comparison, can be ordered
@@ -1062,7 +1061,7 @@ provides several facilities common to each declaration context:</p>
 <div><code class="docutils literal"><span class="pre">DeclContext</span></code> provides two views of the declarations stored within a
 declaration context.  The source-centric view accurately represents the
 program source code as written, including multiple declarations of entities
-where present (see the section <a class="reference internal" href="#redeclarations"><span>Redeclarations and Overloads</span></a>), while the semantics-centric view represents the program
+where present (see the section <a class="reference internal" href="#redeclarations"><span class="std std-ref">Redeclarations and Overloads</span></a>), while the semantics-centric view represents the program
 semantics.  The two views are kept synchronized by semantic analysis while
 the ASTs are being constructed.</div></blockquote>
 <p>Storage of declarations within that context</p>
@@ -1092,35 +1091,35 @@ memory as well as their (de-)serialization.</div></blockquote>
 information about the context in which each declaration lives.  One can
 retrieve the <code class="docutils literal"><span class="pre">DeclContext</span></code> that contains a particular <code class="docutils literal"><span class="pre">Decl</span></code> using
 <code class="docutils literal"><span class="pre">Decl::getDeclContext</span></code>.  However, see the section
-<a class="reference internal" href="#lexicalandsemanticcontexts"><span>Lexical and Semantic Contexts</span></a> for more information about how to interpret
+<a class="reference internal" href="#lexicalandsemanticcontexts"><span class="std std-ref">Lexical and Semantic Contexts</span></a> for more information about how to interpret
 this context information.</p>
 <div class="section" id="redeclarations-and-overloads">
 <span id="redeclarations"></span><h4><a class="toc-backref" href="#id32">Redeclarations and Overloads</a><a class="headerlink" href="#redeclarations-and-overloads" title="Permalink to this headline">¶</a></h4>
 <p>Within a translation unit, it is common for an entity to be declared several
-times.  For example, we might declare a function &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221; and then later
+times.  For example, we might declare a function “<code class="docutils literal"><span class="pre">f</span></code>” and then later
 re-declare it as part of an inlined definition:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="mi">1</span><span class="p">);</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="mi">1</span><span class="p">);</span>
 
 <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">z</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ...  */</span> <span class="p">}</span>
 </pre></div>
 </div>
-<p>The representation of &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221; differs in the source-centric and
+<p>The representation of “<code class="docutils literal"><span class="pre">f</span></code>” differs in the source-centric and
 semantics-centric views of a declaration context.  In the source-centric view,
 all redeclarations will be present, in the order they occurred in the source
 code, making this view suitable for clients that wish to see the structure of
-the source code.  In the semantics-centric view, only the most recent &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221;
+the source code.  In the semantics-centric view, only the most recent “<code class="docutils literal"><span class="pre">f</span></code>”
 will be found by the lookup, since it effectively replaces the first
-declaration of &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221;.</p>
+declaration of “<code class="docutils literal"><span class="pre">f</span></code>”.</p>
 <p>In the semantics-centric view, overloading of functions is represented
-explicitly.  For example, given two declarations of a function &#8220;<code class="docutils literal"><span class="pre">g</span></code>&#8221; that are
+explicitly.  For example, given two declarations of a function “<code class="docutils literal"><span class="pre">g</span></code>” that are
 overloaded, e.g.,</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">g</span><span class="p">();</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">g</span><span class="p">();</span>
 <span class="kt">void</span> <span class="nf">g</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>the <code class="docutils literal"><span class="pre">DeclContext::lookup</span></code> operation will return a
 <code class="docutils literal"><span class="pre">DeclContext::lookup_result</span></code> that contains a range of iterators over
-declarations of &#8220;<code class="docutils literal"><span class="pre">g</span></code>&#8221;.  Clients that perform semantic analysis on a program
+declarations of “<code class="docutils literal"><span class="pre">g</span></code>”.  Clients that perform semantic analysis on a program
 that is not concerned with the actual source code will primarily use this
 semantics-centric view.</p>
 </div>
@@ -1133,7 +1132,7 @@ semantics-centric view.  The lexical context is accessible via
 <code class="docutils literal"><span class="pre">Decl::getLexicalDeclContext</span></code> while the semantic context is accessible via
 <code class="docutils literal"><span class="pre">Decl::getDeclContext</span></code>, both of which return <code class="docutils literal"><span class="pre">DeclContext</span></code> pointers.  For
 most declarations, the two contexts are identical.  For example:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">class</span> <span class="nc">X</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">X</span> <span class="p">{</span>
 <span class="k">public</span><span class="o">:</span>
   <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">);</span>
 <span class="p">};</span>
@@ -1142,10 +1141,10 @@ most declarations, the two contexts are identical.  For example:</p>
 <p>Here, the semantic and lexical contexts of <code class="docutils literal"><span class="pre">X::f</span></code> are the <code class="docutils literal"><span class="pre">DeclContext</span></code>
 associated with the class <code class="docutils literal"><span class="pre">X</span></code> (itself stored as a <code class="docutils literal"><span class="pre">RecordDecl</span></code> AST node).
 However, we can now define <code class="docutils literal"><span class="pre">X::f</span></code> out-of-line:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="n">X</span><span class="o">::</span><span class="n">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">17</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ...  */</span> <span class="p">}</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">X</span><span class="o">::</span><span class="n">f</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">17</span><span class="p">)</span> <span class="p">{</span> <span class="cm">/* ...  */</span> <span class="p">}</span>
 </pre></div>
 </div>
-<p>This definition of &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221; has different lexical and semantic contexts.  The
+<p>This definition of “<code class="docutils literal"><span class="pre">f</span></code>” has different lexical and semantic contexts.  The
 lexical context corresponds to the declaration context in which the actual
 declaration occurred in the source code, e.g., the translation unit containing
 <code class="docutils literal"><span class="pre">X</span></code>.  Thus, this declaration of <code class="docutils literal"><span class="pre">X::f</span></code> can be found by traversing the
@@ -1159,10 +1158,10 @@ of <code class="docutils literal"><span class="pre">X::f</span></code> (includin
 <div class="section" id="transparent-declaration-contexts">
 <h4><a class="toc-backref" href="#id34">Transparent Declaration Contexts</a><a class="headerlink" href="#transparent-declaration-contexts" title="Permalink to this headline">¶</a></h4>
 <p>In C and C++, there are several contexts in which names that are logically
-declared inside another declaration will actually &#8220;leak&#8221; out into the enclosing
+declared inside another declaration will actually “leak” out into the enclosing
 scope from the perspective of name lookup.  The most obvious instance of this
 behavior is in enumeration types, e.g.,</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">enum</span> <span class="n">Color</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">Color</span> <span class="p">{</span>
   <span class="n">Red</span><span class="p">,</span>
   <span class="n">Green</span><span class="p">,</span>
   <span class="n">Blue</span>
@@ -1174,12 +1173,12 @@ the enumerators <code class="docutils literal"><span class="pre">Red</span></cod
 declarations contained in the enumeration <code class="docutils literal"><span class="pre">Color</span></code> will yield <code class="docutils literal"><span class="pre">Red</span></code>,
 <code class="docutils literal"><span class="pre">Green</span></code>, and <code class="docutils literal"><span class="pre">Blue</span></code>.  However, outside of the scope of <code class="docutils literal"><span class="pre">Color</span></code> one can
 name the enumerator <code class="docutils literal"><span class="pre">Red</span></code> without qualifying the name, e.g.,</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">Color</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Red</span><span class="p">;</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">Color</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Red</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>There are other entities in C++ that provide similar behavior.  For example,
 linkage specifications that use curly braces:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
   <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
   <span class="kt">void</span> <span class="nf">g</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
 <span class="p">}</span>
@@ -1187,8 +1186,8 @@ linkage specifications that use curly braces:</p>
 </pre></div>
 </div>
 <p>For source-level accuracy, we treat the linkage specification and enumeration
-type as a declaration context in which its enclosed declarations (&#8220;<code class="docutils literal"><span class="pre">Red</span></code>&#8221;,
-&#8220;<code class="docutils literal"><span class="pre">Green</span></code>&#8221;, and &#8220;<code class="docutils literal"><span class="pre">Blue</span></code>&#8221;; &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221; and &#8220;<code class="docutils literal"><span class="pre">g</span></code>&#8221;) are declared.  However, these
+type as a declaration context in which its enclosed declarations (“<code class="docutils literal"><span class="pre">Red</span></code>”,
+“<code class="docutils literal"><span class="pre">Green</span></code>”, and “<code class="docutils literal"><span class="pre">Blue</span></code>”; “<code class="docutils literal"><span class="pre">f</span></code>” and “<code class="docutils literal"><span class="pre">g</span></code>”) are declared.  However, these
 declarations are visible outside of the scope of the declaration context.</p>
 <p>These language features (and several others, described below) have roughly the
 same set of requirements: declarations are declared within a particular lexical
@@ -1204,8 +1203,8 @@ first non-transparent declaration context (since transparent declaration
 contexts can be nested).</p>
 <p>The transparent <code class="docutils literal"><span class="pre">DeclContext</span></code>s are:</p>
 <ul>
-<li><p class="first">Enumerations (but not C++11 &#8220;scoped enumerations&#8221;):</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">enum</span> <span class="n">Color</span> <span class="p">{</span>
+<li><p class="first">Enumerations (but not C++11 “scoped enumerations”):</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">enum</span> <span class="n">Color</span> <span class="p">{</span>
   <span class="n">Red</span><span class="p">,</span>
   <span class="n">Green</span><span class="p">,</span>
   <span class="n">Blue</span>
@@ -1215,7 +1214,7 @@ contexts can be nested).</p>
 </div>
 </li>
 <li><p class="first">C++ linkage specifications:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
   <span class="kt">void</span> <span class="n">f</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
   <span class="kt">void</span> <span class="nf">g</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
 <span class="p">}</span>
@@ -1224,7 +1223,7 @@ contexts can be nested).</p>
 </div>
 </li>
 <li><p class="first">Anonymous unions and structs:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">struct</span> <span class="n">LookupTable</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">LookupTable</span> <span class="p">{</span>
   <span class="kt">bool</span> <span class="n">IsVector</span><span class="p">;</span>
   <span class="k">union</span> <span class="p">{</span>
     <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">Vector</span><span class="p">;</span>
@@ -1238,7 +1237,7 @@ contexts can be nested).</p>
 </div>
 </li>
 <li><p class="first">C++11 inline namespaces:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">namespace</span> <span class="n">mylib</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="n">mylib</span> <span class="p">{</span>
   <span class="kr">inline</span> <span class="k">namespace</span> <span class="n">debug</span> <span class="p">{</span>
     <span class="k">class</span> <span class="nc">X</span><span class="p">;</span>
   <span class="p">}</span>
@@ -1251,12 +1250,12 @@ contexts can be nested).</p>
 </div>
 <div class="section" id="multiply-defined-declaration-contexts">
 <span id="multideclcontext"></span><h4><a class="toc-backref" href="#id35">Multiply-Defined Declaration Contexts</a><a class="headerlink" href="#multiply-defined-declaration-contexts" title="Permalink to this headline">¶</a></h4>
-<p>C++ namespaces have the interesting &#8212; and, so far, unique &#8212; property that
+<p>C++ namespaces have the interesting — and, so far, unique — property that
 the namespace can be defined multiple times, and the declarations provided by
 each namespace definition are effectively merged (from the semantic point of
 view).  For example, the following two code snippets are semantically
 indistinguishable:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// Snippet #1:</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="c1">// Snippet #1:</span>
 <span class="k">namespace</span> <span class="n">N</span> <span class="p">{</span>
   <span class="kt">void</span> <span class="n">f</span><span class="p">();</span>
 <span class="p">}</span>
@@ -1271,14 +1270,14 @@ indistinguishable:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>In Clang&#8217;s representation, the source-centric view of declaration contexts will
+<p>In Clang’s representation, the source-centric view of declaration contexts will
 actually have two separate <code class="docutils literal"><span class="pre">NamespaceDecl</span></code> nodes in Snippet #1, each of which
-is a declaration context that contains a single declaration of &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221;.
+is a declaration context that contains a single declaration of “<code class="docutils literal"><span class="pre">f</span></code>”.
 However, the semantics-centric view provided by name lookup into the namespace
-<code class="docutils literal"><span class="pre">N</span></code> for &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221; will return a <code class="docutils literal"><span class="pre">DeclContext::lookup_result</span></code> that contains a
-range of iterators over declarations of &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221;.</p>
+<code class="docutils literal"><span class="pre">N</span></code> for “<code class="docutils literal"><span class="pre">f</span></code>” will return a <code class="docutils literal"><span class="pre">DeclContext::lookup_result</span></code> that contains a
+range of iterators over declarations of “<code class="docutils literal"><span class="pre">f</span></code>”.</p>
 <p><code class="docutils literal"><span class="pre">DeclContext</span></code> manages multiply-defined declaration contexts internally.  The
-function <code class="docutils literal"><span class="pre">DeclContext::getPrimaryContext</span></code> retrieves the &#8220;primary&#8221; context for
+function <code class="docutils literal"><span class="pre">DeclContext::getPrimaryContext</span></code> retrieves the “primary” context for
 a given <code class="docutils literal"><span class="pre">DeclContext</span></code> instance, which is the <code class="docutils literal"><span class="pre">DeclContext</span></code> responsible for
 maintaining the lookup table used for the semantics-centric view.  Given a
 DeclContext, one can obtain the set of declaration contexts that are semanticaly
@@ -1304,7 +1303,7 @@ analyses on a given function.</p>
 block is an instance of <code class="docutils literal"><span class="pre">CFGBlock</span></code>, which simply contains an ordered sequence
 of <code class="docutils literal"><span class="pre">Stmt*</span></code> (each referring to statements in the AST).  The ordering of
 statements within a block indicates unconditional flow of control from one
-statement to the next.  <a class="reference internal" href="#conditionalcontrolflow"><span>Conditional control-flow</span></a> is represented using edges between basic blocks.  The
+statement to the next.  <a class="reference internal" href="#conditionalcontrolflow"><span class="std std-ref">Conditional control-flow</span></a> is represented using edges between basic blocks.  The
 statements within a given <code class="docutils literal"><span class="pre">CFGBlock</span></code> can be traversed using the
 <code class="docutils literal"><span class="pre">CFGBlock::*iterator</span></code> interface.</p>
 <p>A <code class="docutils literal"><span class="pre">CFG</span></code> object owns the instances of <code class="docutils literal"><span class="pre">CFGBlock</span></code> within the control-flow
@@ -1335,7 +1334,7 @@ nature of the conditional control-flow between blocks.  For example, in the
 case of an if-statement, the terminator refers to the <code class="docutils literal"><span class="pre">IfStmt</span></code> object in the
 AST that represented the given branch.</p>
 <p>To illustrate, consider the following code example:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="kt">int</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">x</span><span class="o">++</span><span class="p">;</span>
@@ -1352,7 +1351,7 @@ AST that represented the given branch.</p>
 the body of <code class="docutils literal"><span class="pre">foo</span></code> is referenced by a single <code class="docutils literal"><span class="pre">Stmt*</span></code>.  We can then construct
 an instance of <code class="docutils literal"><span class="pre">CFG</span></code> representing the control-flow graph of this function
 body by single call to a static class method:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">Stmt</span> <span class="o">*</span><span class="n">FooBody</span> <span class="o">=</span> <span class="p">...</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">Stmt</span> <span class="o">*</span><span class="n">FooBody</span> <span class="o">=</span> <span class="p">...</span>
 <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">CFG</span><span class="o">&gt;</span> <span class="n">FooCFG</span> <span class="o">=</span> <span class="n">CFG</span><span class="o">::</span><span class="n">buildCFG</span><span class="p">(</span><span class="n">FooBody</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -1362,7 +1361,7 @@ visualizing CFGs.  For example, the method <code class="docutils literal"><span 
 pretty-printed version of the CFG to standard error.  This is especially useful
 when one is using a debugger such as gdb.  For example, here is the output of
 <code class="docutils literal"><span class="pre">FooCFG-&gt;dump()</span></code>:</p>
-<div class="highlight-text"><div class="highlight"><pre>[ B5 (ENTRY) ]
+<div class="highlight-text"><div class="highlight"><pre><span></span>[ B5 (ENTRY) ]
    Predecessors (0):
    Successors (1): B4
 
@@ -1424,27 +1423,27 @@ are hoisted into the actual basic block.</p>
 <p>There are several places where constants and constant folding matter a lot to
 the Clang front-end.  First, in general, we prefer the AST to retain the source
 code as close to how the user wrote it as possible.  This means that if they
-wrote &#8220;<code class="docutils literal"><span class="pre">5+4</span></code>&#8221;, we want to keep the addition and two constants in the AST, we
-don&#8217;t want to fold to &#8220;<code class="docutils literal"><span class="pre">9</span></code>&#8221;.  This means that constant folding in various
+wrote “<code class="docutils literal"><span class="pre">5+4</span></code>”, we want to keep the addition and two constants in the AST, we
+don’t want to fold to “<code class="docutils literal"><span class="pre">9</span></code>”.  This means that constant folding in various
 ways turns into a tree walk that needs to handle the various cases.</p>
 <p>However, there are places in both C and C++ that require constants to be
-folded.  For example, the C standard defines what an &#8220;integer constant
-expression&#8221; (i-c-e) is with very precise and specific requirements.  The
-language then requires i-c-e&#8217;s in a lot of places (for example, the size of a
+folded.  For example, the C standard defines what an “integer constant
+expression” (i-c-e) is with very precise and specific requirements.  The
+language then requires i-c-e’s in a lot of places (for example, the size of a
 bitfield, the value for a case statement, etc).  For these, we have to be able
 to constant fold the constants, to do semantic checks (e.g., verify bitfield
-size is non-negative and that case statements aren&#8217;t duplicated).  We aim for
+size is non-negative and that case statements aren’t duplicated).  We aim for
 Clang to be very pedantic about this, diagnosing cases when the code does not
 use an i-c-e where one is required, but accepting the code unless running with
 <code class="docutils literal"><span class="pre">-pedantic-errors</span></code>.</p>
 <p>Things get a little bit more tricky when it comes to compatibility with
 real-world source code.  Specifically, GCC has historically accepted a huge
-superset of expressions as i-c-e&#8217;s, and a lot of real world code depends on
+superset of expressions as i-c-e’s, and a lot of real world code depends on
 this unfortuate accident of history (including, e.g., the glibc system
-headers).  GCC accepts anything its &#8220;fold&#8221; optimizer is capable of reducing to
+headers).  GCC accepts anything its “fold” optimizer is capable of reducing to
 an integer constant, which means that the definition of what it accepts changes
-as its optimizer does.  One example is that GCC accepts things like &#8220;<code class="docutils literal"><span class="pre">case</span>
-<span class="pre">X-X:</span></code>&#8221; even when <code class="docutils literal"><span class="pre">X</span></code> is a variable, because it can fold this to 0.</p>
+as its optimizer does.  One example is that GCC accepts things like “<code class="docutils literal"><span class="pre">case</span>
+<span class="pre">X-X:</span></code>” even when <code class="docutils literal"><span class="pre">X</span></code> is a variable, because it can fold this to 0.</p>
 <p>Another issue are how constants interact with the extensions we support, such
 as <code class="docutils literal"><span class="pre">__builtin_constant_p</span></code>, <code class="docutils literal"><span class="pre">__builtin_inf</span></code>, <code class="docutils literal"><span class="pre">__extension__</span></code> and many
 others.  C99 obviously does not specify the semantics of any of these
@@ -1455,15 +1454,15 @@ about them.</p>
 and other clients have to be able to fold constants (e.g., to initialize global
 variables) and has to handle a superset of what C99 allows.  Further, these
 clients can benefit from extended information.  For example, we know that
-&#8220;<code class="docutils literal"><span class="pre">foo()</span> <span class="pre">||</span> <span class="pre">1</span></code>&#8221; always evaluates to <code class="docutils literal"><span class="pre">true</span></code>, but we can&#8217;t replace the
+“<code class="docutils literal"><span class="pre">foo()</span> <span class="pre">||</span> <span class="pre">1</span></code>” always evaluates to <code class="docutils literal"><span class="pre">true</span></code>, but we can’t replace the
 expression with <code class="docutils literal"><span class="pre">true</span></code> because it has side effects.</p>
 <div class="section" id="implementation-approach">
 <h4><a class="toc-backref" href="#id41">Implementation Approach</a><a class="headerlink" href="#implementation-approach" title="Permalink to this headline">¶</a></h4>
-<p>After trying several different approaches, we&#8217;ve finally converged on a design
+<p>After trying several different approaches, we’ve finally converged on a design
 (Note, at the time of this writing, not all of this has been implemented,
 consider this a design goal!).  Our basic approach is to define a single
 recursive method evaluation method (<code class="docutils literal"><span class="pre">Expr::Evaluate</span></code>), which is implemented
-in <code class="docutils literal"><span class="pre">AST/ExprConstant.cpp</span></code>.  Given an expression with &#8220;scalar&#8221; type (integer,
+in <code class="docutils literal"><span class="pre">AST/ExprConstant.cpp</span></code>.  Given an expression with “scalar” type (integer,
 fp, complex, or pointer) this method returns the following information:</p>
 <ul class="simple">
 <li>Whether the expression is an integer constant expression, a general constant
@@ -1503,12 +1502,12 @@ a pointer cast to integral type) of integral, enumeration, floating or
 complex type, or if it evaluates to the address of the first character of a
 string literal (possibly cast to some other type).  As a special case, if
 <code class="docutils literal"><span class="pre">__builtin_constant_p</span></code> is the (potentially parenthesized) condition of a
-conditional operator expression (&#8220;<code class="docutils literal"><span class="pre">?:</span></code>&#8221;), only the true side of the
+conditional operator expression (“<code class="docutils literal"><span class="pre">?:</span></code>”), only the true side of the
 conditional operator is considered, and it is evaluated with full constant
 folding.</li>
 <li><code class="docutils literal"><span class="pre">__builtin_choose_expr</span></code>: The condition is required to be an integer
-constant expression, but we accept any constant as an &#8220;extension of an
-extension&#8221;.  This only evaluates one operand depending on which way the
+constant expression, but we accept any constant as an “extension of an
+extension”.  This only evaluates one operand depending on which way the
 condition evaluates.</li>
 <li><code class="docutils literal"><span class="pre">__builtin_classify_type</span></code>: This always returns an integer constant
 expression.</li>
@@ -1524,13 +1523,13 @@ constant expressions if the argument is a string literal.</li>
 </div>
 <div class="section" id="the-sema-library">
 <span id="sema"></span><h2><a class="toc-backref" href="#id43">The Sema Library</a><a class="headerlink" href="#the-sema-library" title="Permalink to this headline">¶</a></h2>
-<p>This library is called by the <a class="reference internal" href="#parser"><span>Parser library</span></a> during parsing to
+<p>This library is called by the <a class="reference internal" href="#parser"><span class="std std-ref">Parser library</span></a> during parsing to
 do semantic analysis of the input.  For valid programs, Sema builds an AST for
 parsed constructs.</p>
 </div>
 <div class="section" id="the-codegen-library">
 <span id="codegen"></span><h2><a class="toc-backref" href="#id44">The CodeGen Library</a><a class="headerlink" href="#the-codegen-library" title="Permalink to this headline">¶</a></h2>
-<p>CodeGen takes an <a class="reference internal" href="#ast"><span>AST</span></a> as input and produces <a class="reference external" href="//llvm.org/docs/LangRef.html">LLVM IR code</a> from it.</p>
+<p>CodeGen takes an <a class="reference internal" href="#ast"><span class="std std-ref">AST</span></a> as input and produces <a class="reference external" href="//llvm.org/docs/LangRef.html">LLVM IR code</a> from it.</p>
 </div>
 <div class="section" id="how-to-change-clang">
 <h2><a class="toc-backref" href="#id45">How to change Clang</a><a class="headerlink" href="#how-to-change-clang" title="Permalink to this headline">¶</a></h2>
@@ -1647,7 +1646,7 @@ Note that this spelling is not used for declaration attributes.</td>
 <p>Attributes appertain to one or more <code class="docutils literal"><span class="pre">Decl</span></code> subjects. If the attribute attempts
 to attach to a subject that is not in the subject list, a diagnostic is issued
 automatically. Whether the diagnostic is a warning or an error depends on how
-the attribute&#8217;s <code class="docutils literal"><span class="pre">SubjectList</span></code> is defined, but the default behavior is to warn.
+the attribute’s <code class="docutils literal"><span class="pre">SubjectList</span></code> is defined, but the default behavior is to warn.
 The diagnostics displayed to the user are automatically determined based on the
 subjects in the list, but a custom diagnostic parameter can also be specified in
 the <code class="docutils literal"><span class="pre">SubjectList</span></code>. The diagnostics generated for subject list violations are
@@ -1699,7 +1698,7 @@ using reStructuredText (RST) syntax.</p>
 to ensure that there are no issues generating the documentation on the server.
 Local testing requires a fresh build of clang-tblgen. To generate the attribute
 documentation, execute the following command:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">clang</span><span class="o">-</span><span class="n">tblgen</span> <span class="o">-</span><span class="n">gen</span><span class="o">-</span><span class="n">attr</span><span class="o">-</span><span class="n">docs</span> <span class="o">-</span><span class="n">I</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">clang</span><span class="o">/</span><span class="n">include</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">clang</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">clang</span><span class="o">/</span><span class="n">Basic</span><span class="o">/</span><span class="n">Attr</span><span class="o">.</span><span class="n">td</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">clang</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">AttributeReference</span><span class="o">.</span><span class="n">rst</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">clang</span><span class="o">-</span><span class="n">tblgen</span> <span class="o">-</span><span class="n">gen</span><span class="o">-</span><span class="n">attr</span><span class="o">-</span><span class="n">docs</span> <span class="o">-</span><span class="n">I</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">clang</span><span class="o">/</span><span class="n">include</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">clang</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">clang</span><span class="o">/</span><span class="n">Basic</span><span class="o">/</span><span class="n">Attr</span><span class="o">.</span><span class="n">td</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">clang</span><span class="o">/</span><span class="n">docs</span><span class="o">/</span><span class="n">AttributeReference</span><span class="o">.</span><span class="n">rst</span>
 </pre></div>
 </div>
 <p>When testing locally, <em>do not</em> commit changes to <code class="docutils literal"><span class="pre">AttributeReference.rst</span></code>.
@@ -1713,7 +1712,7 @@ attribute. Attribute arguments specify both the parsed form and the semantic
 form of the attribute. For example, if <code class="docutils literal"><span class="pre">Args</span></code> is
 <code class="docutils literal"><span class="pre">[StringArgument&lt;&quot;Arg1&quot;&gt;,</span> <span class="pre">IntArgument&lt;&quot;Arg2&quot;&gt;]</span></code> then
 <code class="docutils literal"><span class="pre">__attribute__((myattribute(&quot;Hello&quot;,</span> <span class="pre">3)))</span></code> will be a valid use; it requires
-two arguments while parsing, and the Attr subclass&#8217; constructor for the
+two arguments while parsing, and the Attr subclass’ constructor for the
 semantic attribute will require a string and integer argument.</p>
 <p>All arguments have a name and a flag that specifies whether the argument is
 optional. The associated C++ type of the argument is determined by the argument
@@ -1730,7 +1729,7 @@ document, however a few deserve mention.</p>
 semantic form, the <code class="docutils literal"><span class="pre">HasCustomParsing</span></code> bit can be set to <code class="docutils literal"><span class="pre">1</span></code> for the class,
 and the parsing code in <a class="reference external" href="http://llvm.org/viewvc/llvm-project/cfe/trunk/lib/Parse/ParseDecl.cpp?view=markup">Parser::ParseGNUAttributeArgs()</a>
 can be updated for the special case. Note that this only applies to arguments
-with a GNU spelling &#8211; attributes with a __declspec spelling currently ignore
+with a GNU spelling – attributes with a __declspec spelling currently ignore
 this flag and are handled by <code class="docutils literal"><span class="pre">Parser::ParseMicrosoftDeclSpec</span></code>.</p>
 <p>Note that setting this member to 1 will opt out of common attribute semantic
 handling, requiring extra implementation efforts to ensure the attribute
@@ -1746,12 +1745,12 @@ representation of the attribute.</p>
 <p>The <code class="docutils literal"><span class="pre">LangOpts</span></code> field specifies a list of language options required by the
 attribute.  For instance, all of the CUDA-specific attributes specify <code class="docutils literal"><span class="pre">[CUDA]</span></code>
 for the <code class="docutils literal"><span class="pre">LangOpts</span></code> field, and when the CUDA language option is not enabled, an
-&#8220;attribute ignored&#8221; warning diagnostic is emitted. Since language options are
+“attribute ignored” warning diagnostic is emitted. Since language options are
 not table generated nodes, new language options must be created manually and
 should specify the spelling used by <code class="docutils literal"><span class="pre">LangOptions</span></code> class.</p>
 <p>Custom accessors can be generated for an attribute based on the spelling list
 for that attribute. For instance, if an attribute has two different spellings:
-&#8216;Foo&#8217; and &#8216;Bar&#8217;, accessors can be created:
+‘Foo’ and ‘Bar’, accessors can be created:
 <code class="docutils literal"><span class="pre">[Accessor&lt;&quot;isFoo&quot;,</span> <span class="pre">[GNU&lt;&quot;Foo&quot;&gt;]&gt;,</span> <span class="pre">Accessor&lt;&quot;isBar&quot;,</span> <span class="pre">[GNU&lt;&quot;Bar&quot;&gt;]&gt;]</span></code>
 These accessors will be generated on the semantic form of the attribute,
 accepting no arguments and returning a <code class="docutils literal"><span class="pre">bool</span></code>.</p>
@@ -1766,7 +1765,7 @@ attribute spelled <code class="docutils literal"><span class="pre">GNU&lt;&quot;
 requirements. To support this feature, an attribute inheriting from
 <code class="docutils literal"><span class="pre">TargetSpecificAttribute</span></code> may specify a <code class="docutils literal"><span class="pre">ParseKind</span></code> field. This field
 should be the same value between all arguments sharing a spelling, and
-corresponds to the parsed attribute&#8217;s <code class="docutils literal"><span class="pre">Kind</span></code> enumerator. This allows
+corresponds to the parsed attribute’s <code class="docutils literal"><span class="pre">Kind</span></code> enumerator. This allows
 attributes to share a parsed attribute kind, but have distinct semantic
 attribute classes. For instance, <code class="docutils literal"><span class="pre">AttributeList::AT_Interrupt</span></code> is the shared
 parsed attribute kind, but ARMInterruptAttr and MSP430InterruptAttr are the
@@ -1788,7 +1787,7 @@ semantic attribute class object, with <code class="docutils literal"><span class
 <h4><a class="toc-backref" href="#id54">Boilerplate</a><a class="headerlink" href="#boilerplate" title="Permalink to this headline">¶</a></h4>
 <p>All semantic processing of declaration attributes happens in <a class="reference external" href="http://llvm.org/viewvc/llvm-project/cfe/trunk/lib/Sema/SemaDeclAttr.cpp?view=markup">lib/Sema/SemaDeclAttr.cpp</a>,
 and generally starts in the <code class="docutils literal"><span class="pre">ProcessDeclAttribute()</span></code> function. If the
-attribute is a &#8220;simple&#8221; attribute &#8211; meaning that it requires no custom semantic
+attribute is a “simple” attribute – meaning that it requires no custom semantic
 processing aside from what is automatically  provided, add a call to
 <code class="docutils literal"><span class="pre">handleSimpleAttribute&lt;YourAttr&gt;(S,</span> <span class="pre">D,</span> <span class="pre">Attr);</span></code> to the switch statement.
 Otherwise, write a new <code class="docutils literal"><span class="pre">handleYourAttr()</span></code> function, and add that to the switch
@@ -1800,7 +1799,7 @@ parsed attributes that do not appertain to the given <code class="docutils liter
 correct minimum number of arguments are passed, etc.</p>
 <p>If the attribute adds additional warnings, define a <code class="docutils literal"><span class="pre">DiagGroup</span></code> in
 <a class="reference external" href="http://llvm.org/viewvc/llvm-project/cfe/trunk/include/clang/Basic/DiagnosticGroups.td?view=markup">include/clang/Basic/DiagnosticGroups.td</a>
-named after the attribute&#8217;s <code class="docutils literal"><span class="pre">Spelling</span></code> with &#8220;_&#8221;s replaced by &#8220;-&#8220;s. If there
+named after the attribute’s <code class="docutils literal"><span class="pre">Spelling</span></code> with “_”s replaced by “-“s. If there
 is only a single diagnostic, it is permissible to use <code class="docutils literal"><span class="pre">InGroup&lt;DiagGroup&lt;&quot;your-attribute&quot;&gt;&gt;</span></code>
 directly in <a class="reference external" href="http://llvm.org/viewvc/llvm-project/cfe/trunk/include/clang/Basic/DiagnosticSemaKinds.td?view=markup">DiagnosticSemaKinds.td</a></p>
 <p>All semantic diagnostics generated for your attribute, including automatically-
@@ -1833,10 +1832,10 @@ are similar.</p>
 <li>Introduce parsing actions into the parser.  Recursive-descent parsing is
 mostly self-explanatory, but there are a few things that are worth keeping
 in mind:<ul>
-<li>Keep as much source location information as possible! You&#8217;ll want it later
-to produce great diagnostics and support Clang&#8217;s various features that map
+<li>Keep as much source location information as possible! You’ll want it later
+to produce great diagnostics and support Clang’s various features that map
 between source code and the AST.</li>
-<li>Write tests for all of the &#8220;bad&#8221; parsing cases, to make sure your recovery
+<li>Write tests for all of the “bad” parsing cases, to make sure your recovery
 is good.  If you have matched delimiters (e.g., parentheses, square
 brackets, etc.), use <code class="docutils literal"><span class="pre">Parser::BalancedDelimiterTracker</span></code> to give nice
 diagnostics when things go wrong.</li>
@@ -1845,9 +1844,9 @@ diagnostics when things go wrong.</li>
 <li>Introduce semantic analysis actions into <code class="docutils literal"><span class="pre">Sema</span></code>.  Semantic analysis should
 always involve two functions: an <code class="docutils literal"><span class="pre">ActOnXXX</span></code> function that will be called
 directly from the parser, and a <code class="docutils literal"><span class="pre">BuildXXX</span></code> function that performs the
-actual semantic analysis and will (eventually!) build the AST node.  It&#8217;s
+actual semantic analysis and will (eventually!) build the AST node.  It’s
 fairly common for the <code class="docutils literal"><span class="pre">ActOnCXX</span></code> function to do very little (often just
-some minor translation from the parser&#8217;s representation to <code class="docutils literal"><span class="pre">Sema</span></code>&#8216;s
+some minor translation from the parser’s representation to <code class="docutils literal"><span class="pre">Sema</span></code>’s
 representation of the same thing), but the separation is still important:
 C++ template instantiation, for example, should always call the <code class="docutils literal"><span class="pre">BuildXXX</span></code>
 variant.  Several notes on semantic analysis before we get into construction
@@ -1856,31 +1855,31 @@ of the AST:<ul>
 Make sure to fully check that those types, and the types of those
 subexpressions, meet your expectations.  Add implicit conversions where
 necessary to make sure that all of the types line up exactly the way you
-want them.  Write extensive tests to check that you&#8217;re getting good
+want them.  Write extensive tests to check that you’re getting good
 diagnostics for mistakes and that you can use various forms of
 subexpressions with your expression.</li>
 <li>When type-checking a type or subexpression, make sure to first check
-whether the type is &#8220;dependent&#8221; (<code class="docutils literal"><span class="pre">Type::isDependentType()</span></code>) or whether a
+whether the type is “dependent” (<code class="docutils literal"><span class="pre">Type::isDependentType()</span></code>) or whether a
 subexpression is type-dependent (<code class="docutils literal"><span class="pre">Expr::isTypeDependent()</span></code>).  If any of
-these return <code class="docutils literal"><span class="pre">true</span></code>, then you&#8217;re inside a template and you can&#8217;t do much
-type-checking now.  That&#8217;s normal, and your AST node (when you get there)
+these return <code class="docutils literal"><span class="pre">true</span></code>, then you’re inside a template and you can’t do much
+type-checking now.  That’s normal, and your AST node (when you get there)
 will have to deal with this case.  At this point, you can write tests that
-use your expression within templates, but don&#8217;t try to instantiate the
+use your expression within templates, but don’t try to instantiate the
 templates.</li>
 <li>For each subexpression, be sure to call <code class="docutils literal"><span class="pre">Sema::CheckPlaceholderExpr()</span></code>
-to deal with &#8220;weird&#8221; expressions that don&#8217;t behave well as subexpressions.
+to deal with “weird” expressions that don’t behave well as subexpressions.
 Then, determine whether you need to perform lvalue-to-rvalue conversions
 (<code class="docutils literal"><span class="pre">Sema::DefaultLvalueConversions</span></code>) or the usual unary conversions
 (<code class="docutils literal"><span class="pre">Sema::UsualUnaryConversions</span></code>), for places where the subexpression is
 producing a value you intend to use.</li>
 <li>Your <code class="docutils literal"><span class="pre">BuildXXX</span></code> function will probably just return <code class="docutils literal"><span class="pre">ExprError()</span></code> at
-this point, since you don&#8217;t have an AST.  That&#8217;s perfectly fine, and
-shouldn&#8217;t impact your testing.</li>
+this point, since you don’t have an AST.  That’s perfectly fine, and
+shouldn’t impact your testing.</li>
 </ul>
 </li>
 <li>Introduce an AST node for your new expression.  This starts with declaring
 the node in <code class="docutils literal"><span class="pre">include/Basic/StmtNodes.td</span></code> and creating a new class for your
-expression in the appropriate <code class="docutils literal"><span class="pre">include/AST/Expr*.h</span></code> header.  It&#8217;s best to
+expression in the appropriate <code class="docutils literal"><span class="pre">include/AST/Expr*.h</span></code> header.  It’s best to
 look at the class for a similar expression to get ideas, and there are some
 specific things to watch for:<ul>
 <li>If you need to allocate memory, use the <code class="docutils literal"><span class="pre">ASTContext</span></code> allocator to
@@ -1891,7 +1890,7 @@ called.</li>
 expression.  This is needed for diagnostics and for IDE support.</li>
 <li>Make sure that <code class="docutils literal"><span class="pre">children()</span></code> visits all of the subexpressions.  This is
 important for a number of features (e.g., IDE support, C++ variadic
-templates).  If you have sub-types, you&#8217;ll also need to visit those
+templates).  If you have sub-types, you’ll also need to visit those
 sub-types in <code class="docutils literal"><span class="pre">RecursiveASTVisitor</span></code>.</li>
 <li>Add printing support (<code class="docutils literal"><span class="pre">StmtPrinter.cpp</span></code>) for your expression.</li>
 <li>Add profiling support (<code class="docutils literal"><span class="pre">StmtProfile.cpp</span></code>) for your AST node, noting the
@@ -1912,12 +1911,12 @@ that the object gets properly destructed.  An easy way to test this is to
 return a C++ class with a private destructor: semantic analysis should
 flag an error here with the attempt to call the destructor.</li>
 <li>Inspect the generated AST by printing it using <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-cc1</span> <span class="pre">-ast-print</span></code>,
-to make sure you&#8217;re capturing all of the important information about how
+to make sure you’re capturing all of the important information about how
 the AST was written.</li>
 <li>Inspect the generated AST under <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-cc1</span> <span class="pre">-ast-dump</span></code> to verify that
 all of the types in the generated AST line up the way you want them.
-Remember that clients of the AST should never have to &#8220;think&#8221; to
-understand what&#8217;s going on.  For example, all implicit conversions should
+Remember that clients of the AST should never have to “think” to
+understand what’s going on.  For example, all implicit conversions should
 show up explicitly in the AST.</li>
 <li>Write tests that use your expression as a subexpression of other,
 well-known expressions.  Can you call a function using your expression as
@@ -1932,12 +1931,12 @@ lvalue/rvalue paths, depending on what kind of result your expression
 produces.  On occasion, this requires some careful factoring of code to
 avoid duplication.</li>
 <li><code class="docutils literal"><span class="pre">CodeGenFunction</span></code> contains functions <code class="docutils literal"><span class="pre">ConvertType</span></code> and
-<code class="docutils literal"><span class="pre">ConvertTypeForMem</span></code> that convert Clang&#8217;s types (<code class="docutils literal"><span class="pre">clang::Type*</span></code> or
+<code class="docutils literal"><span class="pre">ConvertTypeForMem</span></code> that convert Clang’s types (<code class="docutils literal"><span class="pre">clang::Type*</span></code> or
 <code class="docutils literal"><span class="pre">clang::QualType</span></code>) to LLVM types.  Use the former for values, and the
-later for memory locations: test with the C++ &#8220;<code class="docutils literal"><span class="pre">bool</span></code>&#8221; type to check
+later for memory locations: test with the C++ “<code class="docutils literal"><span class="pre">bool</span></code>” type to check
 this.  If you find that you are having to use LLVM bitcasts to make the
 subexpressions of your expression have the type that your expression
-expects, STOP!  Go fix semantic analysis and the AST so that you don&#8217;t
+expects, STOP!  Go fix semantic analysis and the AST so that you don’t
 need these bitcasts.</li>
 <li>The <code class="docutils literal"><span class="pre">CodeGenFunction</span></code> class has a number of helper functions to make
 certain operations easy, such as generating code to produce an lvalue or
@@ -1947,16 +1946,16 @@ because these functions take care of some of the tricky details for you
 (e.g., for exceptions).</li>
 <li>If your expression requires some special behavior in the event of an
 exception, look at the <code class="docutils literal"><span class="pre">push*Cleanup</span></code> functions in <code class="docutils literal"><span class="pre">CodeGenFunction</span></code>
-to introduce a cleanup.  You shouldn&#8217;t have to deal with
+to introduce a cleanup.  You shouldn’t have to deal with
 exception-handling directly.</li>
 <li>Testing is extremely important in IR generation.  Use <code class="docutils literal"><span class="pre">clang</span> <span class="pre">-cc1</span>
-<span class="pre">-emit-llvm</span></code> and <a class="reference external" href="http://llvm.org/docs/CommandGuide/FileCheck.html">FileCheck</a> to verify that you&#8217;re
+<span class="pre">-emit-llvm</span></code> and <a class="reference external" href="http://llvm.org/docs/CommandGuide/FileCheck.html">FileCheck</a> to verify that you’re
 generating the right IR.</li>
 </ul>
 </li>
 <li>Teach template instantiation how to cope with your AST node, which requires
 some fairly simple code:<ul>
-<li>Make sure that your expression&#8217;s constructor properly computes the flags
+<li>Make sure that your expression’s constructor properly computes the flags
 for type dependence (i.e., the type your expression produces can change
 from one instantiation to the next), value dependence (i.e., the constant
 value your expression produces can change from one instantiation to the
@@ -1975,17 +1974,17 @@ semantic analysis and build your expression.</li>
 <li>To test template instantiation, take those tests you wrote to make sure
 that you were type checking with type-dependent expressions and dependent
 types (from step #2) and instantiate those templates with various types,
-some of which type-check and some that don&#8217;t, and test the error messages
+some of which type-check and some that don’t, and test the error messages
 in each case.</li>
 </ul>
 </li>
-<li>There are some &#8220;extras&#8221; that make other features work better.  It&#8217;s worth
+<li>There are some “extras” that make other features work better.  It’s worth
 handling these extras to give your expression complete integration into
 Clang:<ul>
 <li>Add code completion support for your expression in
 <code class="docutils literal"><span class="pre">SemaCodeComplete.cpp</span></code>.</li>
-<li>If your expression has types in it, or has any &#8220;interesting&#8221; features
-other than subexpressions, extend libclang&#8217;s <code class="docutils literal"><span class="pre">CursorVisitor</span></code> to provide
+<li>If your expression has types in it, or has any “interesting” features
+other than subexpressions, extend libclang’s <code class="docutils literal"><span class="pre">CursorVisitor</span></code> to provide
 proper visitation for your expression, enabling various IDE features such
 as syntax highlighting, cross-referencing, and so on.  The
 <code class="docutils literal"><span class="pre">c-index-test</span></code> helper program can be used to test these features.</li>
@@ -2011,8 +2010,8 @@ as syntax highlighting, cross-referencing, and so on.  The
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

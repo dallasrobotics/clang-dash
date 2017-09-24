@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Introduction to the Clang AST &mdash; Clang 4 documentation</title>
-    
+    <title>Introduction to the Clang AST &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="LibTooling" href="LibTooling.html" />
     <link rel="prev" title="External Clang Examples" href="ExternalClangExamples.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>Introduction to the Clang AST</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -51,21 +50,21 @@
 <h1>Introduction to the Clang AST<a class="headerlink" href="#introduction-to-the-clang-ast" title="Permalink to this headline">¶</a></h1>
 <p>This document gives a gentle introduction to the mysteries of the Clang
 AST. It is targeted at developers who either want to contribute to
-Clang, or use tools that work based on Clang&#8217;s AST, like the AST
+Clang, or use tools that work based on Clang’s AST, like the AST
 matchers.</p>
 <center><iframe width="560" height="315" src="http://www.youtube.com/embed/VqCkCDFLSsc?vq=hd720" frameborder="0" allowfullscreen></iframe></center><p><a class="reference external" href="http://llvm.org/devmtg/2013-04/klimek-slides.pdf">Slides</a></p>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>Clang&#8217;s AST is different from ASTs produced by some other compilers in
+<p>Clang’s AST is different from ASTs produced by some other compilers in
 that it closely resembles both the written C++ code and the C++
 standard. For example, parenthesis expressions and compile time
 constants are available in an unreduced form in the AST. This makes
-Clang&#8217;s AST a good fit for refactoring tools.</p>
+Clang’s AST a good fit for refactoring tools.</p>
 <p>Documentation for all Clang AST nodes is available via the generated
 <a class="reference external" href="http://clang.llvm.org/doxygen">Doxygen</a>. The doxygen online
 documentation is also indexed by your favorite search engine, which will
-make a search for clang and the AST node&#8217;s class name usually turn up
-the doxygen of the class you&#8217;re looking for (for example, search for:
+make a search for clang and the AST node’s class name usually turn up
+the doxygen of the class you’re looking for (for example, search for:
 clang ParenExpr).</p>
 </div>
 <div class="section" id="examining-the-ast">
@@ -73,8 +72,8 @@ clang ParenExpr).</p>
 <p>A good way to familarize yourself with the Clang AST is to actually look
 at it on some simple example code. Clang has a builtin AST-dump mode,
 which can be enabled with the flag <code class="docutils literal"><span class="pre">-ast-dump</span></code>.</p>
-<p>Let&#8217;s look at a simple example AST:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ cat test.cc
+<p>Let’s look at a simple example AST:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ cat test.cc
 int f(int x) {
   int result = (x / 42);
   return result;
@@ -105,7 +104,7 @@ a translation unit is always the <a class="reference external" href="http://clan
 declaration</a>.
 In this example, our first user written declaration is the <a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1FunctionDecl.html">function
 declaration</a>
-of &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221;. The body of &#8220;<code class="docutils literal"><span class="pre">f</span></code>&#8221; is a <a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1CompoundStmt.html">compound
+of “<code class="docutils literal"><span class="pre">f</span></code>”. The body of “<code class="docutils literal"><span class="pre">f</span></code>” is a <a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1CompoundStmt.html">compound
 statement</a>,
 whose child nodes are a <a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1DeclStmt.html">declaration
 statement</a>
@@ -119,13 +118,13 @@ the class
 <a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1ASTContext.html">ASTContext</a>.
 It allows traversal of the whole translation unit starting from
 <a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1ASTContext.html#abd909fb01ef10cfd0244832a67b1dd64">getTranslationUnitDecl</a>,
-or to access Clang&#8217;s <a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1ASTContext.html#a4f95adb9958e22fbe55212ae6482feb4">table of
+or to access Clang’s <a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1ASTContext.html#a4f95adb9958e22fbe55212ae6482feb4">table of
 identifiers</a>
 for the parsed translation unit.</p>
 </div>
 <div class="section" id="ast-nodes">
 <h2>AST Nodes<a class="headerlink" href="#ast-nodes" title="Permalink to this headline">¶</a></h2>
-<p>Clang&#8217;s AST nodes are modeled on a class hierarchy that does not have a
+<p>Clang’s AST nodes are modeled on a class hierarchy that does not have a
 common ancestor. Instead, there are multiple larger hierarchies for
 basic node types like
 <a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1Decl.html">Decl</a> and
@@ -153,7 +152,7 @@ declarations
 (<a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1Decl.html">Decl</a>). Note
 that expressions
 (<a class="reference external" href="http://clang.llvm.org/doxygen/classclang_1_1Expr.html">Expr</a>) are
-also statements in Clang&#8217;s AST.</p>
+also statements in Clang’s AST.</p>
 </div>
 </div>
 
@@ -172,8 +171,8 @@ also statements in Clang&#8217;s AST.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

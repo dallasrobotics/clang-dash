@@ -1,37 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Objective-C Automatic Reference Counting (ARC) &mdash; Clang 4 documentation</title>
-    
+    <title>Objective-C Automatic Reference Counting (ARC) &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
-    <link rel="up" title="Clang Language Extensions" href="LanguageExtensions.html" />
-    <link rel="next" title="Attributes in Clang" href="AttributeReference.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Clang command line argument reference" href="ClangCommandLineReference.html" />
     <link rel="prev" title="Block Implementation Specification" href="Block-ABI-Apple.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>Objective-C Automatic Reference Counting (ARC)</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -41,7 +39,7 @@
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="AttributeReference.html">Attributes in Clang</a>&#160;&#160;»
+        <a href="ClangCommandLineReference.html">Clang command line argument reference</a>&#160;&#160;»
         </p>
 
       </div>
@@ -241,11 +239,11 @@ pointer types</span>.  This kind has two notable builtin members, <code class="d
 of conversions between object pointer types is not checked at runtime.  Users
 may define <span class="arc-term">classes</span>; each class is a type, and the pointer to that
 type is an object pointer type.  A class may have a superclass; its pointer
-type is a subtype of its superclass&#8217;s pointer type.  A class has a set of
+type is a subtype of its superclass’s pointer type.  A class has a set of
 <span class="arc-term">ivars</span>, fields which appear on all instances of that class.  For
-every class <em>T</em> there&#8217;s an associated metaclass; it has no fields, its
-superclass is the metaclass of <em>T</em>&#8216;s superclass, and its metaclass is a global
-class.  Every class has a global object whose class is the class&#8217;s metaclass;
+every class <em>T</em> there’s an associated metaclass; it has no fields, its
+superclass is the metaclass of <em>T</em>’s superclass, and its metaclass is a global
+class.  Every class has a global object whose class is the class’s metaclass;
 metaclasses have no associated type, so pointers to this object have type
 <code class="docutils literal"><span class="pre">Class</span></code>.</p>
 <p>A class declaration (<code class="docutils literal"><span class="pre">&#64;interface</span></code>) declares a set of <span class="arc-term">methods</span>.  A
@@ -256,12 +254,12 @@ it can be invoked on objects of the class, or a class method, in which case it
 can be invoked on objects of the metaclass.  A method may be invoked by
 providing an object (called the <span class="arc-term">receiver</span>) and a list of formal
 arguments interspersed with the selector, like so:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="p">[</span><span class="n">receiver</span> <span class="nl">foo</span><span class="p">:</span> <span class="n">fooArg</span> <span class="nl">bar</span><span class="p">:</span> <span class="n">barArg</span> <span class="nl">baz</span><span class="p">:</span> <span class="n">bazArg</span><span class="p">]</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">receiver</span> <span class="nl">foo</span><span class="p">:</span> <span class="n">fooArg</span> <span class="nl">bar</span><span class="p">:</span> <span class="n">barArg</span> <span class="nl">baz</span><span class="p">:</span> <span class="n">bazArg</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>This looks in the dynamic class of the receiver for a method with this name,
-then in that class&#8217;s superclass, etc., until it finds something it can execute.
-The receiver &#8220;expression&#8221; may also be the name of a class, in which case the
+then in that class’s superclass, etc., until it finds something it can execute.
+The receiver “expression” may also be the name of a class, in which case the
 actual receiver is the class object for that class, or (within method
 definitions) it may be <code class="docutils literal"><span class="pre">super</span></code>, in which case the lookup algorithm starts
 with the static superclass instead of the dynamic class.  The actual methods
@@ -274,17 +272,17 @@ inherently associated with any class, but which classes may claim to follow.
 Object pointer types may be qualified with additional protocols that the object
 is known to support.</p>
 <p><span class="arc-term">Class extensions</span> are collections of ivars and methods, designed to
-allow a class&#8217;s <code class="docutils literal"><span class="pre">&#64;interface</span></code> to be split across multiple files; however,
+allow a class’s <code class="docutils literal"><span class="pre">&#64;interface</span></code> to be split across multiple files; however,
 there is still a primary implementation file which must see the
 <code class="docutils literal"><span class="pre">&#64;interface</span></code>s of all class extensions.  <span class="arc-term">Categories</span> allow
 methods (but not ivars) to be declared <em>post hoc</em> on an arbitrary class; the
-methods in the category&#8217;s <code class="docutils literal"><span class="pre">&#64;implementation</span></code> will be dynamically added to that
-class&#8217;s method tables which the category is loaded at runtime, replacing those
+methods in the category’s <code class="docutils literal"><span class="pre">&#64;implementation</span></code> will be dynamically added to that
+class’s method tables which the category is loaded at runtime, replacing those
 methods in case of a collision.</p>
 <p>In the standard environment, objects are allocated on the heap, and their
 lifetime is manually managed using a reference count.  This is done using two
 instance methods which all classes are expected to implement: <code class="docutils literal"><span class="pre">retain</span></code>
-increases the object&#8217;s reference count by 1, whereas <code class="docutils literal"><span class="pre">release</span></code> decreases it
+increases the object’s reference count by 1, whereas <code class="docutils literal"><span class="pre">release</span></code> decreases it
 by 1 and calls the instance method <code class="docutils literal"><span class="pre">dealloc</span></code> if the count reaches 0.  To
 simplify certain operations, there is also an <span class="arc-term">autorelease pool</span>, a
 thread-local list of objects to call <code class="docutils literal"><span class="pre">release</span></code> on later; an object can be
@@ -307,8 +305,8 @@ with a revision marker, like so:</p>
 <span class="when-revised">[beginning Apple 8.0, LLVM 3.8]</span> <span class="revision">BPTRs declared
 within</span> <code class="docutils literal"><span class="pre">extern</span> <span class="pre">&quot;BCPL&quot;</span></code> blocks.</div></blockquote>
 <p>For now, it is sensible to version this document by the releases of its sole
-implementation (and its host project), clang.  &#8220;LLVM X.Y&#8221; refers to an
-open-source release of clang from the LLVM project.  &#8220;Apple X.Y&#8221; refers to an
+implementation (and its host project), clang.  “LLVM X.Y” refers to an
+open-source release of clang from the LLVM project.  “Apple X.Y” refers to an
 Apple-provided release of the Apple LLVM Compiler.  Other organizations that
 prepare their own, separately-versioned clang releases and wish to maintain
 similar information in this document should send requests to cfe-dev.</p>
@@ -327,10 +325,10 @@ users must explicitly manage the lifetime of their objects, breaking cycles
 manually or with weak or unsafe references.</p>
 <p>ARC may be explicitly enabled with the compiler flag <code class="docutils literal"><span class="pre">-fobjc-arc</span></code>.  It may
 also be explicitly disabled with the compiler flag <code class="docutils literal"><span class="pre">-fno-objc-arc</span></code>.  The last
-of these two flags appearing on the compile line &#8220;wins&#8221;.</p>
+of these two flags appearing on the compile line “wins”.</p>
 <p>If ARC is enabled, <code class="docutils literal"><span class="pre">__has_feature(objc_arc)</span></code> will expand to 1 in the
 preprocessor.  For more information about <code class="docutils literal"><span class="pre">__has_feature</span></code>, see the
-<a class="reference internal" href="LanguageExtensions.html#langext-has-feature-has-extension"><span>language extensions</span></a> document.</p>
+<a class="reference internal" href="LanguageExtensions.html#langext-has-feature-has-extension"><span class="std std-ref">language extensions</span></a> document.</p>
 </div>
 <div class="section" id="retainable-object-pointers">
 <span id="arc-objects"></span><h2><a class="toc-backref" href="#id9">Retainable object pointers</a><a class="headerlink" href="#retainable-object-pointers" title="Permalink to this headline">¶</a></h2>
@@ -339,8 +337,8 @@ the restrictions imposed on their use under ARC.  Note in particular that it
 covers the rules for pointer <em>values</em> (patterns of bits indicating the location
 of a pointed-to object), not pointer <em>objects</em> (locations in memory which store
 pointer values).  The rules for objects are covered in the next section.</p>
-<p>A <span class="arc-term">retainable object pointer</span> (or &#8220;retainable pointer&#8221;) is a value of
-a <span class="arc-term">retainable object pointer type</span> (&#8220;retainable type&#8221;).  There are
+<p>A <span class="arc-term">retainable object pointer</span> (or “retainable pointer”) is a value of
+a <span class="arc-term">retainable object pointer type</span> (“retainable type”).  There are
 three kinds of retainable object pointer types:</p>
 <ul class="simple">
 <li>block pointers (formed by applying the caret (<code class="docutils literal"><span class="pre">^</span></code>) declarator sigil to a
@@ -349,7 +347,7 @@ function type)</li>
 <li>typedefs marked with <code class="docutils literal"><span class="pre">__attribute__((NSObject))</span></code></li>
 </ul>
 <p>Other pointer types, such as <code class="docutils literal"><span class="pre">int*</span></code> and <code class="docutils literal"><span class="pre">CFStringRef</span></code>, are not subject to
-ARC&#8217;s semantics and restrictions.</p>
+ARC’s semantics and restrictions.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
 <p>We are not at liberty to require all code to be recompiled with ARC;
@@ -359,7 +357,7 @@ a compiler-supported reference-count system to provide reliable
 interoperation:</p>
 <ul class="last simple">
 <li>The type system must reliably identify which objects are to be managed.  An
-<code class="docutils literal"><span class="pre">int*</span></code> might be a pointer to a <code class="docutils literal"><span class="pre">malloc</span></code>&#8216;ed array, or it might be an
+<code class="docutils literal"><span class="pre">int*</span></code> might be a pointer to a <code class="docutils literal"><span class="pre">malloc</span></code>’ed array, or it might be an
 interior pointer to such an array, or it might point to some field or local
 variable.  In contrast, values of the retainable object pointer types are
 never interior.</li>
@@ -367,7 +365,7 @@ never interior.</li>
 This usually means that the type must imply a procedure for incrementing
 and decrementing retain counts.  Supporting single-ownership objects
 requires a lot more explicit mediation in the language.</li>
-<li>There must be reliable conventions for whether and when &#8220;ownership&#8221; is
+<li>There must be reliable conventions for whether and when “ownership” is
 passed between caller and callee, for both arguments and return values.
 Objective-C methods follow such a convention very reliably, at least for
 system libraries on Mac OS X, and functions always pass objects at +0.  The
@@ -375,13 +373,13 @@ C-based APIs for Core Foundation objects, on the other hand, have much more
 varied transfer semantics.</li>
 </ul>
 </div>
-<p>The use of <code class="docutils literal"><span class="pre">__attribute__((NSObject))</span></code> typedefs is not recommended.  If it&#8217;s
+<p>The use of <code class="docutils literal"><span class="pre">__attribute__((NSObject))</span></code> typedefs is not recommended.  If it’s
 absolutely necessary to use this attribute, be very explicit about using the
 typedef, and do not assume that it will be preserved by language features like
 <code class="docutils literal"><span class="pre">__typeof</span></code> and C++ template argument substitution.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
-<p class="last">Any compiler operation which incidentally strips type &#8220;sugar&#8221; from a type
+<p class="last">Any compiler operation which incidentally strips type “sugar” from a type
 will yield a type without the attribute, which may result in unexpected
 behavior.</p>
 </div>
@@ -394,7 +392,7 @@ to a valid object.  Furthermore, if it has block pointer type and is not
 to a class object.  Otherwise ARC does not enforce the Objective-C type system
 as long as the implementing methods follow the signature of the static type.
 It is undefined behavior if ARC is exposed to an invalid pointer.</p>
-<p>For ARC&#8217;s purposes, a valid object is one with &#8220;well-behaved&#8221; retaining
+<p>For ARC’s purposes, a valid object is one with “well-behaved” retaining
 operations.  Specifically, the object must be laid out such that the
 Objective-C message send machinery can successfully send it the following
 messages:</p>
@@ -427,7 +425,7 @@ exception.</p>
 <p>When the semantics call for performing one of these operations on a retainable
 object pointer, if that pointer is <code class="docutils literal"><span class="pre">null</span></code> then the effect is a no-op.</p>
 <p>All of the semantics described in this document are subject to additional
-<a class="reference internal" href="#arc-optimization"><span>optimization rules</span></a> which permit the removal or
+<a class="reference internal" href="#arc-optimization"><span class="std std-ref">optimization rules</span></a> which permit the removal or
 optimization of operations based on local knowledge of data flow.  The
 semantics describe the high-level behaviors that the compiler implements, not
 an exact sequence of operations that a program will be compiled into.</p>
@@ -437,14 +435,14 @@ an exact sequence of operations that a program will be compiled into.</p>
 <p>In general, ARC does not perform retain or release operations when simply using
 a retainable object pointer as an operand within an expression.  This includes:</p>
 <ul class="simple">
-<li>loading a retainable pointer from an object with non-weak <a class="reference internal" href="#arc-ownership"><span>ownership</span></a>,</li>
+<li>loading a retainable pointer from an object with non-weak <a class="reference internal" href="#arc-ownership"><span class="std std-ref">ownership</span></a>,</li>
 <li>passing a retainable pointer as an argument to a function or method, and</li>
 <li>receiving a retainable pointer as the result of a function or method call.</li>
 </ul>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
 <p class="last">While this might seem uncontroversial, it is actually unsafe when multiple
-expressions are evaluated in &#8220;parallel&#8221;, as with binary operators and calls,
+expressions are evaluated in “parallel”, as with binary operators and calls,
 because (for example) one expression might load from an object while another
 writes to it.  However, C and C++ already call this undefined behavior
 because the evaluations are unsequenced, and ARC simply exploits that here to
@@ -458,7 +456,7 @@ exceptions are detected, and what those exceptions imply semantically.</p>
 as <span class="arc-term">consumed</span>, signifying that the callee expects to take ownership
 of a +1 retain count.  This is done by adding the <code class="docutils literal"><span class="pre">ns_consumed</span></code> attribute to
 the parameter declaration, like so:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="n">__attribute</span><span class="p">((</span><span class="n">ns_consumed</span><span class="p">))</span> <span class="kt">id</span> <span class="n">x</span><span class="p">);</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="n">__attribute</span><span class="p">((</span><span class="n">ns_consumed</span><span class="p">))</span> <span class="kt">id</span> <span class="n">x</span><span class="p">);</span>
 <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">foo:</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="nv">__attribute</span><span class="p">((</span><span class="n">ns_consumed</span><span class="p">))</span> <span class="nv">x</span><span class="p">;</span>
 </pre></div>
 </div>
@@ -479,7 +477,7 @@ initialization of the parameter.</p>
 </div>
 <p>The implicit <code class="docutils literal"><span class="pre">self</span></code> parameter of a method may be marked as consumed by adding
 <code class="docutils literal"><span class="pre">__attribute__((ns_consumes_self))</span></code> to the method declaration.  Methods in
-the <code class="docutils literal"><span class="pre">init</span></code> <a class="reference internal" href="#arc-method-families"><span>family</span></a> are treated as if they were
+the <code class="docutils literal"><span class="pre">init</span></code> <a class="reference internal" href="#arc-method-families"><span class="std std-ref">family</span></a> are treated as if they were
 implicitly marked with this attribute.</p>
 <p>It is undefined behavior if an Objective-C message send to a method with
 <code class="docutils literal"><span class="pre">ns_consumed</span></code> parameters (other than self) is made with a null receiver.  It
@@ -495,7 +493,7 @@ function.</p>
 with consumed parameters will cause over-retains or over-releases, depending
 on the direction.  The rule about function calls is really just an
 application of the existing C/C++ rule about calling functions through an
-incompatible function type, but it&#8217;s useful to state it explicitly.</p>
+incompatible function type, but it’s useful to state it explicitly.</p>
 </div>
 </div>
 <div class="section" id="retained-return-values">
@@ -505,7 +503,7 @@ marked as returning a retained value, signifying that the caller expects to take
 ownership of a +1 retain count.  This is done by adding the
 <code class="docutils literal"><span class="pre">ns_returns_retained</span></code> attribute to the function or method declaration, like
 so:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="kt">id</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="n">__attribute</span><span class="p">((</span><span class="n">ns_returns_retained</span><span class="p">));</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="kt">id</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="n">__attribute</span><span class="p">((</span><span class="n">ns_returns_retained</span><span class="p">));</span>
 <span class="p">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span> <span class="nf">foo</span> <span class="n">__attribute</span><span class="p">((</span><span class="n">ns_returns_retained</span><span class="p">));</span>
 </pre></div>
 </div>
@@ -524,7 +522,7 @@ frameworks.  After optimization there are typically no extra retains and
 releases required.</p>
 </div>
 <p>Methods in the <code class="docutils literal"><span class="pre">alloc</span></code>, <code class="docutils literal"><span class="pre">copy</span></code>, <code class="docutils literal"><span class="pre">init</span></code>, <code class="docutils literal"><span class="pre">mutableCopy</span></code>, and <code class="docutils literal"><span class="pre">new</span></code>
-<a class="reference internal" href="#arc-method-families"><span>families</span></a> are implicitly marked
+<a class="reference internal" href="#arc-method-families"><span class="std std-ref">families</span></a> are implicitly marked
 <code class="docutils literal"><span class="pre">__attribute__((ns_returns_retained))</span></code>.  This may be suppressed by explicitly
 marking the method <code class="docutils literal"><span class="pre">__attribute__((ns_returns_not_retained))</span></code>.</p>
 <p>It is undefined behavior if the method to which an Objective-C message send
@@ -588,7 +586,7 @@ the enclosing full-expression, subject to the usual optimizations on local
 values.</li>
 </ul>
 <p>These casts are required in order to transfer objects in and out of ARC
-control; see the rationale in the section on <a class="reference internal" href="#arc-objects-restrictions-conversion"><span>conversion of retainable
+control; see the rationale in the section on <a class="reference internal" href="#arc-objects-restrictions-conversion"><span class="std std-ref">conversion of retainable
 object pointers</span></a>.</p>
 <p>Using a <code class="docutils literal"><span class="pre">__bridge_retained</span></code> or <code class="docutils literal"><span class="pre">__bridge_transfer</span></code> cast purely to convince
 ARC to emit an unbalanced retain or release, respectively, is poor form.</p>
@@ -602,7 +600,7 @@ ARC to emit an unbalanced retain or release, respectively, is poor form.</p>
 value of retainable object pointer type to any non-retainable type, or
 vice-versa, is ill-formed.  For example, an Objective-C object pointer shall
 not be converted to <code class="docutils literal"><span class="pre">void*</span></code>.  As an exception, cast to <code class="docutils literal"><span class="pre">intptr_t</span></code> is
-allowed because such casts are not transferring ownership.  The <a class="reference internal" href="#arc-objects-operands-casts"><span>bridged
+allowed because such casts are not transferring ownership.  The <a class="reference internal" href="#arc-objects-operands-casts"><span class="std std-ref">bridged
 casts</span></a> may be used to perform these conversions
 where necessary.</p>
 <div class="admonition-rationale admonition">
@@ -628,29 +626,29 @@ unretained, or known retain-agnostic.</p>
 <p>An expression is <span class="arc-term">known retain-agnostic</span> if it is:</p>
 <ul class="simple">
 <li>an Objective-C string literal,</li>
-<li>a load from a <code class="docutils literal"><span class="pre">const</span></code> system global variable of <a class="reference internal" href="#arc-misc-c-retainable"><span>C retainable pointer
+<li>a load from a <code class="docutils literal"><span class="pre">const</span></code> system global variable of <a class="reference internal" href="#arc-misc-c-retainable"><span class="std std-ref">C retainable pointer
 type</span></a>, or</li>
 <li>a null pointer constant.</li>
 </ul>
-<p>An expression is <span class="arc-term">known unretained</span> if it is an rvalue of <a class="reference internal" href="#arc-misc-c-retainable"><span>C
+<p>An expression is <span class="arc-term">known unretained</span> if it is an rvalue of <a class="reference internal" href="#arc-misc-c-retainable"><span class="std std-ref">C
 retainable pointer type</span></a> and it is:</p>
 <ul class="simple">
 <li>a direct call to a function, and either that function has the
-<code class="docutils literal"><span class="pre">cf_returns_not_retained</span></code> attribute or it is an <a class="reference internal" href="#arc-misc-c-retainable-audit"><span>audited</span></a> function that does not have the
+<code class="docutils literal"><span class="pre">cf_returns_not_retained</span></code> attribute or it is an <a class="reference internal" href="#arc-misc-c-retainable-audit"><span class="std std-ref">audited</span></a> function that does not have the
 <code class="docutils literal"><span class="pre">cf_returns_retained</span></code> attribute and does not follow the create/copy naming
 convention,</li>
 <li>a message send, and the declared method either has the
 <code class="docutils literal"><span class="pre">cf_returns_not_retained</span></code> attribute or it has neither the
-<code class="docutils literal"><span class="pre">cf_returns_retained</span></code> attribute nor a <a class="reference internal" href="#arc-method-families"><span>selector family</span></a> that implies a retained result, or</li>
+<code class="docutils literal"><span class="pre">cf_returns_retained</span></code> attribute nor a <a class="reference internal" href="#arc-method-families"><span class="std std-ref">selector family</span></a> that implies a retained result, or</li>
 <li><span class="when-revised">[beginning LLVM 3.6]</span> <span class="revision">a load from a</span> <code class="docutils literal"><span class="pre">const</span></code>
 <span class="revision">non-system global variable.</span></li>
 </ul>
-<p>An expression is <span class="arc-term">known retained</span> if it is an rvalue of <a class="reference internal" href="#arc-misc-c-retainable"><span>C
+<p>An expression is <span class="arc-term">known retained</span> if it is an rvalue of <a class="reference internal" href="#arc-misc-c-retainable"><span class="std std-ref">C
 retainable pointer type</span></a> and it is:</p>
 <ul class="simple">
 <li>a message send, and the declared method either has the
 <code class="docutils literal"><span class="pre">cf_returns_retained</span></code> attribute, or it does not have the
-<code class="docutils literal"><span class="pre">cf_returns_not_retained</span></code> attribute but it does have a <a class="reference internal" href="#arc-method-families"><span>selector
+<code class="docutils literal"><span class="pre">cf_returns_not_retained</span></code> attribute but it does have a <a class="reference internal" href="#arc-method-families"><span class="std std-ref">selector
 family</span></a> that implies a retained result.</li>
 </ul>
 <p>Furthermore:</p>
@@ -672,12 +670,12 @@ retain-agnostic, the conversion is treated as a <code class="docutils literal"><
 <p>Bridging casts are annoying.  Absent the ability to completely automate the
 management of CF objects, however, we are left with relatively poor attempts
 to reduce the need for a glut of explicit bridges.  Hence these rules.</p>
-<p>We&#8217;ve so far consciously refrained from implicitly turning retained CF
+<p>We’ve so far consciously refrained from implicitly turning retained CF
 results from function calls into <code class="docutils literal"><span class="pre">__bridge_transfer</span></code> casts.  The worry is
-that some code patterns  &#8212;  for example, creating a CF value, assigning it
-to an ObjC-typed local, and then calling <code class="docutils literal"><span class="pre">CFRelease</span></code> when done  &#8212;  are a
+that some code patterns  —  for example, creating a CF value, assigning it
+to an ObjC-typed local, and then calling <code class="docutils literal"><span class="pre">CFRelease</span></code> when done  —  are a
 bit too likely to be accidentally accepted, leading to mysterious behavior.</p>
-<p class="last">For loads from <code class="docutils literal"><span class="pre">const</span></code> global variables of <a class="reference internal" href="#arc-misc-c-retainable"><span>C retainable pointer type</span></a>, it is reasonable to assume that global system
+<p class="last">For loads from <code class="docutils literal"><span class="pre">const</span></code> global variables of <a class="reference internal" href="#arc-misc-c-retainable"><span class="std std-ref">C retainable pointer type</span></a>, it is reasonable to assume that global system
 constants were initialitzed with true constants (e.g. string literals), but
 user constants might have been initialized with something dynamically
 allocated, using a global initializer.</p>
@@ -687,13 +685,13 @@ allocated, using a global initializer.</p>
 <span id="arc-objects-restrictions-conversion-exception-contextual"></span><h4><a class="toc-backref" href="#id19">Conversion from retainable object pointer type in certain contexts</a><a class="headerlink" href="#conversion-from-retainable-object-pointer-type-in-certain-contexts" title="Permalink to this headline">¶</a></h4>
 <p><span class="when-revised">[beginning Apple 4.0, LLVM 3.1]</span></p>
 <p>If an expression of retainable object pointer type is explicitly cast to a
-<a class="reference internal" href="#arc-misc-c-retainable"><span>C retainable pointer type</span></a>, the program is
+<a class="reference internal" href="#arc-misc-c-retainable"><span class="std std-ref">C retainable pointer type</span></a>, the program is
 ill-formed as discussed above unless the result is immediately used:</p>
 <ul class="simple">
 <li>to initialize a parameter in an Objective-C message send where the parameter
 is not marked with the <code class="docutils literal"><span class="pre">cf_consumed</span></code> attribute, or</li>
 <li>to initialize a parameter in a direct call to an
-<a class="reference internal" href="#arc-misc-c-retainable-audit"><span>audited</span></a> function where the parameter is
+<a class="reference internal" href="#arc-misc-c-retainable-audit"><span class="std std-ref">audited</span></a> function where the parameter is
 not marked with the <code class="docutils literal"><span class="pre">cf_consumed</span></code> attribute.</li>
 </ul>
 <div class="admonition-rationale admonition">
@@ -725,7 +723,7 @@ to a substituted template type parameter, which overrides the ownership
 qualifier provided by the template argument.</p>
 <p>When forming a function type, the result type is adjusted so that any
 top-level ownership qualifier is deleted.</p>
-<p>Except as described under the <a class="reference internal" href="#arc-ownership-inference"><span>inference rules</span></a>,
+<p>Except as described under the <a class="reference internal" href="#arc-ownership-inference"><span class="std std-ref">inference rules</span></a>,
 a program is ill-formed if it attempts to form a pointer or reference type to a
 retainable object owner type which lacks an ownership qualifier.</p>
 <div class="admonition-rationale admonition">
@@ -733,7 +731,7 @@ retainable object owner type which lacks an ownership qualifier.</p>
 <p class="last">These rules, together with the inference rules, ensure that all objects and
 lvalues of retainable object pointer type have an ownership qualifier.  The
 ability to override an ownership qualifier during template substitution is
-required to counteract the <a class="reference internal" href="#arc-ownership-inference-template-arguments"><span>inference of __strong for template type
+required to counteract the <a class="reference internal" href="#arc-ownership-inference-template-arguments"><span class="std std-ref">inference of __strong for template type
 arguments</span></a>.  Ownership qualifiers
 on return types are dropped because they serve no purpose there except to
 cause spurious problems with overloading and templates.</p>
@@ -779,7 +777,7 @@ the type there.</p>
 that they may sensibly apply at multiple distinct positions within a
 declarator.  However, unlike those qualifiers, there are many
 situations where they are not meaningful, and so we make an effort
-to &#8220;move&#8221; the qualifier to a place where it will be meaningful.  The
+to “move” the qualifier to a place where it will be meaningful.  The
 general goal is to allow the programmer to write, say, <code class="docutils literal"><span class="pre">__strong</span></code>
 before the entire declaration and have it apply in the leftmost
 sensible place.</p>
@@ -787,7 +785,7 @@ sensible place.</p>
 <div class="section" id="property-declarations">
 <span id="arc-ownership-spelling-property"></span><h4><a class="toc-backref" href="#id22">Property declarations</a><a class="headerlink" href="#property-declarations" title="Permalink to this headline">¶</a></h4>
 <p>A property of retainable object pointer type may have ownership.  If the
-property&#8217;s type is ownership-qualified, then the property has that ownership.
+property’s type is ownership-qualified, then the property has that ownership.
 If the property has one of the following modifiers, then the property has the
 corresponding ownership.  A property is ill-formed if it has conflicting
 sources of ownership, or if it has redundant ownership modifiers, or if it has
@@ -803,7 +801,7 @@ copy semantics on the setter.</li>
 </ul>
 <p>With the exception of <code class="docutils literal"><span class="pre">weak</span></code>, these modifiers are available in non-ARC
 modes.</p>
-<p>A property&#8217;s specified ownership is preserved in its metadata, but otherwise
+<p>A property’s specified ownership is preserved in its metadata, but otherwise
 the meaning is purely conventional unless the property is synthesized.  If a
 property is synthesized, then the <span class="arc-term">associated instance variable</span> is
 the instance variable which is named, possibly implicitly, by the
@@ -819,7 +817,7 @@ was ill-formed to synthesize such a property.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
 <p class="last">Using <code class="docutils literal"><span class="pre">strong</span></code> by default is safe and consistent with the generic ARC rule
-about <a class="reference internal" href="#arc-ownership-inference-variables"><span>inferring ownership</span></a>.  It is,
+about <a class="reference internal" href="#arc-ownership-inference-variables"><span class="std std-ref">inferring ownership</span></a>.  It is,
 unfortunately, inconsistent with the non-ARC rule which states that such
 properties are implicitly <code class="docutils literal"><span class="pre">assign</span></code>.  However, that rule is clearly
 untenable in ARC, since it leads to default-unsafe code.  The main merit to
@@ -845,7 +843,7 @@ deallocation.</p>
 object of retainable object pointer type.  Each qualifier specifies different
 semantics for each of these operations.  It is still undefined behavior to
 access an object outside of its lifetime.</p>
-<p>A load or store with &#8220;primitive semantics&#8221; has the same semantics as the
+<p>A load or store with “primitive semantics” has the same semantics as the
 respective operation would have on an <code class="docutils literal"><span class="pre">void*</span></code> lvalue with the same alignment
 and non-ownership qualification.</p>
 <p><span class="arc-term">Reading</span> occurs when performing a lvalue-to-rvalue conversion on an
@@ -874,7 +872,7 @@ lvalue using primitive semantics.</li>
 <li>For <code class="docutils literal"><span class="pre">__autoreleasing</span></code> objects, the new pointee is retained, autoreleased,
 and stored into the lvalue using primitive semantics.</li>
 </ul>
-<p><span class="arc-term">Initialization</span> occurs when an object&#8217;s lifetime begins, which
+<p><span class="arc-term">Initialization</span> occurs when an object’s lifetime begins, which
 depends on its storage duration.  Initialization proceeds in two stages:</p>
 <ol class="arabic simple">
 <li>First, a null pointer is stored into the lvalue using primitive semantics.
@@ -882,12 +880,12 @@ This step is skipped if the object is <code class="docutils literal"><span class
 <li>Second, if the object has an initializer, that expression is evaluated and
 then assigned into the object using the usual assignment semantics.</li>
 </ol>
-<p><span class="arc-term">Destruction</span> occurs when an object&#8217;s lifetime ends.  In all cases it
+<p><span class="arc-term">Destruction</span> occurs when an object’s lifetime ends.  In all cases it
 is semantically equivalent to assigning a null pointer to the object, with the
-proviso that of course the object cannot be legally read after the object&#8217;s
+proviso that of course the object cannot be legally read after the object’s
 lifetime ends.</p>
-<p><span class="arc-term">Moving</span> occurs in specific situations where an lvalue is &#8220;moved
-from&#8221;, meaning that its current pointee will be used but the object may be left
+<p><span class="arc-term">Moving</span> occurs in specific situations where an lvalue is “moved
+from”, meaning that its current pointee will be used but the object may be left
 in a different (but still valid) state.  This arises with <code class="docutils literal"><span class="pre">__block</span></code> variables
 and rvalue references in C++.  For <code class="docutils literal"><span class="pre">__strong</span></code> lvalues, moving is equivalent
 to loading the lvalue with primitive semantics, writing a null pointer to it
@@ -907,7 +905,7 @@ not support <code class="docutils literal"><span class="pre">__weak</span></code
 <p class="first admonition-title">Rationale</p>
 <p class="last">Historically, it has been possible for a class to provide its own
 reference-count implementation by overriding <code class="docutils literal"><span class="pre">retain</span></code>, <code class="docutils literal"><span class="pre">release</span></code>, etc.
-However, weak references to an object require coordination with its class&#8217;s
+However, weak references to an object require coordination with its class’s
 reference-count implementation because, among other things, weak loads and
 stores must be atomic with respect to the final release.  Therefore, existing
 custom reference-count implementations will generally not support weak
@@ -915,7 +913,7 @@ references without additional effort.  This is unavoidable without breaking
 binary compatibility.</p>
 </div>
 <p>A class may indicate that it does not support weak references by providing the
-<code class="docutils literal"><span class="pre">objc_arc_weak_reference_unavailable</span></code> attribute on the class&#8217;s interface declaration.  A
+<code class="docutils literal"><span class="pre">objc_arc_weak_reference_unavailable</span></code> attribute on the class’s interface declaration.  A
 retainable object pointer type is <strong>weak-unavailable</strong> if
 is a pointer to an (optionally protocol-qualified) Objective-C class <code class="docutils literal"><span class="pre">T</span></code> where
 <code class="docutils literal"><span class="pre">T</span></code> or one of its superclasses has the <code class="docutils literal"><span class="pre">objc_arc_weak_reference_unavailable</span></code>
@@ -938,7 +936,7 @@ sort of safety guarantee there.</p>
 </div>
 <p>It is undefined behavior if a non-null pointer is assigned to an
 <code class="docutils literal"><span class="pre">__autoreleasing</span></code> object while an autorelease pool is in scope and then that
-object is read after the autorelease pool&#8217;s scope is left.</p>
+object is read after the autorelease pool’s scope is left.</p>
 </div>
 <div class="section" id="conversion-of-pointers-to-ownership-qualified-types">
 <span id="arc-ownership-restrictions-conversion-indirect"></span><h4><a class="toc-backref" href="#id27">Conversion of pointers to ownership-qualified types</a><a class="headerlink" href="#conversion-of-pointers-to-ownership-qualified-types" title="Permalink to this headline">¶</a></h4>
@@ -952,7 +950,7 @@ different ownership qualification, unless:</p>
 <li>either <code class="docutils literal"><span class="pre">T</span></code> or <code class="docutils literal"><span class="pre">U</span></code> is <code class="docutils literal"><span class="pre">cv</span> <span class="pre">void</span></code>, where <code class="docutils literal"><span class="pre">cv</span></code> is an optional sequence
 of non-ownership qualifiers; or</li>
 <li>the conversion is requested with a <code class="docutils literal"><span class="pre">reinterpret_cast</span></code> in Objective-C++; or</li>
-<li>the conversion is a well-formed <a class="reference internal" href="#arc-ownership-restrictions-pass-by-writeback"><span>pass-by-writeback</span></a>.</li>
+<li>the conversion is a well-formed <a class="reference internal" href="#arc-ownership-restrictions-pass-by-writeback"><span class="std std-ref">pass-by-writeback</span></a>.</li>
 </ul>
 <p>The analogous rule applies to <code class="docutils literal"><span class="pre">T&amp;</span></code> and <code class="docutils literal"><span class="pre">U&amp;</span></code> in Objective-C++.</p>
 <div class="admonition-rationale admonition">
@@ -960,7 +958,7 @@ of non-ownership qualifiers; or</li>
 <p class="last">These rules provide a reasonable level of type-safety for indirect pointers,
 as long as the underlying memory is not deallocated.  The conversion to
 <code class="docutils literal"><span class="pre">const</span> <span class="pre">__unsafe_unretained</span></code> is permitted because the semantics of reads are
-equivalent across all these ownership semantics, and that&#8217;s a very useful and
+equivalent across all these ownership semantics, and that’s a very useful and
 common pattern.  The interconversion with <code class="docutils literal"><span class="pre">void*</span></code> is useful for allocating
 memory or otherwise escaping the type system, but use it carefully.
 <code class="docutils literal"><span class="pre">reinterpret_cast</span></code> is considered to be an obvious enough sign of taking
@@ -976,10 +974,10 @@ object being first assigned a null pointer.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
 <p class="last">ARC cannot differentiate between an assignment operator which is intended to
-&#8220;initialize&#8221; dynamic memory and one which is intended to potentially replace
-a value.  Therefore the object&#8217;s pointer must be valid before letting ARC at
+“initialize” dynamic memory and one which is intended to potentially replace
+a value.  Therefore the object’s pointer must be valid before letting ARC at
 it.  Similarly, C and Objective-C do not provide any language hooks for
-destroying objects held in dynamic memory, so it is the programmer&#8217;s
+destroying objects held in dynamic memory, so it is the programmer’s
 responsibility to avoid leaks (<code class="docutils literal"><span class="pre">__strong</span></code> objects) and consistency errors
 (<code class="docutils literal"><span class="pre">__weak</span></code> objects).</p>
 </div>
@@ -988,7 +986,7 @@ objects of retainable object owner type with <code class="docutils literal"><spa
 them with <code class="docutils literal"><span class="pre">delete</span></code>, <code class="docutils literal"><span class="pre">delete[]</span></code>, or a pseudo-destructor expression.  Note
 that arrays of nontrivially-ownership-qualified type are not ABI compatible with
 non-ARC code because the element type is non-POD: such arrays that are
-<code class="docutils literal"><span class="pre">new[]</span></code>&#8216;d in ARC translation units cannot be <code class="docutils literal"><span class="pre">delete[]</span></code>&#8216;d in non-ARC
+<code class="docutils literal"><span class="pre">new[]</span></code>’d in ARC translation units cannot be <code class="docutils literal"><span class="pre">delete[]</span></code>’d in non-ARC
 translation units and vice-versa.</p>
 </div>
 <div class="section" id="passing-to-an-out-parameter-by-writeback">
@@ -1018,7 +1016,7 @@ forms</li>
 <p class="last">The restriction in the form of the argument serves two purposes.  First, it
 makes it impossible to pass the address of an array to the argument, which
 serves to protect against an otherwise serious risk of mis-inferring an
-&#8220;array&#8221; argument as an out-parameter.  Second, it makes it much less likely
+“array” argument as an out-parameter.  Second, it makes it much less likely
 that the user will see confusing aliasing problems due to the implementation,
 below, where their store to the writeback temporary is not immediately seen
 in the original argument variable.</p>
@@ -1062,7 +1060,7 @@ with a <code class="docutils literal"><span class="pre">void*</span></code> or a
 <p>This restriction does not apply in Objective-C++.  However, nontrivally
 ownership-qualified types are considered non-POD: in C++11 terms, they are not
 trivially default constructible, copy constructible, move constructible, copy
-assignable, move assignable, or destructible.  It is a violation of C++&#8217;s One
+assignable, move assignable, or destructible.  It is a violation of C++’s One
 Definition Rule to use a class outside of ARC that, under ARC, would have a
 nontrivially ownership-qualified member.</p>
 <div class="admonition-rationale admonition">
@@ -1084,7 +1082,7 @@ ABI-incompatible manner.</p>
 <p>If an object is declared with retainable object owner type, but without an
 explicit ownership qualifier, its type is implicitly adjusted to have
 <code class="docutils literal"><span class="pre">__strong</span></code> qualification.</p>
-<p>As a special case, if the object&#8217;s base type is <code class="docutils literal"><span class="pre">Class</span></code> (possibly
+<p>As a special case, if the object’s base type is <code class="docutils literal"><span class="pre">Class</span></code> (possibly
 protocol-qualified), the type is adjusted to have <code class="docutils literal"><span class="pre">__unsafe_unretained</span></code>
 qualification instead.</p>
 </div>
@@ -1108,7 +1106,7 @@ caution in the following rules about writeback.</p>
 </div>
 <p>Such a type written anywhere else would be ill-formed by the general rule
 requiring ownership qualifiers.</p>
-<p>This rule does not apply in Objective-C++ if a parameter&#8217;s type is dependent in
+<p>This rule does not apply in Objective-C++ if a parameter’s type is dependent in
 a template pattern and is only <em>instantiated</em> to a type which would be a
 pointer to an unqualified retainable object pointer type.  Such code is still
 ill-formed.</p>
@@ -1172,11 +1170,11 @@ declared on a protocol).</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
 <p>There are a fair number of existing methods with <code class="docutils literal"><span class="pre">init</span></code>-like selectors
-which nonetheless don&#8217;t follow the <code class="docutils literal"><span class="pre">init</span></code> conventions.  Typically these
+which nonetheless don’t follow the <code class="docutils literal"><span class="pre">init</span></code> conventions.  Typically these
 are either accidental naming collisions or helper methods called during
 initialization.  Because of the peculiar retain/release behavior of
-<code class="docutils literal"><span class="pre">init</span></code> methods, it&#8217;s very important not to treat these methods as
-<code class="docutils literal"><span class="pre">init</span></code> methods if they aren&#8217;t meant to be.  It was felt that implicitly
+<code class="docutils literal"><span class="pre">init</span></code> methods, it’s very important not to treat these methods as
+<code class="docutils literal"><span class="pre">init</span></code> methods if they aren’t meant to be.  It was felt that implicitly
 defining these methods out of the family based on the exact relationship
 between the return type and the declaring class would be much too subtle
 and fragile.  Therefore we identify a small number of legitimate-seeming
@@ -1185,11 +1183,11 @@ purpose of encouraging programmers not to accidentally give methods names
 in the <code class="docutils literal"><span class="pre">init</span></code> family.</p>
 <p class="last">Note that a method with an <code class="docutils literal"><span class="pre">init</span></code>-family selector which returns a
 non-Objective-C type (e.g. <code class="docutils literal"><span class="pre">void</span></code>) is perfectly well-formed; it simply
-isn&#8217;t in the <code class="docutils literal"><span class="pre">init</span></code> family.</p>
+isn’t in the <code class="docutils literal"><span class="pre">init</span></code> family.</p>
 </div>
 </li>
 </ul>
-<p>A program is ill-formed if a method&#8217;s declarations, implementations, and
+<p>A program is ill-formed if a method’s declarations, implementations, and
 overrides do not all have the same method family.</p>
 <div class="section" id="explicit-method-family-control">
 <span id="arc-family-attribute"></span><h3><a class="toc-backref" href="#id35">Explicit method family control</a><a class="headerlink" href="#explicit-method-family-control" title="Permalink to this headline">¶</a></h3>
@@ -1214,7 +1212,7 @@ naming convention.</p>
 <p class="last">The rules codified in this document describe the standard conventions of
 Objective-C.  However, as these conventions have not heretofore been enforced
 by an unforgiving mechanical system, they are only imperfectly kept,
-especially as they haven&#8217;t always even been precisely defined.  While it is
+especially as they haven’t always even been precisely defined.  While it is
 possible to define low-level ownership semantics with attributes like
 <code class="docutils literal"><span class="pre">ns_returns_retained</span></code>, this attribute allows the user to communicate
 semantic intent, which is of use both to ARC (which, e.g., treats calls to
@@ -1223,29 +1221,29 @@ semantic intent, which is of use both to ARC (which, e.g., treats calls to
 </div>
 <div class="section" id="semantics-of-method-families">
 <span id="arc-family-semantics"></span><h3><a class="toc-backref" href="#id36">Semantics of method families</a><a class="headerlink" href="#semantics-of-method-families" title="Permalink to this headline">¶</a></h3>
-<p>A method&#8217;s membership in a method family may imply non-standard semantics for
+<p>A method’s membership in a method family may imply non-standard semantics for
 its parameters and return type.</p>
-<p>Methods in the <code class="docutils literal"><span class="pre">alloc</span></code>, <code class="docutils literal"><span class="pre">copy</span></code>, <code class="docutils literal"><span class="pre">mutableCopy</span></code>, and <code class="docutils literal"><span class="pre">new</span></code> families &#8212;
-that is, methods in all the currently-defined families except <code class="docutils literal"><span class="pre">init</span></code> &#8212;
-implicitly <a class="reference internal" href="#arc-object-operands-retained-return-values"><span>return a retained object</span></a> as if they were annotated with
+<p>Methods in the <code class="docutils literal"><span class="pre">alloc</span></code>, <code class="docutils literal"><span class="pre">copy</span></code>, <code class="docutils literal"><span class="pre">mutableCopy</span></code>, and <code class="docutils literal"><span class="pre">new</span></code> families —
+that is, methods in all the currently-defined families except <code class="docutils literal"><span class="pre">init</span></code> —
+implicitly <a class="reference internal" href="#arc-object-operands-retained-return-values"><span class="std std-ref">return a retained object</span></a> as if they were annotated with
 the <code class="docutils literal"><span class="pre">ns_returns_retained</span></code> attribute.  This can be overridden by annotating
 the method with either of the <code class="docutils literal"><span class="pre">ns_returns_autoreleased</span></code> or
 <code class="docutils literal"><span class="pre">ns_returns_not_retained</span></code> attributes.</p>
 <p>Properties also follow same naming rules as methods.  This means that those in
 the <code class="docutils literal"><span class="pre">alloc</span></code>, <code class="docutils literal"><span class="pre">copy</span></code>, <code class="docutils literal"><span class="pre">mutableCopy</span></code>, and <code class="docutils literal"><span class="pre">new</span></code> families provide access
-to <a class="reference internal" href="#arc-object-operands-retained-return-values"><span>retained objects</span></a>.  This
+to <a class="reference internal" href="#arc-object-operands-retained-return-values"><span class="std std-ref">retained objects</span></a>.  This
 can be overridden by annotating the property with <code class="docutils literal"><span class="pre">ns_returns_not_retained</span></code>
 attribute.</p>
 <div class="section" id="semantics-of-init">
 <span id="arc-family-semantics-init"></span><h4><a class="toc-backref" href="#id37">Semantics of <code class="docutils literal"><span class="pre">init</span></code></a><a class="headerlink" href="#semantics-of-init" title="Permalink to this headline">¶</a></h4>
-<p>Methods in the <code class="docutils literal"><span class="pre">init</span></code> family implicitly <a class="reference internal" href="#arc-objects-operands-consumed"><span>consume</span></a> their <code class="docutils literal"><span class="pre">self</span></code> parameter and <a class="reference internal" href="#arc-object-operands-retained-return-values"><span>return a
+<p>Methods in the <code class="docutils literal"><span class="pre">init</span></code> family implicitly <a class="reference internal" href="#arc-objects-operands-consumed"><span class="std std-ref">consume</span></a> their <code class="docutils literal"><span class="pre">self</span></code> parameter and <a class="reference internal" href="#arc-object-operands-retained-return-values"><span class="std std-ref">return a
 retained object</span></a>.  Neither of
 these properties can be altered through attributes.</p>
 <p>A call to an <code class="docutils literal"><span class="pre">init</span></code> method with a receiver that is either <code class="docutils literal"><span class="pre">self</span></code> (possibly
 parenthesized or casted) or <code class="docutils literal"><span class="pre">super</span></code> is called a <span class="arc-term">delegate init
 call</span>.  It is an error for a delegate init call to be made except from an
 <code class="docutils literal"><span class="pre">init</span></code> method, and excluding blocks within such methods.</p>
-<p>As an exception to the <a class="reference internal" href="#arc-misc-self"><span>usual rule</span></a>, the variable <code class="docutils literal"><span class="pre">self</span></code>
+<p>As an exception to the <a class="reference internal" href="#arc-misc-self"><span class="std std-ref">usual rule</span></a>, the variable <code class="docutils literal"><span class="pre">self</span></code>
 is mutable in an <code class="docutils literal"><span class="pre">init</span></code> method and has the usual semantics for a <code class="docutils literal"><span class="pre">__strong</span></code>
 variable.  However, it is undefined behavior and the program is ill-formed, no
 diagnostic required, if an <code class="docutils literal"><span class="pre">init</span></code> method attempts to use the previous value
@@ -1279,7 +1277,7 @@ send expression has type <code class="docutils literal"><span class="pre">T</spa
 <p>This is a new rule of the Objective-C language and applies outside of ARC.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
-<p class="last">ARC&#8217;s automatic code emission is more prone than most code to signature
+<p class="last">ARC’s automatic code emission is more prone than most code to signature
 errors, i.e. errors where a call was emitted against one method signature,
 but the implementing method has an incompatible signature.  Having more
 precise type information helps drastically lower this risk, as well as
@@ -1304,8 +1302,8 @@ object pointer.  The corresponding actual sequence executed is the
 <cite>dynamic local retain history</cite>.</p>
 <p>However, under certain circumstances, ARC is permitted to re-order and
 eliminate operations in a manner which may alter the overall
-computation history beyond what is permitted by the general &#8220;as if&#8221;
-rule of C/C++ and the <a class="reference internal" href="#arc-objects-retains"><span>restrictions</span></a> on
+computation history beyond what is permitted by the general “as if”
+rule of C/C++ and the <a class="reference internal" href="#arc-objects-retains"><span class="std std-ref">restrictions</span></a> on
 the implementation of <code class="docutils literal"><span class="pre">retain</span></code> and <code class="docutils literal"><span class="pre">release</span></code>.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
@@ -1314,7 +1312,7 @@ operations in ways which might cause an object to be deallocated
 before it would otherwise be.  Without this, it would be almost
 impossible to eliminate any <code class="docutils literal"><span class="pre">retain</span></code>/<code class="docutils literal"><span class="pre">release</span></code> pairs.  For
 example, consider the following code:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="kt">id</span> <span class="n">x</span> <span class="o">=</span> <span class="n">_ivar</span><span class="p">;</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="kt">id</span> <span class="n">x</span> <span class="o">=</span> <span class="n">_ivar</span><span class="p">;</span>
 <span class="p">[</span><span class="n">x</span> <span class="n">foo</span><span class="p">];</span>
 </pre></div>
 </div>
@@ -1322,7 +1320,7 @@ example, consider the following code:</p>
 object in <code class="docutils literal"><span class="pre">x</span></code>, then we would not be able to eliminate this retain
 and release unless we could prove that the message send could not
 modify <code class="docutils literal"><span class="pre">_ivar</span></code> (or deallocate <code class="docutils literal"><span class="pre">self</span></code>).  Since message sends are
-opaque to the optimizer, this is not possible, and so ARC&#8217;s hands
+opaque to the optimizer, this is not possible, and so ARC’s hands
 would be almost completely tied.</p>
 </div>
 <p>ARC makes no guarantees about the execution of a computation history
@@ -1348,14 +1346,14 @@ except as guaranteed by <code class="docutils literal"><span class="pre">__stron
 conventions.  For example, if an object is provably double-retained
 and double-released, ARC may eliminate the inner retain and release;
 it does not need to guard against code which performs an unbalanced
-release followed by a &#8220;balancing&#8221; retain.</p>
+release followed by a “balancing” retain.</p>
 <div class="section" id="object-liveness">
 <span id="arc-optimization-liveness"></span><h3><a class="toc-backref" href="#id40">Object liveness</a><a class="headerlink" href="#object-liveness" title="Permalink to this headline">¶</a></h3>
 <p>ARC may not allow a retainable object <code class="docutils literal"><span class="pre">X</span></code> to be deallocated at a
 time <code class="docutils literal"><span class="pre">T</span></code> in a computation history if:</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">X</span></code> is the value stored in a <code class="docutils literal"><span class="pre">__strong</span></code> object <code class="docutils literal"><span class="pre">S</span></code> with
-<a class="reference internal" href="#arc-optimization-precise"><span>precise lifetime semantics</span></a>, or</li>
+<a class="reference internal" href="#arc-optimization-precise"><span class="std std-ref">precise lifetime semantics</span></a>, or</li>
 <li><code class="docutils literal"><span class="pre">X</span></code> is the value stored in a <code class="docutils literal"><span class="pre">__strong</span></code> object <code class="docutils literal"><span class="pre">S</span></code> with
 imprecise lifetime semantics and, at some point after <code class="docutils literal"><span class="pre">T</span></code> but
 before the next store to <code class="docutils literal"><span class="pre">S</span></code>, the computation history features a
@@ -1372,7 +1370,7 @@ on that value.</li>
 the variable is no longer being used: either the variable stops
 being used completely or a new value is stored in the variable.</p>
 <p class="last">The intent of the third rule is to say that return values may be
-released after they&#8217;ve been used.</p>
+released after they’ve been used.</p>
 </div>
 <p>A computation history depends on a pointer value <code class="docutils literal"><span class="pre">P</span></code> if it:</p>
 <ul class="simple">
@@ -1391,10 +1389,10 @@ dependency is not carried by values that are stored to objects.</p>
 <p class="first admonition-title">Rationale</p>
 <p>The restrictions on dependency are intended to make this analysis
 feasible by an optimizer with only incomplete information about a
-program.  Essentially, dependence is carried to &#8220;obvious&#8221; uses of a
+program.  Essentially, dependence is carried to “obvious” uses of a
 pointer.  Merely passing a pointer argument to a function does not
 itself cause dependence, but since generally the optimizer will not
-be able to prove that the function doesn&#8217;t depend on that parameter,
+be able to prove that the function doesn’t depend on that parameter,
 it will be forced to conservatively assume it does.</p>
 <p>Dependency propagates to values loaded from a pointer because those
 values might be invalidated by deallocating the object.  For
@@ -1436,11 +1434,11 @@ lifetime of a retainable object, other than as specified in this
 document.  Together with the rule limiting the transformation of
 releases, this rule requires ARC to eliminate retains and release
 only in pairs.</p>
-<p class="last">ARC&#8217;s power to reorder the destruction of objects is critical to its
+<p class="last">ARC’s power to reorder the destruction of objects is critical to its
 ability to do any optimization, for essentially the same reason that
 it must retain the power to decrease the lifetime of an object.
-Unfortunately, while it&#8217;s generally poor style for the destruction
-of objects to have arbitrary side-effects, it&#8217;s certainly possible.
+Unfortunately, while it’s generally poor style for the destruction
+of objects to have arbitrary side-effects, it’s certainly possible.
 Hence the caveat.</p>
 </div>
 </div>
@@ -1497,7 +1495,7 @@ accidentally tried to incorporate code written for manual retain/release code
 into an ARC program.  At best, such code would do twice as much work as
 necessary; quite frequently, however, ARC and the explicit code would both
 try to balance the same retain, leading to crashes.  The cost is losing the
-ability to perform &#8220;unrooted&#8221; retains, i.e. retains not logically
+ability to perform “unrooted” retains, i.e. retains not logically
 corresponding to a strong reference in the object graph.</p>
 <p><strong>Ignoring</strong> them would badly violate user expectations about their code.
 While it <em>would</em> make it easier to develop code simultaneously for ARC and
@@ -1505,7 +1503,7 @@ non-ARC, there is very little reason to do so except for certain library
 developers.  ARC and non-ARC translation units share an execution model and
 can seamlessly interoperate.  Within a translation unit, a developer who
 faithfully maintains their code in non-ARC mode is suffering all the
-restrictions of ARC for zero benefit, while a developer who isn&#8217;t testing the
+restrictions of ARC for zero benefit, while a developer who isn’t testing the
 non-ARC mode is likely to be unpleasantly surprised if they try to go back to
 it.</p>
 <p><strong>Banning</strong> them has the disadvantage of making it very awkward to migrate
@@ -1516,7 +1514,7 @@ users in that migration.</p>
 semantics of ARC; many tricks which worked tolerably under manual reference
 counting will misbehave if ARC performs an ephemeral extra retain or two.  If
 absolutely required, it is still possible to implement them in non-ARC code,
-for example in a category; the implementations must obey the <a class="reference internal" href="#arc-objects-retains"><span>semantics</span></a> laid out elsewhere in this document.</p>
+for example in a category; the implementations must obey the <a class="reference internal" href="#arc-objects-retains"><span class="std std-ref">semantics</span></a> laid out elsewhere in this document.</p>
 </div>
 </div>
 <div class="section" id="dealloc">
@@ -1530,7 +1528,7 @@ expression for the selector <code class="docutils literal"><span class="pre">dea
 <p>A class may provide a method definition for an instance method named
 <code class="docutils literal"><span class="pre">dealloc</span></code>.  This method will be called after the final <code class="docutils literal"><span class="pre">release</span></code> of the
 object but before it is deallocated or any of its instance variables are
-destroyed.  The superclass&#8217;s implementation of <code class="docutils literal"><span class="pre">dealloc</span></code> will be called
+destroyed.  The superclass’s implementation of <code class="docutils literal"><span class="pre">dealloc</span></code> will be called
 automatically when the method returns.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
@@ -1543,7 +1541,7 @@ for the object to be raising such objections.  Somewhat more legitimately, an
 object may have been pool-allocated and should not be deallocated with
 <code class="docutils literal"><span class="pre">free</span></code>; for now, this can only be supported with a <code class="docutils literal"><span class="pre">dealloc</span></code>
 implementation outside of ARC.  Such an implementation must be very careful
-to do all the other work that <code class="docutils literal"><span class="pre">NSObject</span></code>&#8216;s <code class="docutils literal"><span class="pre">dealloc</span></code> would, which is
+to do all the other work that <code class="docutils literal"><span class="pre">NSObject</span></code>’s <code class="docutils literal"><span class="pre">dealloc</span></code> would, which is
 outside the scope of this document to describe.</p>
 </div>
 <p>The instance variables for an ARC-compiled class will be destroyed at some
@@ -1558,10 +1556,10 @@ message sends from the superclass are quite capable of reaching methods in
 the subclass, and those methods may well read or write to those instance
 variables.  Making such message sends from dealloc is generally discouraged,
 since the subclass may well rely on other invariants that were broken during
-<code class="docutils literal"><span class="pre">dealloc</span></code>, but it&#8217;s not so inescapably dangerous that we felt comfortable
+<code class="docutils literal"><span class="pre">dealloc</span></code>, but it’s not so inescapably dangerous that we felt comfortable
 calling it undefined behavior.  Therefore we chose to delay destroying the
 instance variables to a point at which message sends are clearly disallowed:
-the point at which the root class&#8217;s deallocation routines take over.</p>
+the point at which the root class’s deallocation routines take over.</p>
 <p class="last">In most code, the difference is not observable.  It can, however, be observed
 if an instance variable holds a strong reference to an object whose
 deallocation will trigger a side-effect which must be carefully ordered with
@@ -1594,7 +1592,7 @@ semantics.</p>
 it is far too much to expect the compiler to accurately reason about control
 dependencies between two calls.  It is also very easy to accidentally forget
 to drain an autorelease pool when using the manual API, and this can
-significantly inflate the process&#8217;s high-water-mark.  The introduction of a
+significantly inflate the process’s high-water-mark.  The introduction of a
 new scope is unfortunate but basically required for sane interaction with the
 rest of the language.  Not draining the pool during an unwind is apparently
 required by the Objective-C exceptions implementation.</p>
@@ -1607,16 +1605,16 @@ retained by the implementation.  It is undefined behavior, or at least
 dangerous, to cause an object to be deallocated during a message send to that
 object.</p>
 <p>To make this safe, for Objective-C instance methods <code class="docutils literal"><span class="pre">self</span></code> is implicitly
-<code class="docutils literal"><span class="pre">const</span></code> unless the method is in the <a class="reference internal" href="#arc-family-semantics-init"><span>init family</span></a>.  Further, <code class="docutils literal"><span class="pre">self</span></code> is <strong>always</strong> implicitly
+<code class="docutils literal"><span class="pre">const</span></code> unless the method is in the <a class="reference internal" href="#arc-family-semantics-init"><span class="std std-ref">init family</span></a>.  Further, <code class="docutils literal"><span class="pre">self</span></code> is <strong>always</strong> implicitly
 <code class="docutils literal"><span class="pre">const</span></code> within a class method.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
 <p class="last">The cost of retaining <code class="docutils literal"><span class="pre">self</span></code> in all methods was found to be prohibitive, as
 it tends to be live across calls, preventing the optimizer from proving that
-the retain and release are unnecessary &#8212; for good reason, as it&#8217;s quite
+the retain and release are unnecessary — for good reason, as it’s quite
 possible in theory to cause an object to be deallocated during its execution
-without this retain and release.  Since it&#8217;s extremely uncommon to actually
-do so, even unintentionally, and since there&#8217;s no natural way for the
+without this retain and release.  Since it’s extremely uncommon to actually
+do so, even unintentionally, and since there’s no natural way for the
 programmer to remove this retain/release pair otherwise (as there is for
 other parameters by, say, making the variable <code class="docutils literal"><span class="pre">__unsafe_unretained</span></code>), we
 chose to make this optimizing assumption and shift some amount of risk to the
@@ -1645,7 +1643,7 @@ literal expression have the same ownership semantics as the local variables
 they capture.  The capture is performed by reading from the captured variable
 and initializing the capture variable with that value; the capture variable is
 destroyed when the block literal is, i.e. at the end of the enclosing scope.</p>
-<p>The <a class="reference internal" href="#arc-ownership-inference"><span>inference</span></a> rules apply equally to
+<p>The <a class="reference internal" href="#arc-ownership-inference"><span class="std std-ref">inference</span></a> rules apply equally to
 <code class="docutils literal"><span class="pre">__block</span></code> variables, which is a shift in semantics from non-ARC, where
 <code class="docutils literal"><span class="pre">__block</span></code> variables did not implicitly retain during capture.</p>
 <p><code class="docutils literal"><span class="pre">__block</span></code> variables of retainable object owner type are moved off the stack
@@ -1667,7 +1665,7 @@ full-expression if that full-expression throws an exception.</li>
 </ul>
 <p>A program may be compiled with the option <code class="docutils literal"><span class="pre">-fobjc-arc-exceptions</span></code> in order to
 enable these, or with the option <code class="docutils literal"><span class="pre">-fno-objc-arc-exceptions</span></code> to explicitly
-disable them, with the last such argument &#8220;winning&#8221;.</p>
+disable them, with the last such argument “winning”.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
 <p class="last">The standard Cocoa convention is that exceptions signal programmer error and
@@ -1702,7 +1700,7 @@ exceptions.</p>
 the <code class="docutils literal"><span class="pre">objc_returns_inner_pointer</span></code> attribute to indicate that it returns a
 handle to the internal data of an object, and that this reference will be
 invalidated if the object is destroyed.  When such a message is sent to an
-object, the object&#8217;s lifetime will be extended until at least the earliest of:</p>
+object, the object’s lifetime will be extended until at least the earliest of:</p>
 <ul class="simple">
 <li>the last use of the returned pointer, or any pointer derived from it, in the
 calling function or</li>
@@ -1714,13 +1712,13 @@ calling function or</li>
 is common for objects to manage private resources in their own, private way.
 Typically these resources are completely encapsulated within the object, but
 some classes offer their users direct access for efficiency.  If ARC is not
-aware of methods that return such &#8220;interior&#8221; pointers, its optimizations can
+aware of methods that return such “interior” pointers, its optimizations can
 cause the owning object to be reclaimed too soon.  This attribute informs ARC
 that it must tread lightly.</p>
 <p class="last">The extension rules are somewhat intentionally vague.  The autorelease pool
 limit is there to permit a simple implementation to simply retain and
 autorelease the receiver.  The other limit permits some amount of
-optimization.  The phrase &#8220;derived from&#8221; is intended to encompass the results
+optimization.  The phrase “derived from” is intended to encompass the results
 both of pointer transformations, such as casts and arithmetic, and of loading
 from such derived pointers; furthermore, it applies whether or not such
 derivations are applied directly in the calling code or by other utility code
@@ -1729,11 +1727,11 @@ never need account for uses after a return from the code which calls the
 method returning an interior pointer.</p>
 </div>
 <p>As an exception, no extension is required if the receiver is loaded directly
-from a <code class="docutils literal"><span class="pre">__strong</span></code> object with <a class="reference internal" href="#arc-optimization-precise"><span>precise lifetime semantics</span></a>.</p>
+from a <code class="docutils literal"><span class="pre">__strong</span></code> object with <a class="reference internal" href="#arc-optimization-precise"><span class="std std-ref">precise lifetime semantics</span></a>.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
 <p class="last">Implicit autoreleases carry the risk of significantly inflating memory use,
-so it&#8217;s important to provide users a way of avoiding these autoreleases.
+so it’s important to provide users a way of avoiding these autoreleases.
 Tying this to precise lifetime semantics is ideal, as for local variables
 this requires a very explicit annotation, which allows ARC to trust the user
 with good cheer.</p>
@@ -1772,16 +1770,16 @@ the create/copy naming convention and is not marked
 <p>A function obeys the <span class="arc-term">create/copy</span> naming convention if its name
 contains as a substring:</p>
 <ul class="simple">
-<li>either &#8220;Create&#8221; or &#8220;Copy&#8221; not followed by a lowercase letter, or</li>
-<li>either &#8220;create&#8221; or &#8220;copy&#8221; not followed by a lowercase letter and
+<li>either “Create” or “Copy” not followed by a lowercase letter, or</li>
+<li>either “create” or “copy” not followed by a lowercase letter and
 not preceded by any letter, whether uppercase or lowercase.</li>
 </ul>
-<p>A second attribute, <code class="docutils literal"><span class="pre">cf_unknown_transfer</span></code>, signifies that a function&#8217;s
+<p>A second attribute, <code class="docutils literal"><span class="pre">cf_unknown_transfer</span></code>, signifies that a function’s
 transfer semantics cannot be accurately captured using any of these
 annotations.  A program is ill-formed if it annotates the same function with
 both <code class="docutils literal"><span class="pre">cf_audited_transfer</span></code> and <code class="docutils literal"><span class="pre">cf_unknown_transfer</span></code>.</p>
 <p>A pragma is provided to facilitate the mass annotation of interfaces:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="cp">#pragma clang arc_cf_code_audited begin</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="cp">#pragma clang arc_cf_code_audited begin</span>
 <span class="p">...</span>
 <span class="cp">#pragma clang arc_cf_code_audited end</span>
 </pre></div>
@@ -1800,7 +1798,7 @@ interacting with APIs based around C retainable pointers.  These features are
 designed to make it relatively easy for API authors to quickly review and
 annotate their interfaces, in turn improving the fidelity of tools such as
 the static analyzer and ARC.  The single-file restriction on the pragma is
-designed to eliminate the risk of accidentally annotating some other header&#8217;s
+designed to eliminate the risk of accidentally annotating some other header’s
 interfaces.</p>
 </div>
 </div>
@@ -1811,7 +1809,7 @@ interfaces.</p>
 <p>This section describes the interaction between the ARC runtime and the code
 generated by the ARC compiler.  This is not part of the ARC language
 specification; instead, it is effectively a language-specific ABI supplement,
-akin to the &#8220;Itanium&#8221; generic ABI for C++.</p>
+akin to the “Itanium” generic ABI for C++.</p>
 <p>Ownership qualification does not alter the storage requirements for objects,
 except that it is undefined behavior if a <code class="docutils literal"><span class="pre">__weak</span></code> object is inadequately
 aligned for an object of type <code class="docutils literal"><span class="pre">id</span></code>.  The other qualifiers may be used on
@@ -1819,9 +1817,9 @@ explicitly under-aligned memory.</p>
 <p>The runtime tracks <code class="docutils literal"><span class="pre">__weak</span></code> objects which holds non-null values.  It is
 undefined behavior to direct modify a <code class="docutils literal"><span class="pre">__weak</span></code> object which is being tracked
 by the runtime except through an
-<a class="reference internal" href="#arc-runtime-objc-storeweak"><span>objc_storeWeak</span></a>,
-<a class="reference internal" href="#arc-runtime-objc-destroyweak"><span>objc_destroyWeak</span></a>, or
-<a class="reference internal" href="#arc-runtime-objc-moveweak"><span>objc_moveWeak</span></a> call.</p>
+<a class="reference internal" href="#arc-runtime-objc-storeweak"><span class="std std-ref">objc_storeWeak</span></a>,
+<a class="reference internal" href="#arc-runtime-objc-destroyweak"><span class="std std-ref">objc_destroyWeak</span></a>, or
+<a class="reference internal" href="#arc-runtime-objc-moveweak"><span class="std std-ref">objc_moveWeak</span></a> call.</p>
 <p>The runtime must provide a number of new entrypoints which the compiler may
 emit, which are described in the remainder of this section.</p>
 <div class="admonition-rationale admonition">
@@ -1834,7 +1832,7 @@ emit calls to C functions instead because:</p>
 <li>a sufficient sophisticated runtime may be able to avoid the message send in
 common cases.</li>
 </ul>
-<p class="last">Several other of these functions are &#8220;fused&#8221; operations which can be
+<p class="last">Several other of these functions are “fused” operations which can be
 described entirely in terms of other operations.  We use the fused operations
 primarily as a code-size optimization, although in some cases there is also a
 real potential for avoiding redundant operations in the runtime.</p>
@@ -1850,7 +1848,7 @@ to the innermost autorelease pool exactly as if the object had been sent the
 <div class="section" id="void-objc-autoreleasepoolpop-void-pool">
 <span id="arc-runtime-objc-autoreleasepoolpop"></span><h3><a class="toc-backref" href="#id57"><code class="docutils literal"><span class="pre">void</span> <span class="pre">objc_autoreleasePoolPop(void</span> <span class="pre">*pool);</span></code></a><a class="headerlink" href="#void-objc-autoreleasepoolpop-void-pool" title="Permalink to this headline">¶</a></h3>
 <p><em>Precondition:</em> <code class="docutils literal"><span class="pre">pool</span></code> is the result of a previous call to
-<a class="reference internal" href="#arc-runtime-objc-autoreleasepoolpush"><span>objc_autoreleasePoolPush</span></a> on the
+<a class="reference internal" href="#arc-runtime-objc-autoreleasepoolpush"><span class="std std-ref">objc_autoreleasePoolPush</span></a> on the
 current thread, where neither <code class="docutils literal"><span class="pre">pool</span></code> nor any enclosing pool have previously
 been popped.</p>
 <p>Releases all the objects added to the given autorelease pool and any
@@ -1860,7 +1858,7 @@ pool directly enclosing <code class="docutils literal"><span class="pre">pool</s
 <div class="section" id="void-objc-autoreleasepoolpush-void">
 <span id="arc-runtime-objc-autoreleasepoolpush"></span><h3><a class="toc-backref" href="#id58"><code class="docutils literal"><span class="pre">void</span> <span class="pre">*objc_autoreleasePoolPush(void);</span></code></a><a class="headerlink" href="#void-objc-autoreleasepoolpush-void" title="Permalink to this headline">¶</a></h3>
 <p>Creates a new autorelease pool that is enclosed by the current pool, makes that
-the current pool, and returns an opaque &#8220;handle&#8221; to it.</p>
+the current pool, and returns an opaque “handle” to it.</p>
 <div class="admonition-rationale admonition">
 <p class="first admonition-title">Rationale</p>
 <p class="last">While the interface is described as an explicit hierarchy of pools, the rules
@@ -1873,7 +1871,7 @@ depth as the opaque pool handle.</p>
 <p><em>Precondition:</em> <code class="docutils literal"><span class="pre">value</span></code> is null or a pointer to a valid object.</p>
 <p>If <code class="docutils literal"><span class="pre">value</span></code> is null, this call has no effect.  Otherwise, it makes a best
 effort to hand off ownership of a retain count on the object to a call to
-<a class="reference internal" href="#arc-runtime-objc-retainautoreleasedreturnvalue"><span>objc_retainAutoreleasedReturnValue</span></a> for the same object in an
+<a class="reference internal" href="#arc-runtime-objc-retainautoreleasedreturnvalue"><span class="std std-ref">objc_retainAutoreleasedReturnValue</span></a> for the same object in an
 enclosing call frame.  If this is not possible, the object is autoreleased as
 above.</p>
 <p>Always returns <code class="docutils literal"><span class="pre">value</span></code>.</p>
@@ -1885,7 +1883,7 @@ or has been registered as a <code class="docutils literal"><span class="pre">__w
 which has not been registered as a <code class="docutils literal"><span class="pre">__weak</span></code> object.</p>
 <p><code class="docutils literal"><span class="pre">dest</span></code> is initialized to be equivalent to <code class="docutils literal"><span class="pre">src</span></code>, potentially registering it
 with the runtime.  Equivalent to the following code:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">objc_copyWeak</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">dest</span><span class="p">,</span> <span class="kt">id</span> <span class="o">*</span><span class="n">src</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">objc_copyWeak</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">dest</span><span class="p">,</span> <span class="kt">id</span> <span class="o">*</span><span class="n">src</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">objc_release</span><span class="p">(</span><span class="n">objc_initWeak</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">objc_loadWeakRetained</span><span class="p">(</span><span class="n">src</span><span class="p">)));</span>
 <span class="p">}</span>
 </pre></div>
@@ -1898,7 +1896,7 @@ with the runtime.  Equivalent to the following code:</p>
 pointer or has been registered as a <code class="docutils literal"><span class="pre">__weak</span></code> object.</p>
 <p><code class="docutils literal"><span class="pre">object</span></code> is unregistered as a weak object, if it ever was.  The current value
 of <code class="docutils literal"><span class="pre">object</span></code> is left unspecified; otherwise, equivalent to the following code:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">objc_destroyWeak</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">object</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">objc_destroyWeak</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">object</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">objc_storeWeak</span><span class="p">(</span><span class="n">object</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
@@ -1914,7 +1912,7 @@ a <code class="docutils literal"><span class="pre">__weak</span></code> object. 
 deallocation, <code class="docutils literal"><span class="pre">object</span></code> is zero-initialized.  Otherwise, <code class="docutils literal"><span class="pre">object</span></code> is
 registered as a <code class="docutils literal"><span class="pre">__weak</span></code> object pointing to <code class="docutils literal"><span class="pre">value</span></code>.  Equivalent to the
 following code:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="kt">id</span> <span class="nf">objc_initWeak</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">object</span><span class="p">,</span> <span class="kt">id</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="kt">id</span> <span class="nf">objc_initWeak</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">object</span><span class="p">,</span> <span class="kt">id</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
   <span class="o">*</span><span class="n">object</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
   <span class="k">return</span> <span class="n">objc_storeWeak</span><span class="p">(</span><span class="n">object</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
 <span class="p">}</span>
@@ -1932,7 +1930,7 @@ pointer or has been registered as a <code class="docutils literal"><span class="
 into <code class="docutils literal"><span class="pre">object</span></code> has not yet been deallocated or begun deallocation, retains and
 autoreleases that value and returns it.  Otherwise returns null.  Equivalent to
 the following code:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="kt">id</span> <span class="nf">objc_loadWeak</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">object</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="kt">id</span> <span class="nf">objc_loadWeak</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">object</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="n">objc_autorelease</span><span class="p">(</span><span class="n">objc_loadWeakRetained</span><span class="p">(</span><span class="n">object</span><span class="p">));</span>
 <span class="p">}</span>
 </pre></div>
@@ -1960,7 +1958,7 @@ or has been registered as a <code class="docutils literal"><span class="pre">__w
 which has not been registered as a <code class="docutils literal"><span class="pre">__weak</span></code> object.</p>
 <p><code class="docutils literal"><span class="pre">dest</span></code> is initialized to be equivalent to <code class="docutils literal"><span class="pre">src</span></code>, potentially registering it
 with the runtime.  <code class="docutils literal"><span class="pre">src</span></code> may then be left in its original state, in which
-case this call is equivalent to <a class="reference internal" href="#arc-runtime-objc-copyweak"><span>objc_copyWeak</span></a>, or it may be left as null.</p>
+case this call is equivalent to <a class="reference internal" href="#arc-runtime-objc-copyweak"><span class="std std-ref">objc_copyWeak</span></a>, or it may be left as null.</p>
 <p>Must be atomic with respect to calls to <code class="docutils literal"><span class="pre">objc_storeWeak</span></code> on <code class="docutils literal"><span class="pre">src</span></code>.</p>
 </div>
 <div class="section" id="void-objc-release-id-value">
@@ -1983,7 +1981,7 @@ operation exactly as if the object had been sent the <code class="docutils liter
 <p>If <code class="docutils literal"><span class="pre">value</span></code> is null, this call has no effect.  Otherwise, it performs a retain
 operation followed by an autorelease operation.  Equivalent to the following
 code:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="kt">id</span> <span class="nf">objc_retainAutorelease</span><span class="p">(</span><span class="kt">id</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="kt">id</span> <span class="nf">objc_retainAutorelease</span><span class="p">(</span><span class="kt">id</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="n">objc_autorelease</span><span class="p">(</span><span class="n">objc_retain</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
 <span class="p">}</span>
 </pre></div>
@@ -1995,9 +1993,9 @@ code:</p>
 <p><em>Precondition:</em> <code class="docutils literal"><span class="pre">value</span></code> is null or a pointer to a valid object.</p>
 <p>If <code class="docutils literal"><span class="pre">value</span></code> is null, this call has no effect.  Otherwise, it performs a retain
 operation followed by the operation described in
-<a class="reference internal" href="#arc-runtime-objc-autoreleasereturnvalue"><span>objc_autoreleaseReturnValue</span></a>.
+<a class="reference internal" href="#arc-runtime-objc-autoreleasereturnvalue"><span class="std std-ref">objc_autoreleaseReturnValue</span></a>.
 Equivalent to the following code:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="kt">id</span> <span class="nf">objc_retainAutoreleaseReturnValue</span><span class="p">(</span><span class="kt">id</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="kt">id</span> <span class="nf">objc_retainAutoreleaseReturnValue</span><span class="p">(</span><span class="kt">id</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="n">objc_autoreleaseReturnValue</span><span class="p">(</span><span class="n">objc_retain</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
 <span class="p">}</span>
 </pre></div>
@@ -2009,9 +2007,9 @@ Equivalent to the following code:</p>
 <p><em>Precondition:</em> <code class="docutils literal"><span class="pre">value</span></code> is null or a pointer to a valid object.</p>
 <p>If <code class="docutils literal"><span class="pre">value</span></code> is null, this call has no effect.  Otherwise, it attempts to
 accept a hand off of a retain count from a call to
-<a class="reference internal" href="#arc-runtime-objc-autoreleasereturnvalue"><span>objc_autoreleaseReturnValue</span></a> on
+<a class="reference internal" href="#arc-runtime-objc-autoreleasereturnvalue"><span class="std std-ref">objc_autoreleaseReturnValue</span></a> on
 <code class="docutils literal"><span class="pre">value</span></code> in a recently-called function or something it calls.  If that fails,
-it performs a retain operation exactly like <a class="reference internal" href="#arc-runtime-objc-retain"><span>objc_retain</span></a>.</p>
+it performs a retain operation exactly like <a class="reference internal" href="#arc-runtime-objc-retain"><span class="std std-ref">objc_retain</span></a>.</p>
 <p>Always returns <code class="docutils literal"><span class="pre">value</span></code>.</p>
 </div>
 <div class="section" id="arc-runtime-objc-retainblock">
@@ -2029,7 +2027,7 @@ adequately aligned for a pointer.  <code class="docutils literal"><span class="p
 object.</p>
 <p>Performs the complete sequence for assigning to a <code class="docutils literal"><span class="pre">__strong</span></code> object of
 non-block type <a class="footnote-reference" href="#id3" id="id2">[*]</a>.  Equivalent to the following code:</p>
-<div class="highlight-objc"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">objc_storeStrong</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">object</span><span class="p">,</span> <span class="kt">id</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-objc"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">objc_storeStrong</span><span class="p">(</span><span class="kt">id</span> <span class="o">*</span><span class="n">object</span><span class="p">,</span> <span class="kt">id</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
   <span class="kt">id</span> <span class="n">oldValue</span> <span class="o">=</span> <span class="o">*</span><span class="n">object</span><span class="p">;</span>
   <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span> <span class="k">retain</span><span class="p">];</span>
   <span class="o">*</span><span class="n">object</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
@@ -2070,14 +2068,14 @@ registration updated to point to <code class="docutils literal"><span class="pre
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="AttributeReference.html">Attributes in Clang</a>&#160;&#160;»
+        <a href="ClangCommandLineReference.html">Clang command line argument reference</a>&#160;&#160;»
         </p>
 
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

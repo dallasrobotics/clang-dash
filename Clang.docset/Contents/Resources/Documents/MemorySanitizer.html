@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>MemorySanitizer &mdash; Clang 4 documentation</title>
-    
+    <title>MemorySanitizer &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="UndefinedBehaviorSanitizer" href="UndefinedBehaviorSanitizer.html" />
     <link rel="prev" title="ThreadSanitizer" href="ThreadSanitizer.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>MemorySanitizer</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -85,13 +84,13 @@ compiler instrumentation module and a run-time library.</p>
 The MemorySanitizer run-time library should be linked to the final
 executable, so make sure to use <code class="docutils literal"><span class="pre">clang</span></code> (not <code class="docutils literal"><span class="pre">ld</span></code>) for the final
 link step. When linking shared libraries, the MemorySanitizer run-time
-is not linked, so <code class="docutils literal"><span class="pre">-Wl,-z,defs</span></code> may cause link errors (don&#8217;t use it
+is not linked, so <code class="docutils literal"><span class="pre">-Wl,-z,defs</span></code> may cause link errors (don’t use it
 with MemorySanitizer). To get a reasonable performance add <code class="docutils literal"><span class="pre">-O1</span></code> or
-higher. To get meaninful stack traces in error messages add
+higher. To get meaningful stack traces in error messages add
 <code class="docutils literal"><span class="pre">-fno-omit-frame-pointer</span></code>. To get perfect stack traces you may need
 to disable inlining (just use <code class="docutils literal"><span class="pre">-O1</span></code>) and tail call elimination
 (<code class="docutils literal"><span class="pre">-fno-optimize-sibling-calls</span></code>).</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> cat umr.cc
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">%</span> cat umr.cc
 <span class="gp">#</span>include &lt;stdio.h&gt;
 
 <span class="go">int main(int argc, char** argv) {</span>
@@ -107,7 +106,7 @@ to disable inlining (just use <code class="docutils literal"><span class="pre">-
 </div>
 <p>If a bug is detected, the program will print an error message to
 stderr and exit with a non-zero exit code.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> ./a.out
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">%</span> ./a.out
 <span class="go">WARNING: MemorySanitizer: use-of-uninitialized-value</span>
 <span class="gp">    #</span><span class="m">0</span> 0x7f45944b418a in main umr.cc:6
 <span class="gp">    #</span><span class="m">1</span> 0x7f45938b676c in __libc_start_main libc-start.c:226
@@ -115,12 +114,12 @@ stderr and exit with a non-zero exit code.</p>
 </div>
 <p>By default, MemorySanitizer exits on the first detected error. If you
 find the error report hard to understand, try enabling
-<a class="reference internal" href="#msan-origins"><span>origin tracking</span></a>.</p>
+<a class="reference internal" href="#msan-origins"><span class="std std-ref">origin tracking</span></a>.</p>
 <div class="section" id="has-feature-memory-sanitizer">
 <h3><a class="toc-backref" href="#id4"><code class="docutils literal"><span class="pre">__has_feature(memory_sanitizer)</span></code></a><a class="headerlink" href="#has-feature-memory-sanitizer" title="Permalink to this headline">¶</a></h3>
 <p>In some cases one may need to execute different code depending on
-whether MemorySanitizer is enabled. <a class="reference internal" href="LanguageExtensions.html#langext-has-feature-has-extension"><span>__has_feature</span></a> can be used for this purpose.</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="cp">#if defined(__has_feature)</span>
+whether MemorySanitizer is enabled. <a class="reference internal" href="LanguageExtensions.html#langext-has-feature-has-extension"><span class="std std-ref">__has_feature</span></a> can be used for this purpose.</p>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="cp">#if defined(__has_feature)</span>
 <span class="cp">#  if __has_feature(memory_sanitizer)</span>
 <span class="c1">// code that builds only under MemorySanitizer</span>
 <span class="cp">#  endif</span>
@@ -139,8 +138,8 @@ so we suggest to use it together with <code class="docutils literal"><span class
 <div class="section" id="blacklist">
 <h3><a class="toc-backref" href="#id6">Blacklist</a><a class="headerlink" href="#blacklist" title="Permalink to this headline">¶</a></h3>
 <p>MemorySanitizer supports <code class="docutils literal"><span class="pre">src</span></code> and <code class="docutils literal"><span class="pre">fun</span></code> entity types in
-<a class="reference internal" href="SanitizerSpecialCaseList.html"><em>Sanitizer special case list</em></a>, that can be used to relax MemorySanitizer
-checks for certain source files and functions. All &#8220;Use of uninitialized value&#8221;
+<a class="reference internal" href="SanitizerSpecialCaseList.html"><span class="doc">Sanitizer special case list</span></a>, that can be used to relax MemorySanitizer
+checks for certain source files and functions. All “Use of uninitialized value”
 warnings will be suppressed and all values loaded from memory will be
 considered fully initialized.</p>
 </div>
@@ -154,11 +153,11 @@ or set environment variable <code class="docutils literal"><span class="pre">MSA
 <div class="section" id="origin-tracking">
 <span id="msan-origins"></span><h2><a class="toc-backref" href="#id8">Origin Tracking</a><a class="headerlink" href="#origin-tracking" title="Permalink to this headline">¶</a></h2>
 <p>MemorySanitizer can track origins of uninitialized values, similar to
-Valgrind&#8217;s &#8211;track-origins option. This feature is enabled by
+Valgrind’s –track-origins option. This feature is enabled by
 <code class="docutils literal"><span class="pre">-fsanitize-memory-track-origins=2</span></code> (or simply
 <code class="docutils literal"><span class="pre">-fsanitize-memory-track-origins</span></code>) Clang option. With the code from
 the example above,</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> cat umr2.cc
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">%</span> cat umr2.cc
 <span class="gp">#</span>include &lt;stdio.h&gt;
 
 <span class="go">int main(int argc, char** argv) {</span>
@@ -236,7 +235,7 @@ origin tracking.</li>
 address space. This means that tools like <code class="docutils literal"><span class="pre">ulimit</span></code> may not work as
 usually expected.</li>
 <li>Static linking is not supported.</li>
-<li>Older versions of MSan (LLVM 3.7 and older) didn&#8217;t work with
+<li>Older versions of MSan (LLVM 3.7 and older) didn’t work with
 non-position-independent executables, and could fail on some Linux
 kernel versions with disabled ASLR. Refer to documentation for older versions
 for more details.</li>
@@ -269,8 +268,8 @@ dependent libraries.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

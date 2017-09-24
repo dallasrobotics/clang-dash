@@ -1,42 +1,41 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Driver Design &amp; Internals &mdash; Clang 4 documentation</title>
-    
+    <title>Driver Design &amp; Internals &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Pretokenized Headers (PTH)" href="PTHInternals.html" />
     <link rel="prev" title="“Clang” CFE Internals Manual" href="InternalsManual.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>Driver Design &amp; Internals</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="InternalsManual.html">&#8220;Clang&#8221; CFE Internals Manual</a>
+        «&#160;&#160;<a href="InternalsManual.html">“Clang” CFE Internals Manual</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -120,18 +119,18 @@ like interface.</p>
 <h3><a class="toc-backref" href="#id20">Low Overhead</a><a class="headerlink" href="#low-overhead" title="Permalink to this headline">¶</a></h3>
 <p>The driver should have as little overhead as possible. In practice, we
 found that the gcc driver by itself incurred a small but meaningful
-overhead when compiling many small files. The driver doesn&#8217;t do much
+overhead when compiling many small files. The driver doesn’t do much
 work compared to a compilation, but we have tried to keep it as
 efficient as possible by following a few simple principles:</p>
 <ul class="simple">
 <li>Avoid memory allocation and string copying when possible.</li>
-<li>Don&#8217;t parse arguments more than once.</li>
+<li>Don’t parse arguments more than once.</li>
 <li>Provide a few simple interfaces for efficiently searching arguments.</li>
 </ul>
 </div>
 <div class="section" id="simple">
 <h3><a class="toc-backref" href="#id21">Simple</a><a class="headerlink" href="#simple" title="Permalink to this headline">¶</a></h3>
-<p>Finally, the driver was designed to be &#8220;as simple as possible&#8221;, given
+<p>Finally, the driver was designed to be “as simple as possible”, given
 the other goals. Notably, trying to be completely compatible with the
 gcc driver adds a significant amount of complexity. However, the design
 of the driver attempts to mitigate this complexity by dividing the
@@ -186,7 +185,7 @@ additional metadata. The Arg instances themselves are lightweight and
 merely contain enough information for clients to determine which
 option they correspond to and their values (if they have additional
 parameters).</p>
-<p>For example, a command line like &#8220;-Ifoo -I foo&#8221; would parse to two
+<p>For example, a command line like “-Ifoo -I foo” would parse to two
 Arg instances (a JoinedArg and a SeparateArg instance), but each
 would refer to the same Option.</p>
 <p>Options are lazily created in order to avoid populating all Option
@@ -201,7 +200,7 @@ this vector instead of storing its values directly.</p>
 <p>The clang driver can dump the results of this stage using the
 <code class="docutils literal"><span class="pre">-###</span></code> flag (which must precede any actual command
 line arguments). For example:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang -### -Xarch_i386 -fomit-frame-pointer -Wa,-fast -Ifoo -I foo t.c
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> clang -### -Xarch_i386 -fomit-frame-pointer -Wa,-fast -Ifoo -I foo t.c
 <span class="go">Option 0 - Name: &quot;-Xarch_&quot;, Values: {&quot;i386&quot;, &quot;-fomit-frame-pointer&quot;}</span>
 <span class="go">Option 1 - Name: &quot;-Wa,&quot;, Values: {&quot;-fast&quot;}</span>
 <span class="go">Option 2 - Name: &quot;-I&quot;, Values: {&quot;foo&quot;}</span>
@@ -229,7 +228,7 @@ second is BindArchAction, which conceptually alters the architecture
 to be used for all of its input Actions.</p>
 <p>The clang driver can dump the results of this stage using the
 <code class="docutils literal"><span class="pre">-ccc-print-phases</span></code> flag. For example:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang -ccc-print-phases -x c t.c -x assembler t.s
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> clang -ccc-print-phases -x c t.c -x assembler t.s
 <span class="go">0: input, &quot;t.c&quot;, c</span>
 <span class="go">1: preprocessor, {0}, cpp-output</span>
 <span class="go">2: compiler, {1}, assembler</span>
@@ -240,13 +239,13 @@ to be used for all of its input Actions.</p>
 </pre></div>
 </div>
 <p>Here the driver is constructing seven distinct actions, four to
-compile the &#8220;t.c&#8221; input into an object file, two to assemble the
-&#8220;t.s&#8221; input, and one to link them together.</p>
+compile the “t.c” input into an object file, two to assemble the
+“t.s” input, and one to link them together.</p>
 <p>A rather different compilation pipeline is shown here; in this
 example there are two top level actions to compile the input files
 into two separate object files, where each object file is built using
 <code class="docutils literal"><span class="pre">lipo</span></code> to merge results built for two separate architectures.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang -ccc-print-phases -c -arch i386 -arch x86_64 t0.c t1.c
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> clang -ccc-print-phases -c -arch i386 -arch x86_64 t0.c t1.c
 <span class="go">0: input, &quot;t0.c&quot;, c</span>
 <span class="go">1: preprocessor, {0}, cpp-output</span>
 <span class="go">2: compiler, {1}, assembler</span>
@@ -266,8 +265,8 @@ into two separate object files, where each object file is built using
 <p>After this stage is complete the compilation process is divided into
 a simple set of actions which need to be performed to produce
 intermediate or final outputs (in some cases, like <code class="docutils literal"><span class="pre">-fsyntax-only</span></code>,
-there is no &#8220;real&#8221; final output). Phases are well known compilation
-steps, such as &#8220;preprocess&#8221;, &#8220;compile&#8221;, &#8220;assemble&#8221;, &#8220;link&#8221;, etc.</p>
+there is no “real” final output). Phases are well known compilation
+steps, such as “preprocess”, “compile”, “assemble”, “link”, etc.</p>
 </li>
 <li><p class="first"><strong>Bind: Tool &amp; Filename Selection</strong></p>
 <p>This stage (in conjunction with the Translate stage) turns the tree
@@ -292,7 +291,7 @@ architectures.</p>
 <p>The results of this stage are not computed directly, but the driver
 can print the results via the <code class="docutils literal"><span class="pre">-ccc-print-bindings</span></code> option. For
 example:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang -ccc-print-bindings -arch i386 -arch ppc t0.c
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> clang -ccc-print-bindings -arch i386 -arch ppc t0.c
 <span class="gp">#</span> <span class="s2">&quot;i386-apple-darwin9&quot;</span> - <span class="s2">&quot;clang&quot;</span>, inputs: <span class="o">[</span><span class="s2">&quot;t0.c&quot;</span><span class="o">]</span>, output: <span class="s2">&quot;/tmp/cc-Sn4RKF.s&quot;</span>
 <span class="gp">#</span> <span class="s2">&quot;i386-apple-darwin9&quot;</span> - <span class="s2">&quot;darwin::Assemble&quot;</span>, inputs: <span class="o">[</span><span class="s2">&quot;/tmp/cc-Sn4RKF.s&quot;</span><span class="o">]</span>, output: <span class="s2">&quot;/tmp/cc-gvSnbS.o&quot;</span>
 <span class="gp">#</span> <span class="s2">&quot;i386-apple-darwin9&quot;</span> - <span class="s2">&quot;darwin::Link&quot;</span>, inputs: <span class="o">[</span><span class="s2">&quot;/tmp/cc-gvSnbS.o&quot;</span><span class="o">]</span>, output: <span class="s2">&quot;/tmp/cc-jgHQxi.out&quot;</span>
@@ -381,10 +380,10 @@ anywhere near all the options that gcc does, and we want to make sure
 users know which ones are being used.</p>
 <p>To support this, the driver maintains a bit associated with each
 argument of whether it has been used (at all) during the compilation.
-This bit usually doesn&#8217;t need to be set by hand, as the key ArgList
+This bit usually doesn’t need to be set by hand, as the key ArgList
 accessors will set it automatically.</p>
 <p>When a compilation is successful (there are no errors), the driver
-checks the bit and emits an &#8220;unused argument&#8221; warning for any arguments
+checks the bit and emits an “unused argument” warning for any arguments
 which were never accessed. This is conservative (the argument may not
 have been used to do what the user wanted) but still catches the most
 obvious cases.</p>
@@ -403,14 +402,14 @@ translation is responsible for handling <code class="docutils literal"><span cla
 <p>The one caveat is that this approach requires <code class="docutils literal"><span class="pre">-Xarch_</span></code> not be used
 to alter the compilation itself (for example, one cannot provide
 <code class="docutils literal"><span class="pre">-S</span></code> as an <code class="docutils literal"><span class="pre">-Xarch_</span></code> argument). The driver attempts to reject
-such invocations, and overall there isn&#8217;t a good reason to abuse
+such invocations, and overall there isn’t a good reason to abuse
 <code class="docutils literal"><span class="pre">-Xarch_</span></code> to that end in practice.</p>
 <p>The upside is that the clang driver is more efficient and does little
 extra work to support universal builds. It also provides better error
 reporting and UI consistency.</p>
 </li>
 <li><p class="first"><strong>Specs</strong></p>
-<p>The clang driver has no direct correspondent for &#8220;specs&#8221;. The
+<p>The clang driver has no direct correspondent for “specs”. The
 majority of the functionality that is embedded in specs is in the
 Tool specific argument translation routines. The parts of specs which
 control the compilation pipeline are generally part of the <em>Pipeline</em>
@@ -435,7 +434,7 @@ should be protected behind either abstract or well defined interfaces
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="InternalsManual.html">&#8220;Clang&#8221; CFE Internals Manual</a>
+        «&#160;&#160;<a href="InternalsManual.html">“Clang” CFE Internals Manual</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -445,8 +444,8 @@ should be protected behind either abstract or well defined interfaces
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

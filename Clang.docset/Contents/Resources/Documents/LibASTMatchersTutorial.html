@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Tutorial for building tools using LibTooling and LibASTMatchers &mdash; Clang 4 documentation</title>
-    
+    <title>Tutorial for building tools using LibTooling and LibASTMatchers &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Matching the Clang AST" href="LibASTMatchers.html" />
     <link rel="prev" title="How to write RecursiveASTVisitor based ASTFrontendActions." href="RAVFrontendAction.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>Tutorial for building tools using LibTooling and LibASTMatchers</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -50,21 +49,21 @@
   <div class="section" id="tutorial-for-building-tools-using-libtooling-and-libastmatchers">
 <h1>Tutorial for building tools using LibTooling and LibASTMatchers<a class="headerlink" href="#tutorial-for-building-tools-using-libtooling-and-libastmatchers" title="Permalink to this headline">¶</a></h1>
 <p>This document is intended to show how to build a useful source-to-source
-translation tool based on Clang&#8217;s <a class="reference external" href="LibTooling.html">LibTooling</a>. It is
+translation tool based on Clang’s <a class="reference external" href="LibTooling.html">LibTooling</a>. It is
 explicitly aimed at people who are new to Clang, so all you should need
 is a working knowledge of C++ and the command line.</p>
 <p>In order to work on the compiler, you need some basic knowledge of the
 abstract syntax tree (AST). To this end, the reader is incouraged to
-skim the <a class="reference internal" href="IntroductionToTheClangAST.html"><em>Introduction to the Clang
-AST</em></a></p>
+skim the <a class="reference internal" href="IntroductionToTheClangAST.html"><span class="doc">Introduction to the Clang
+AST</span></a></p>
 <div class="section" id="step-0-obtaining-clang">
 <h2>Step 0: Obtaining Clang<a class="headerlink" href="#step-0-obtaining-clang" title="Permalink to this headline">¶</a></h2>
-<p>As Clang is part of the LLVM project, you&#8217;ll need to download LLVM&#8217;s
+<p>As Clang is part of the LLVM project, you’ll need to download LLVM’s
 source code first. Both Clang and LLVM are maintained as Subversion
-repositories, but we&#8217;ll be accessing them through the git mirror. For
+repositories, but we’ll be accessing them through the git mirror. For
 further information, see the <a class="reference external" href="http://llvm.org/docs/GettingStarted.html">getting started
 guide</a>.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">mkdir ~/clang-llvm &amp;&amp; cd ~/clang-llvm</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">mkdir ~/clang-llvm &amp;&amp; cd ~/clang-llvm</span>
 <span class="go">git clone http://llvm.org/git/llvm.git</span>
 <span class="go">cd llvm/tools</span>
 <span class="go">git clone http://llvm.org/git/clang.git</span>
@@ -74,8 +73,8 @@ guide</a>.</p>
 </div>
 <p>Next you need to obtain the CMake build system and Ninja build tool. You
 may already have CMake installed, but current binary versions of CMake
-aren&#8217;t built with Ninja support.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">cd ~/clang-llvm</span>
+aren’t built with Ninja support.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">cd ~/clang-llvm</span>
 <span class="go">git clone https://github.com/martine/ninja.git</span>
 <span class="go">cd ninja</span>
 <span class="go">git checkout release</span>
@@ -91,8 +90,8 @@ aren&#8217;t built with Ninja support.</p>
 <span class="go">sudo make install</span>
 </pre></div>
 </div>
-<p>Okay. Now we&#8217;ll build Clang!</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">cd ~/clang-llvm</span>
+<p>Okay. Now we’ll build Clang!</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">cd ~/clang-llvm</span>
 <span class="go">mkdir build &amp;&amp; cd build</span>
 <span class="go">cmake -G Ninja ../llvm -DLLVM_BUILD_TESTS=ON  # Enable tests; default is off.</span>
 <span class="go">ninja</span>
@@ -101,12 +100,12 @@ aren&#8217;t built with Ninja support.</p>
 <span class="go">ninja install</span>
 </pre></div>
 </div>
-<p>And we&#8217;re live.</p>
+<p>And we’re live.</p>
 <p>All of the tests should pass, though there is a (very) small chance that
 you can catch LLVM and Clang out of sync. Running <code class="docutils literal"><span class="pre">'git</span> <span class="pre">svn</span> <span class="pre">rebase'</span></code>
 in both the llvm and clang directories should fix any problems.</p>
 <p>Finally, we want to set Clang as its own compiler.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">cd ~/clang-llvm/build</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">cd ~/clang-llvm/build</span>
 <span class="go">ccmake ../llvm</span>
 </pre></div>
 </div>
@@ -114,43 +113,43 @@ in both the llvm and clang directories should fix any problems.</p>
 to set the entry for <code class="docutils literal"><span class="pre">CMAKE_CXX_COMPILER</span></code>. Press <code class="docutils literal"><span class="pre">'t'</span></code> to turn on
 advanced mode. Scroll down to <code class="docutils literal"><span class="pre">CMAKE_CXX_COMPILER</span></code>, and set it to
 <code class="docutils literal"><span class="pre">/usr/bin/clang++</span></code>, or wherever you installed it. Press <code class="docutils literal"><span class="pre">'c'</span></code> to
-configure, then <code class="docutils literal"><span class="pre">'g'</span></code> to generate CMake&#8217;s files.</p>
-<p>Finally, run ninja one last time, and you&#8217;re done.</p>
+configure, then <code class="docutils literal"><span class="pre">'g'</span></code> to generate CMake’s files.</p>
+<p>Finally, run ninja one last time, and you’re done.</p>
 </div>
 <div class="section" id="step-1-create-a-clangtool">
 <h2>Step 1: Create a ClangTool<a class="headerlink" href="#step-1-create-a-clangtool" title="Permalink to this headline">¶</a></h2>
-<p>Now that we have enough background knowledge, it&#8217;s time to create the
+<p>Now that we have enough background knowledge, it’s time to create the
 simplest productive ClangTool in existence: a syntax checker. While this
-already exists as <code class="docutils literal"><span class="pre">clang-check</span></code>, it&#8217;s important to understand what&#8217;s
+already exists as <code class="docutils literal"><span class="pre">clang-check</span></code>, it’s important to understand what’s
 going on.</p>
-<p>First, we&#8217;ll need to create a new directory for our tool and tell CMake
+<p>First, we’ll need to create a new directory for our tool and tell CMake
 that it exists. As this is not going to be a core clang tool, it will
 live in the <code class="docutils literal"><span class="pre">tools/extra</span></code> repository.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">cd ~/clang-llvm/llvm/tools/clang</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">cd ~/clang-llvm/llvm/tools/clang</span>
 <span class="go">mkdir tools/extra/loop-convert</span>
 <span class="go">echo &#39;add_subdirectory(loop-convert)&#39; &gt;&gt; tools/extra/CMakeLists.txt</span>
 <span class="go">vim tools/extra/loop-convert/CMakeLists.txt</span>
 </pre></div>
 </div>
 <p>CMakeLists.txt should have the following contents:</p>
-<div class="highlight-python"><div class="highlight"><pre>set(LLVM_LINK_COMPONENTS support)
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">set</span><span class="p">(</span><span class="n">LLVM_LINK_COMPONENTS</span> <span class="n">support</span><span class="p">)</span>
 
-add_clang_executable(loop-convert
-  LoopConvert.cpp
-  )
-target_link_libraries(loop-convert
-  clangTooling
-  clangBasic
-  clangASTMatchers
-  )
+<span class="n">add_clang_executable</span><span class="p">(</span><span class="n">loop</span><span class="o">-</span><span class="n">convert</span>
+  <span class="n">LoopConvert</span><span class="o">.</span><span class="n">cpp</span>
+  <span class="p">)</span>
+<span class="n">target_link_libraries</span><span class="p">(</span><span class="n">loop</span><span class="o">-</span><span class="n">convert</span>
+  <span class="n">clangTooling</span>
+  <span class="n">clangBasic</span>
+  <span class="n">clangASTMatchers</span>
+  <span class="p">)</span>
 </pre></div>
 </div>
-<p>With that done, Ninja will be able to compile our tool. Let&#8217;s give it
+<p>With that done, Ninja will be able to compile our tool. Let’s give it
 something to compile! Put the following into
 <code class="docutils literal"><span class="pre">tools/extra/loop-convert/LoopConvert.cpp</span></code>. A detailed explanation of
 why the different parts are needed can be found in the <a class="reference external" href="LibTooling.html">LibTooling
 documentation</a>.</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="c1">// Declares clang::SyntaxOnlyAction.</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="c1">// Declares clang::SyntaxOnlyAction.</span>
 <span class="cp">#include</span> <span class="cpf">&quot;clang/Frontend/FrontendActions.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;clang/Tooling/CommonOptionsParser.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;clang/Tooling/Tooling.h&quot;</span><span class="cp"></span>
@@ -180,36 +179,36 @@ documentation</a>.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>And that&#8217;s it! You can compile our new tool by running ninja from the
+<p>And that’s it! You can compile our new tool by running ninja from the
 <code class="docutils literal"><span class="pre">build</span></code> directory.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">cd ~/clang-llvm/build</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">cd ~/clang-llvm/build</span>
 <span class="go">ninja</span>
 </pre></div>
 </div>
 <p>You should now be able to run the syntax checker, which is located in
 <code class="docutils literal"><span class="pre">~/clang-llvm/build/bin</span></code>, on any source file. Try it!</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">echo &quot;int main() { return 0; }&quot; &gt; test.cpp</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">echo &quot;int main() { return 0; }&quot; &gt; test.cpp</span>
 <span class="go">bin/loop-convert test.cpp --</span>
 </pre></div>
 </div>
 <p>Note the two dashes after we specify the source file. The additional
 options for the compiler are passed after the dashes rather than loading
-them from a compilation database - there just aren&#8217;t any options needed
+them from a compilation database - there just aren’t any options needed
 right now.</p>
 </div>
 <div class="section" id="intermezzo-learn-ast-matcher-basics">
 <h2>Intermezzo: Learn AST matcher basics<a class="headerlink" href="#intermezzo-learn-ast-matcher-basics" title="Permalink to this headline">¶</a></h2>
-<p>Clang recently introduced the <a class="reference internal" href="LibASTMatchers.html"><em>ASTMatcher
-library</em></a> to provide a simple, powerful, and
+<p>Clang recently introduced the <a class="reference internal" href="LibASTMatchers.html"><span class="doc">ASTMatcher
+library</span></a> to provide a simple, powerful, and
 concise way to describe specific patterns in the AST. Implemented as a
 DSL powered by macros and templates (see
-<a class="reference external" href="../doxygen/ASTMatchers_8h_source.html">ASTMatchers.h</a> if you&#8217;re
+<a class="reference external" href="../doxygen/ASTMatchers_8h_source.html">ASTMatchers.h</a> if you’re
 curious), matchers offer the feel of algebraic data types common to
 functional programming languages.</p>
 <p>For example, suppose you wanted to examine only binary operators. There
 is a matcher to do exactly that, conveniently named <code class="docutils literal"><span class="pre">binaryOperator</span></code>.
-I&#8217;ll give you one guess what this matcher does:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">binaryOperator</span><span class="p">(</span><span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;+&quot;</span><span class="p">),</span> <span class="n">hasLHS</span><span class="p">(</span><span class="n">integerLiteral</span><span class="p">(</span><span class="n">equals</span><span class="p">(</span><span class="mi">0</span><span class="p">))))</span>
+I’ll give you one guess what this matcher does:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">binaryOperator</span><span class="p">(</span><span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;+&quot;</span><span class="p">),</span> <span class="n">hasLHS</span><span class="p">(</span><span class="n">integerLiteral</span><span class="p">(</span><span class="n">equals</span><span class="p">(</span><span class="mi">0</span><span class="p">))))</span>
 </pre></div>
 </div>
 <p>Shockingly, it will match against addition expressions whose left hand
@@ -226,38 +225,38 @@ References</a></p>
 <p>All matcher that are nouns describe entities in the AST and can be
 bound, so that they can be referred to whenever a match is found. To do
 so, simply call the method <code class="docutils literal"><span class="pre">bind</span></code> on these matchers, e.g.:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">variable</span><span class="p">(</span><span class="n">hasType</span><span class="p">(</span><span class="n">isInteger</span><span class="p">())).</span><span class="n">bind</span><span class="p">(</span><span class="s">&quot;intvar&quot;</span><span class="p">)</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">variable</span><span class="p">(</span><span class="n">hasType</span><span class="p">(</span><span class="n">isInteger</span><span class="p">())).</span><span class="n">bind</span><span class="p">(</span><span class="s">&quot;intvar&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="step-2-using-ast-matchers">
 <h2>Step 2: Using AST matchers<a class="headerlink" href="#step-2-using-ast-matchers" title="Permalink to this headline">¶</a></h2>
-<p>Okay, on to using matchers for real. Let&#8217;s start by defining a matcher
+<p>Okay, on to using matchers for real. Let’s start by defining a matcher
 which will capture all <code class="docutils literal"><span class="pre">for</span></code> statements that define a new variable
-initialized to zero. Let&#8217;s start with matching all <code class="docutils literal"><span class="pre">for</span></code> loops:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">forStmt</span><span class="p">()</span>
+initialized to zero. Let’s start with matching all <code class="docutils literal"><span class="pre">for</span></code> loops:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">forStmt</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Next, we want to specify that a single variable is declared in the first
 portion of the loop, so we can extend the matcher to</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">forStmt</span><span class="p">(</span><span class="n">hasLoopInit</span><span class="p">(</span><span class="n">declStmt</span><span class="p">(</span><span class="n">hasSingleDecl</span><span class="p">(</span><span class="n">varDecl</span><span class="p">()))))</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">forStmt</span><span class="p">(</span><span class="n">hasLoopInit</span><span class="p">(</span><span class="n">declStmt</span><span class="p">(</span><span class="n">hasSingleDecl</span><span class="p">(</span><span class="n">varDecl</span><span class="p">()))))</span>
 </pre></div>
 </div>
 <p>Finally, we can add the condition that the variable is initialized to
 zero.</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">forStmt</span><span class="p">(</span><span class="n">hasLoopInit</span><span class="p">(</span><span class="n">declStmt</span><span class="p">(</span><span class="n">hasSingleDecl</span><span class="p">(</span><span class="n">varDecl</span><span class="p">(</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">forStmt</span><span class="p">(</span><span class="n">hasLoopInit</span><span class="p">(</span><span class="n">declStmt</span><span class="p">(</span><span class="n">hasSingleDecl</span><span class="p">(</span><span class="n">varDecl</span><span class="p">(</span>
   <span class="n">hasInitializer</span><span class="p">(</span><span class="n">integerLiteral</span><span class="p">(</span><span class="n">equals</span><span class="p">(</span><span class="mi">0</span><span class="p">))))))))</span>
 </pre></div>
 </div>
-<p>It is fairly easy to read and understand the matcher definition (&#8220;match
+<p>It is fairly easy to read and understand the matcher definition (“match
 loops whose init portion declares a single variable which is initialized
-to the integer literal 0&#8221;), but deciding that every piece is necessary
+to the integer literal 0”), but deciding that every piece is necessary
 is more difficult. Note that this matcher will not match loops whose
 variables are initialized to <code class="docutils literal"><span class="pre">'\0'</span></code>, <code class="docutils literal"><span class="pre">0.0</span></code>, <code class="docutils literal"><span class="pre">NULL</span></code>, or any form of
 zero besides the integer 0.</p>
 <p>The last step is giving the matcher a name and binding the <code class="docutils literal"><span class="pre">ForStmt</span></code>
 as we will want to do something with it:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">StatementMatcher</span> <span class="n">LoopMatcher</span> <span class="o">=</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">StatementMatcher</span> <span class="n">LoopMatcher</span> <span class="o">=</span>
   <span class="n">forStmt</span><span class="p">(</span><span class="n">hasLoopInit</span><span class="p">(</span><span class="n">declStmt</span><span class="p">(</span><span class="n">hasSingleDecl</span><span class="p">(</span><span class="n">varDecl</span><span class="p">(</span>
     <span class="n">hasInitializer</span><span class="p">(</span><span class="n">integerLiteral</span><span class="p">(</span><span class="n">equals</span><span class="p">(</span><span class="mi">0</span><span class="p">)))))))).</span><span class="n">bind</span><span class="p">(</span><span class="s">&quot;forLoop&quot;</span><span class="p">);</span>
 </pre></div>
@@ -267,7 +266,7 @@ scaffolding in order to run them. Matchers are paired with a
 <code class="docutils literal"><span class="pre">MatchCallback</span></code> and registered with a <code class="docutils literal"><span class="pre">MatchFinder</span></code> object, then run
 from a <code class="docutils literal"><span class="pre">ClangTool</span></code>. More code!</p>
 <p>Add the following to <code class="docutils literal"><span class="pre">LoopConvert.cpp</span></code>:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;clang/ASTMatchers/ASTMatchers.h&quot;</span><span class="cp"></span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;clang/ASTMatchers/ASTMatchers.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;clang/ASTMatchers/ASTMatchFinder.h&quot;</span><span class="cp"></span>
 
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">clang</span><span class="p">;</span>
@@ -287,7 +286,7 @@ from a <code class="docutils literal"><span class="pre">ClangTool</span></code>.
 </pre></div>
 </div>
 <p>And change <code class="docutils literal"><span class="pre">main()</span></code> to:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">CommonOptionsParser</span> <span class="n">OptionsParser</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="n">MyToolCategory</span><span class="p">);</span>
   <span class="n">ClangTool</span> <span class="n">Tool</span><span class="p">(</span><span class="n">OptionsParser</span><span class="p">.</span><span class="n">getCompilations</span><span class="p">(),</span>
                  <span class="n">OptionsParser</span><span class="p">.</span><span class="n">getSourcePathList</span><span class="p">());</span>
@@ -303,7 +302,7 @@ from a <code class="docutils literal"><span class="pre">ClangTool</span></code>.
 <p>Now, you should be able to recompile and run the code to discover for
 loops. Create a new file with a few examples, and test out our new
 handiwork:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">cd ~/clang-llvm/llvm/llvm_build/</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">cd ~/clang-llvm/llvm/llvm_build/</span>
 <span class="go">ninja loop-convert</span>
 <span class="go">vim ~/test-files/simple-loops.cc</span>
 <span class="go">bin/loop-convert ~/test-files/simple-loops.cc</span>
@@ -324,8 +323,8 @@ size <code class="docutils literal"><span class="pre">N</span></code> that:</p>
 <li>iterate consecutively</li>
 <li>end at index <code class="docutils literal"><span class="pre">N-1</span></code></li>
 </ul>
-<p>We already check for (1), so all we need to add is a check to the loop&#8217;s
-condition to ensure that the loop&#8217;s index variable is compared against
+<p>We already check for (1), so all we need to add is a check to the loop’s
+condition to ensure that the loop’s index variable is compared against
 <code class="docutils literal"><span class="pre">N</span></code> and another check to ensure that the increment step just
 increments this same variable. The matcher for (2) is straightforward:
 require a pre- or post-increment of the same variable declared in the
@@ -336,29 +335,29 @@ or not they are equal, so the best we can do is matching more than we
 would like to allow, and punting extra comparisons to the callback.</p>
 <p>In any case, we can start building this sub-matcher. We can require that
 the increment step be a unary increment like this:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">hasIncrement</span><span class="p">(</span><span class="n">unaryOperator</span><span class="p">(</span><span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;++&quot;</span><span class="p">)))</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">hasIncrement</span><span class="p">(</span><span class="n">unaryOperator</span><span class="p">(</span><span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;++&quot;</span><span class="p">)))</span>
 </pre></div>
 </div>
-<p>Specifying what is incremented introduces another quirk of Clang&#8217;s AST:
-Usages of variables are represented as <code class="docutils literal"><span class="pre">DeclRefExpr</span></code>&#8216;s (&#8220;declaration
-reference expressions&#8221;) because they are expressions which refer to
+<p>Specifying what is incremented introduces another quirk of Clang’s AST:
+Usages of variables are represented as <code class="docutils literal"><span class="pre">DeclRefExpr</span></code>’s (“declaration
+reference expressions”) because they are expressions which refer to
 variable declarations. To find a <code class="docutils literal"><span class="pre">unaryOperator</span></code> that refers to a
 specific declaration, we can simply add a second condition to it:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">hasIncrement</span><span class="p">(</span><span class="n">unaryOperator</span><span class="p">(</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">hasIncrement</span><span class="p">(</span><span class="n">unaryOperator</span><span class="p">(</span>
   <span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;++&quot;</span><span class="p">),</span>
   <span class="n">hasUnaryOperand</span><span class="p">(</span><span class="n">declRefExpr</span><span class="p">())))</span>
 </pre></div>
 </div>
 <p>Furthermore, we can restrict our matcher to only match if the
 incremented variable is an integer:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">hasIncrement</span><span class="p">(</span><span class="n">unaryOperator</span><span class="p">(</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">hasIncrement</span><span class="p">(</span><span class="n">unaryOperator</span><span class="p">(</span>
   <span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;++&quot;</span><span class="p">),</span>
   <span class="n">hasUnaryOperand</span><span class="p">(</span><span class="n">declRefExpr</span><span class="p">(</span><span class="n">to</span><span class="p">(</span><span class="n">varDecl</span><span class="p">(</span><span class="n">hasType</span><span class="p">(</span><span class="n">isInteger</span><span class="p">())))))))</span>
 </pre></div>
 </div>
 <p>And the last step will be to attach an identifier to this variable, so
 that we can retrieve it in the callback:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">hasIncrement</span><span class="p">(</span><span class="n">unaryOperator</span><span class="p">(</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">hasIncrement</span><span class="p">(</span><span class="n">unaryOperator</span><span class="p">(</span>
   <span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;++&quot;</span><span class="p">),</span>
   <span class="n">hasUnaryOperand</span><span class="p">(</span><span class="n">declRefExpr</span><span class="p">(</span><span class="n">to</span><span class="p">(</span>
     <span class="n">varDecl</span><span class="p">(</span><span class="n">hasType</span><span class="p">(</span><span class="n">isInteger</span><span class="p">())).</span><span class="n">bind</span><span class="p">(</span><span class="s">&quot;incrementVariable&quot;</span><span class="p">))))))</span>
@@ -370,49 +369,49 @@ that declare a single variable initialized to zero and have an increment
 step consisting of a unary increment of some variable.</p>
 <p>Now, we just need to add a matcher to check if the condition part of the
 <code class="docutils literal"><span class="pre">for</span></code> loop compares a variable against the size of the array. There is
-only one problem - we don&#8217;t know which array we&#8217;re iterating over
+only one problem - we don’t know which array we’re iterating over
 without looking at the body of the loop! We are again restricted to
 approximating the result we want with matchers, filling in the details
 in the callback. So we start with:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">hasCondition</span><span class="p">(</span><span class="n">binaryOperator</span><span class="p">(</span><span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;&lt;&quot;</span><span class="p">))</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">hasCondition</span><span class="p">(</span><span class="n">binaryOperator</span><span class="p">(</span><span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;&lt;&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>It makes sense to ensure that the left-hand side is a reference to a
 variable, and that the right-hand side has integer type.</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">hasCondition</span><span class="p">(</span><span class="n">binaryOperator</span><span class="p">(</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">hasCondition</span><span class="p">(</span><span class="n">binaryOperator</span><span class="p">(</span>
   <span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;&lt;&quot;</span><span class="p">),</span>
   <span class="n">hasLHS</span><span class="p">(</span><span class="n">declRefExpr</span><span class="p">(</span><span class="n">to</span><span class="p">(</span><span class="n">varDecl</span><span class="p">(</span><span class="n">hasType</span><span class="p">(</span><span class="n">isInteger</span><span class="p">()))))),</span>
   <span class="n">hasRHS</span><span class="p">(</span><span class="n">expr</span><span class="p">(</span><span class="n">hasType</span><span class="p">(</span><span class="n">isInteger</span><span class="p">())))))</span>
 </pre></div>
 </div>
-<p>Why? Because it doesn&#8217;t work. Of the three loops provided in
+<p>Why? Because it doesn’t work. Of the three loops provided in
 <code class="docutils literal"><span class="pre">test-files/simple.cpp</span></code>, zero of them have a matching condition. A
 quick look at the AST dump of the first for loop, produced by the
 previous iteration of loop-convert, shows us the answer:</p>
-<div class="highlight-python"><div class="highlight"><pre>(ForStmt 0x173b240
-  (DeclStmt 0x173afc8
-    0x173af50 &quot;int i =
-      (IntegerLiteral 0x173afa8 &#39;int&#39; 0)&quot;)
-  &lt;&lt;&gt;&gt;
-  (BinaryOperator 0x173b060 &#39;_Bool&#39; &#39;&lt;&#39;
-    (ImplicitCastExpr 0x173b030 &#39;int&#39;
-      (DeclRefExpr 0x173afe0 &#39;int&#39; lvalue Var 0x173af50 &#39;i&#39; &#39;int&#39;))
-    (ImplicitCastExpr 0x173b048 &#39;int&#39;
-      (DeclRefExpr 0x173b008 &#39;const int&#39; lvalue Var 0x170fa80 &#39;N&#39; &#39;const int&#39;)))
-  (UnaryOperator 0x173b0b0 &#39;int&#39; lvalue prefix &#39;++&#39;
-    (DeclRefExpr 0x173b088 &#39;int&#39; lvalue Var 0x173af50 &#39;i&#39; &#39;int&#39;))
-  (CompoundStatement ...
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">ForStmt</span> <span class="mh">0x173b240</span>
+  <span class="p">(</span><span class="n">DeclStmt</span> <span class="mh">0x173afc8</span>
+    <span class="mh">0x173af50</span> <span class="s2">&quot;int i =</span>
+      <span class="p">(</span><span class="n">IntegerLiteral</span> <span class="mh">0x173afa8</span> <span class="s1">&#39;int&#39;</span> <span class="mi">0</span><span class="p">)</span><span class="s2">&quot;)</span>
+  <span class="o">&lt;&lt;&gt;&gt;</span>
+  <span class="p">(</span><span class="n">BinaryOperator</span> <span class="mh">0x173b060</span> <span class="s1">&#39;_Bool&#39;</span> <span class="s1">&#39;&lt;&#39;</span>
+    <span class="p">(</span><span class="n">ImplicitCastExpr</span> <span class="mh">0x173b030</span> <span class="s1">&#39;int&#39;</span>
+      <span class="p">(</span><span class="n">DeclRefExpr</span> <span class="mh">0x173afe0</span> <span class="s1">&#39;int&#39;</span> <span class="n">lvalue</span> <span class="n">Var</span> <span class="mh">0x173af50</span> <span class="s1">&#39;i&#39;</span> <span class="s1">&#39;int&#39;</span><span class="p">))</span>
+    <span class="p">(</span><span class="n">ImplicitCastExpr</span> <span class="mh">0x173b048</span> <span class="s1">&#39;int&#39;</span>
+      <span class="p">(</span><span class="n">DeclRefExpr</span> <span class="mh">0x173b008</span> <span class="s1">&#39;const int&#39;</span> <span class="n">lvalue</span> <span class="n">Var</span> <span class="mh">0x170fa80</span> <span class="s1">&#39;N&#39;</span> <span class="s1">&#39;const int&#39;</span><span class="p">)))</span>
+  <span class="p">(</span><span class="n">UnaryOperator</span> <span class="mh">0x173b0b0</span> <span class="s1">&#39;int&#39;</span> <span class="n">lvalue</span> <span class="n">prefix</span> <span class="s1">&#39;++&#39;</span>
+    <span class="p">(</span><span class="n">DeclRefExpr</span> <span class="mh">0x173b088</span> <span class="s1">&#39;int&#39;</span> <span class="n">lvalue</span> <span class="n">Var</span> <span class="mh">0x173af50</span> <span class="s1">&#39;i&#39;</span> <span class="s1">&#39;int&#39;</span><span class="p">))</span>
+  <span class="p">(</span><span class="n">CompoundStatement</span> <span class="o">...</span>
 </pre></div>
 </div>
 <p>We already know that the declaration and increments both match, or this
-loop wouldn&#8217;t have been dumped. The culprit lies in the implicit cast
+loop wouldn’t have been dumped. The culprit lies in the implicit cast
 applied to the first operand (i.e. the LHS) of the less-than operator,
 an L-value to R-value conversion applied to the expression referencing
 <code class="docutils literal"><span class="pre">i</span></code>. Thankfully, the matcher library offers a solution to this problem
 in the form of <code class="docutils literal"><span class="pre">ignoringParenImpCasts</span></code>, which instructs the matcher to
 ignore implicit casts and parentheses before continuing to match.
 Adjusting the condition operator will restore the desired match.</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">hasCondition</span><span class="p">(</span><span class="n">binaryOperator</span><span class="p">(</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">hasCondition</span><span class="p">(</span><span class="n">binaryOperator</span><span class="p">(</span>
   <span class="n">hasOperatorName</span><span class="p">(</span><span class="s">&quot;&lt;&quot;</span><span class="p">),</span>
   <span class="n">hasLHS</span><span class="p">(</span><span class="n">ignoringParenImpCasts</span><span class="p">(</span><span class="n">declRefExpr</span><span class="p">(</span>
     <span class="n">to</span><span class="p">(</span><span class="n">varDecl</span><span class="p">(</span><span class="n">hasType</span><span class="p">(</span><span class="n">isInteger</span><span class="p">())))))),</span>
@@ -425,12 +424,12 @@ completed.</p>
 </div>
 <div class="section" id="step-4-retrieving-matched-nodes">
 <h2>Step 4: Retrieving Matched Nodes<a class="headerlink" href="#step-4-retrieving-matched-nodes" title="Permalink to this headline">¶</a></h2>
-<p>So far, the matcher callback isn&#8217;t very interesting: it just dumps the
-loop&#8217;s AST. At some point, we will need to make changes to the input
-source code. Next, we&#8217;ll work on using the nodes we bound in the
+<p>So far, the matcher callback isn’t very interesting: it just dumps the
+loop’s AST. At some point, we will need to make changes to the input
+source code. Next, we’ll work on using the nodes we bound in the
 previous step.</p>
 <p>The <code class="docutils literal"><span class="pre">MatchFinder::run()</span></code> callback takes a
-<code class="docutils literal"><span class="pre">MatchFinder::MatchResult&amp;</span></code> as its parameter. We&#8217;re most interested in
+<code class="docutils literal"><span class="pre">MatchFinder::MatchResult&amp;</span></code> as its parameter. We’re most interested in
 its <code class="docutils literal"><span class="pre">Context</span></code> and <code class="docutils literal"><span class="pre">Nodes</span></code> members. Clang uses the <code class="docutils literal"><span class="pre">ASTContext</span></code>
 class to represent contextual information about the AST, as the name
 implies, though the most functionally important detail is that several
@@ -440,11 +439,11 @@ is the set of matched nodes, and how we retrieve them.</p>
 InitVarName, and IncrementVarName), we can obtain the matched nodes by
 using the <code class="docutils literal"><span class="pre">getNodeAs()</span></code> member function.</p>
 <p>In <code class="docutils literal"><span class="pre">LoopConvert.cpp</span></code> add</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;clang/AST/ASTContext.h&quot;</span><span class="cp"></span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;clang/AST/ASTContext.h&quot;</span><span class="cp"></span>
 </pre></div>
 </div>
 <p>Change <code class="docutils literal"><span class="pre">LoopMatcher</span></code> to</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="n">StatementMatcher</span> <span class="n">LoopMatcher</span> <span class="o">=</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">StatementMatcher</span> <span class="n">LoopMatcher</span> <span class="o">=</span>
     <span class="n">forStmt</span><span class="p">(</span><span class="n">hasLoopInit</span><span class="p">(</span><span class="n">declStmt</span><span class="p">(</span>
                 <span class="n">hasSingleDecl</span><span class="p">(</span><span class="n">varDecl</span><span class="p">(</span><span class="n">hasInitializer</span><span class="p">(</span><span class="n">integerLiteral</span><span class="p">(</span><span class="n">equals</span><span class="p">(</span><span class="mi">0</span><span class="p">))))</span>
                                   <span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="s">&quot;initVarName&quot;</span><span class="p">)))),</span>
@@ -460,7 +459,7 @@ using the <code class="docutils literal"><span class="pre">getNodeAs()</span></c
 </pre></div>
 </div>
 <p>And change <code class="docutils literal"><span class="pre">LoopPrinter::run</span></code> to</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="kt">void</span> <span class="n">LoopPrinter</span><span class="o">::</span><span class="n">run</span><span class="p">(</span><span class="k">const</span> <span class="n">MatchFinder</span><span class="o">::</span><span class="n">MatchResult</span> <span class="o">&amp;</span><span class="n">Result</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">LoopPrinter</span><span class="o">::</span><span class="n">run</span><span class="p">(</span><span class="k">const</span> <span class="n">MatchFinder</span><span class="o">::</span><span class="n">MatchResult</span> <span class="o">&amp;</span><span class="n">Result</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">ASTContext</span> <span class="o">*</span><span class="n">Context</span> <span class="o">=</span> <span class="n">Result</span><span class="p">.</span><span class="n">Context</span><span class="p">;</span>
   <span class="k">const</span> <span class="n">ForStmt</span> <span class="o">*</span><span class="n">FS</span> <span class="o">=</span> <span class="n">Result</span><span class="p">.</span><span class="n">Nodes</span><span class="p">.</span><span class="n">getNodeAs</span><span class="o">&lt;</span><span class="n">ForStmt</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;forLoop&quot;</span><span class="p">);</span>
   <span class="c1">// We do not want to convert header files!</span>
@@ -476,11 +475,11 @@ using the <code class="docutils literal"><span class="pre">getNodeAs()</span></c
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Clang associates a <code class="docutils literal"><span class="pre">VarDecl</span></code> with each variable to represent the variable&#8217;s
-declaration. Since the &#8220;canonical&#8221; form of each declaration is unique by
+<p>Clang associates a <code class="docutils literal"><span class="pre">VarDecl</span></code> with each variable to represent the variable’s
+declaration. Since the “canonical” form of each declaration is unique by
 address, all we need to do is make sure neither <code class="docutils literal"><span class="pre">ValueDecl</span></code> (base class of
 <code class="docutils literal"><span class="pre">VarDecl</span></code>) is <code class="docutils literal"><span class="pre">NULL</span></code> and compare the canonical Decls.</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">static</span> <span class="kt">bool</span> <span class="nf">areSameVariable</span><span class="p">(</span><span class="k">const</span> <span class="n">ValueDecl</span> <span class="o">*</span><span class="n">First</span><span class="p">,</span> <span class="k">const</span> <span class="n">ValueDecl</span> <span class="o">*</span><span class="n">Second</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="nf">areSameVariable</span><span class="p">(</span><span class="k">const</span> <span class="n">ValueDecl</span> <span class="o">*</span><span class="n">First</span><span class="p">,</span> <span class="k">const</span> <span class="n">ValueDecl</span> <span class="o">*</span><span class="n">Second</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="n">First</span> <span class="o">&amp;&amp;</span> <span class="n">Second</span> <span class="o">&amp;&amp;</span>
          <span class="n">First</span><span class="o">-&gt;</span><span class="n">getCanonicalDecl</span><span class="p">()</span> <span class="o">==</span> <span class="n">Second</span><span class="o">-&gt;</span><span class="n">getCanonicalDecl</span><span class="p">();</span>
 <span class="p">}</span>
@@ -488,16 +487,16 @@ address, all we need to do is make sure neither <code class="docutils literal"><
 </div>
 <p>If execution reaches the end of <code class="docutils literal"><span class="pre">LoopPrinter::run()</span></code>, we know that the
 loop shell that looks like</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">expr</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">expr</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>For now, we will just print a message explaining that we found a loop.
 The next section will deal with recursively traversing the AST to
 discover all changes needed.</p>
-<p>As a side note, it&#8217;s not as trivial to test if two expressions are the same,
+<p>As a side note, it’s not as trivial to test if two expressions are the same,
 though Clang has already done the hard work for us by providing a way to
 canonicalize expressions:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span class="k">static</span> <span class="kt">bool</span> <span class="nf">areSameExpr</span><span class="p">(</span><span class="n">ASTContext</span> <span class="o">*</span><span class="n">Context</span><span class="p">,</span> <span class="k">const</span> <span class="n">Expr</span> <span class="o">*</span><span class="n">First</span><span class="p">,</span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">bool</span> <span class="nf">areSameExpr</span><span class="p">(</span><span class="n">ASTContext</span> <span class="o">*</span><span class="n">Context</span><span class="p">,</span> <span class="k">const</span> <span class="n">Expr</span> <span class="o">*</span><span class="n">First</span><span class="p">,</span>
                         <span class="k">const</span> <span class="n">Expr</span> <span class="o">*</span><span class="n">Second</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">First</span> <span class="o">||</span> <span class="o">!</span><span class="n">Second</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
@@ -535,8 +534,8 @@ potentially convertible.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

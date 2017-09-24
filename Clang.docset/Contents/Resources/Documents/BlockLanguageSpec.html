@@ -1,37 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Language Specification for Blocks &mdash; Clang 4 documentation</title>
-    
+    <title>Language Specification for Blocks &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
-    <link rel="up" title="Clang Language Extensions" href="LanguageExtensions.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Block Implementation Specification" href="Block-ABI-Apple.html" />
     <link rel="prev" title="Objective-C Literals" href="ObjectiveCLiterals.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>Language Specification for Blocks</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -68,13 +66,13 @@
 <div class="section" id="revisions">
 <h2><a class="toc-backref" href="#id1">Revisions</a><a class="headerlink" href="#revisions" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>2008/2/25 &#8212; created</li>
-<li>2008/7/28 &#8212; revised, <code class="docutils literal"><span class="pre">__block</span></code> syntax</li>
-<li>2008/8/13 &#8212; revised, Block globals</li>
-<li>2008/8/21 &#8212; revised, C++ elaboration</li>
-<li>2008/11/1 &#8212; revised, <code class="docutils literal"><span class="pre">__weak</span></code> support</li>
-<li>2009/1/12 &#8212; revised, explicit return types</li>
-<li>2009/2/10 &#8212; revised, <code class="docutils literal"><span class="pre">__block</span></code> objects need retain</li>
+<li>2008/2/25 — created</li>
+<li>2008/7/28 — revised, <code class="docutils literal"><span class="pre">__block</span></code> syntax</li>
+<li>2008/8/13 — revised, Block globals</li>
+<li>2008/8/21 — revised, C++ elaboration</li>
+<li>2008/11/1 — revised, <code class="docutils literal"><span class="pre">__weak</span></code> support</li>
+<li>2009/1/12 — revised, explicit return types</li>
+<li>2009/2/10 — revised, <code class="docutils literal"><span class="pre">__block</span></code> objects need retain</li>
 </ul>
 </div>
 <div class="section" id="overview">
@@ -91,7 +89,7 @@ the key distinction being that in addition to executable code they
 also contain various variable bindings to automatic (stack) or managed
 (heap) memory.</p>
 <p>The abstract declarator,</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="kt">int</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="kt">char</span><span class="p">,</span> <span class="kt">float</span><span class="p">)</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="kt">char</span><span class="p">,</span> <span class="kt">float</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>describes a reference to a Block that, when invoked, takes two
@@ -105,7 +103,7 @@ memory.</p>
 <p>A <span class="block-term">variable with Block type</span> is declared using function
 pointer style notation substituting <code class="docutils literal"><span class="pre">^</span></code> for <code class="docutils literal"><span class="pre">*</span></code>. The following are
 valid Block variable declarations:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">blockReturningVoidWithVoidArgument</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">blockReturningVoidWithVoidArgument</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
 <span class="kt">int</span> <span class="p">(</span><span class="o">^</span><span class="n">blockReturningIntWithIntAndCharArguments</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">char</span><span class="p">);</span>
 <span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">arrayOfTenBlocksReturningVoidWithIntArgument</span><span class="p">[</span><span class="mi">10</span><span class="p">])(</span><span class="kt">int</span><span class="p">);</span>
 </pre></div>
@@ -117,7 +115,7 @@ unspecified argument list.  Note: both gcc and clang support K&amp;R style
 as a convenience.</p>
 <p>A Block reference may be cast to a pointer of arbitrary type and vice
 versa. [cast.c] A Block reference may not be dereferenced via the
-pointer dereference operator <code class="docutils literal"><span class="pre">*</span></code>, and thus a Block&#8217;s size may not be
+pointer dereference operator <code class="docutils literal"><span class="pre">*</span></code>, and thus a Block’s size may not be
 computed at compile time. [sizeof.c]</p>
 </div>
 <div class="section" id="block-literal-expressions">
@@ -125,7 +123,7 @@ computed at compile time. [sizeof.c]</p>
 <p>A <span class="block-term">Block literal expression</span> produces a reference to a
 Block. It is introduced by the use of the <code class="docutils literal"><span class="pre">^</span></code> token as a unary
 operator.</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">Block_literal_expression</span> <span class="o">::=</span>   <span class="o">^</span> <span class="n">block_decl</span> <span class="n">compound_statement_body</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">Block_literal_expression</span> <span class="o">::=</span>   <span class="o">^</span> <span class="n">block_decl</span> <span class="n">compound_statement_body</span>
 <span class="n">block_decl</span> <span class="o">::=</span>
 <span class="n">block_decl</span> <span class="o">::=</span> <span class="n">parameter_list</span>
 <span class="n">block_decl</span> <span class="o">::=</span> <span class="n">type_expression</span>
@@ -134,7 +132,7 @@ operator.</p>
 <p>where type expression is extended to allow <code class="docutils literal"><span class="pre">^</span></code> as a Block reference
 (pointer) where <code class="docutils literal"><span class="pre">*</span></code> is allowed as a function reference (pointer).</p>
 <p>The following Block literal:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="o">^</span> <span class="kt">void</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="p">}</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="o">^</span> <span class="kt">void</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>produces a reference to a Block with no arguments with no return value.</p>
@@ -146,11 +144,11 @@ return statement value.</p>
 <p>If the return type is omitted and the argument list is <code class="docutils literal"><span class="pre">(</span> <span class="pre">void</span> <span class="pre">)</span></code>,
 the <code class="docutils literal"><span class="pre">(</span> <span class="pre">void</span> <span class="pre">)</span></code> argument list may also be omitted.</p>
 <p>So:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="o">^</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="p">}</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="o">^</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>and:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="o">^</span> <span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="p">}</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="o">^</span> <span class="p">{</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;hello world</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>are exactly equivalent constructs for the same expression.</p>
@@ -158,17 +156,17 @@ the <code class="docutils literal"><span class="pre">(</span> <span class="pre">
 reference declarations as it accommodates function pointer
 declarations.</p>
 <p>Given:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">pointerToFunctionThatReturnsIntWithCharArg</span><span class="p">)(</span><span class="kt">char</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">pointerToFunctionThatReturnsIntWithCharArg</span><span class="p">)(</span><span class="kt">char</span><span class="p">);</span>
 <span class="n">pointerToFunctionThatReturnsIntWithCharArg</span> <span class="n">functionPointer</span><span class="p">;</span>
 <span class="o">^</span> <span class="n">pointerToFunctionThatReturnsIntWithCharArg</span> <span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">functionPointer</span><span class="p">;</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>and:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="o">^</span> <span class="kt">int</span> <span class="p">((</span><span class="o">*</span><span class="p">)(</span><span class="kt">float</span> <span class="n">x</span><span class="p">))(</span><span class="kt">char</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">functionPointer</span><span class="p">;</span> <span class="p">}</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="o">^</span> <span class="kt">int</span> <span class="p">((</span><span class="o">*</span><span class="p">)(</span><span class="kt">float</span> <span class="n">x</span><span class="p">))(</span><span class="kt">char</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">functionPointer</span><span class="p">;</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>are equivalent expressions, as is:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="o">^</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">functionPointer</span><span class="p">;</span> <span class="p">}</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="o">^</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">functionPointer</span><span class="p">;</span> <span class="p">}</span>
 </pre></div>
 </div>
 <p>[returnfunctionptr.c]</p>
@@ -186,7 +184,7 @@ literal expression evaluation.</p>
 that no references to the variable will actually be evaluated.
 Programmers can force a variable to be captured by referencing it in a
 statement at the beginning of the Block, like so:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="n">foo</span><span class="p">;</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="n">foo</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>This matters when capturing the variable has side-effects, as it can
@@ -208,13 +206,13 @@ Block variables at global or local static scope.</p>
 list of expression parameters of types corresponding to the
 declaration and returning a result type also according to the
 declaration. Given:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="kt">int</span> <span class="p">(</span><span class="o">^</span><span class="n">x</span><span class="p">)(</span><span class="kt">char</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="p">(</span><span class="o">^</span><span class="n">x</span><span class="p">)(</span><span class="kt">char</span><span class="p">);</span>
 <span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">z</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
 <span class="kt">int</span> <span class="p">(</span><span class="o">^</span><span class="p">(</span><span class="o">*</span><span class="n">y</span><span class="p">))(</span><span class="kt">char</span><span class="p">)</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>the following are all legal Block invocations:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">x</span><span class="p">(</span><span class="sc">&#39;a&#39;</span><span class="p">);</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">x</span><span class="p">(</span><span class="sc">&#39;a&#39;</span><span class="p">);</span>
 <span class="p">(</span><span class="o">*</span><span class="n">y</span><span class="p">)(</span><span class="sc">&#39;a&#39;</span><span class="p">);</span>
 <span class="p">(</span><span class="nb">true</span> <span class="o">?</span> <span class="nl">x</span> <span class="p">:</span> <span class="o">*</span><span class="n">y</span><span class="p">)(</span><span class="sc">&#39;a&#39;</span><span class="p">)</span>
 </pre></div>
@@ -242,7 +240,7 @@ qualifiers auto, register, and static. [testme] Variables qualified by
 <code class="docutils literal"><span class="pre">__block</span></code> act as if they were in allocated storage and this storage
 is automatically recovered after last use of said variable.  An
 implementation may choose an optimization where the storage is
-initially automatic and only &#8220;moved&#8221; to allocated (heap) storage upon
+initially automatic and only “moved” to allocated (heap) storage upon
 a Block_copy of a referencing Block.  Such variables may be mutated as
 normal variables are.</p>
 <p>In the case where a <code class="docutils literal"><span class="pre">__block</span></code> variable is a Block one must assume
@@ -313,14 +311,14 @@ const-qualified, as if they were references to members of a const
 object.  Note that this does not change the type of a variable of
 reference type.</p>
 <p>For example, given a class Foo:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">Foo</span> <span class="n">foo</span><span class="p">;</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">Foo</span> <span class="n">foo</span><span class="p">;</span>
 <span class="n">Foo</span> <span class="o">&amp;</span><span class="n">fooRef</span> <span class="o">=</span> <span class="n">foo</span><span class="p">;</span>
 <span class="n">Foo</span> <span class="o">*</span><span class="n">fooPtr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">foo</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>A Block that referenced these variables would import the variables as
 const variations:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">const</span> <span class="n">Foo</span> <span class="n">block_foo</span> <span class="o">=</span> <span class="n">foo</span><span class="p">;</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="n">Foo</span> <span class="n">block_foo</span> <span class="o">=</span> <span class="n">foo</span><span class="p">;</span>
 <span class="n">Foo</span> <span class="o">&amp;</span><span class="n">block_fooRef</span> <span class="o">=</span> <span class="n">fooRef</span><span class="p">;</span>
 <span class="n">Foo</span> <span class="o">*</span><span class="k">const</span> <span class="n">block_fooPtr</span> <span class="o">=</span> <span class="n">fooPtr</span><span class="p">;</span>
 </pre></div>
@@ -329,7 +327,7 @@ const variations:</p>
 evaluating the Block literal expression.  They are also copied when
 calling <code class="docutils literal"><span class="pre">Block_copy()</span></code> on a Block allocated on the stack.  In both
 cases, they are copied as if the variable were const-qualified, and
-it&#8217;s an error if there&#8217;s no such constructor.</p>
+it’s an error if there’s no such constructor.</p>
 <p>Captured variables in Blocks on the stack are destroyed when control
 leaves the compound statement that contains the Block literal
 expression.  Captured variables in Blocks on the heap are destroyed
@@ -340,8 +338,8 @@ to the heap as a result of a <code class="docutils literal"><span class="pre">Bl
 from the stack, <code class="docutils literal"><span class="pre">__block</span></code> variables are copied using their normal
 qualification (i.e. without adding const).  In C++11, <code class="docutils literal"><span class="pre">__block</span></code>
 variables are copied as x-values if that is possible, then as l-values
-if not; if both fail, it&#8217;s an error.  The destructor for any initial
-stack-based version is called at the variable&#8217;s normal end of scope.</p>
+if not; if both fail, it’s an error.  The destructor for any initial
+stack-based version is called at the variable’s normal end of scope.</p>
 <p>References to <code class="docutils literal"><span class="pre">this</span></code>, as well as references to non-static members of
 any enclosing class, are evaluated by capturing <code class="docutils literal"><span class="pre">this</span></code> just like a
 normal variable of C pointer type.</p>
@@ -365,8 +363,8 @@ their arguments.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

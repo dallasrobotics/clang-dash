@@ -1,43 +1,41 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>clang - the Clang C, C++, and Objective-C compiler &mdash; Clang 4 documentation</title>
-    
+    <title>clang - the Clang C, C++, and Objective-C compiler &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="../index.html" />
-    <link rel="up" title="Clang “man” pages" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Frequently Asked Questions (FAQ)" href="../FAQ.html" />
     <link rel="prev" title="Clang “man” pages" href="index.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>clang - the Clang C, C++, and Objective-C compiler</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="index.html">Clang &#8220;man&#8221; pages</a>
+        «&#160;&#160;<a href="index.html">Clang “man” pages</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -52,7 +50,7 @@
 <h1>clang - the Clang C, C++, and Objective-C compiler<a class="headerlink" href="#clang-the-clang-c-c-and-objective-c-compiler" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="synopsis">
 <h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
-<p><strong class="program">clang</strong> [<em>options</em>] <em>filename ...</em></p>
+<p><strong class="program">clang</strong> [<em>options</em>] <em>filename …</em></p>
 </div>
 <div class="section" id="description">
 <h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
@@ -71,32 +69,32 @@ transparently use it to run the other tools.</dd>
 <dt>Preprocessing</dt>
 <dd>This stage handles tokenization of the input source file, macro expansion,
 #include expansion and handling of other preprocessor directives.  The
-output of this stage is typically called a &#8221;.i&#8221; (for C), &#8221;.ii&#8221; (for C++),
-&#8221;.mi&#8221; (for Objective-C), or &#8221;.mii&#8221; (for Objective-C++) file.</dd>
+output of this stage is typically called a “.i” (for C), “.ii” (for C++),
+“.mi” (for Objective-C), or “.mii” (for Objective-C++) file.</dd>
 <dt>Parsing and Semantic Analysis</dt>
 <dd>This stage parses the input file, translating preprocessor tokens into a
 parse tree.  Once in the form of a parse tree, it applies semantic
 analysis to compute types for expressions as well and determine whether
 the code is well formed. This stage is responsible for generating most of
 the compiler warnings as well as parse errors. The output of this stage is
-an &#8220;Abstract Syntax Tree&#8221; (AST).</dd>
+an “Abstract Syntax Tree” (AST).</dd>
 <dt>Code Generation and Optimization</dt>
 <dd><p class="first">This stage translates an AST into low-level intermediate code (known as
-&#8220;LLVM IR&#8221;) and ultimately to machine code.  This phase is responsible for
+“LLVM IR”) and ultimately to machine code.  This phase is responsible for
 optimizing the generated code and handling target-specific code generation.
-The output of this stage is typically called a &#8221;.s&#8221; file or &#8220;assembly&#8221; file.</p>
+The output of this stage is typically called a “.s” file or “assembly” file.</p>
 <p class="last">Clang also supports the use of an integrated assembler, in which the code
 generator produces object files directly. This avoids the overhead of
-generating the &#8221;.s&#8221; file and of calling the target assembler.</p>
+generating the “.s” file and of calling the target assembler.</p>
 </dd>
 <dt>Assembler</dt>
 <dd>This stage runs the target assembler to translate the output of the
 compiler into a target object file. The output of this stage is typically
-called a &#8221;.o&#8221; file or &#8220;object&#8221; file.</dd>
+called a “.o” file or “object” file.</dd>
 <dt>Linker</dt>
 <dd>This stage runs the target linker to merge multiple object files into an
 executable or dynamic library. The output of this stage is typically called
-an &#8220;a.out&#8221;, &#8221;.dylib&#8221; or &#8221;.so&#8221; file.</dd>
+an “a.out”, “.dylib” or “.so” file.</dd>
 </dl>
 <p><strong class="program">Clang Static Analyzer</strong></p>
 <p>The Clang Static Analyzer is a tool that scans source code to try to find bugs
@@ -109,8 +107,8 @@ on how to use the static analyzer.</p>
 <div class="section" id="stage-selection-options">
 <h3>Stage Selection Options<a class="headerlink" href="#stage-selection-options" title="Permalink to this headline">¶</a></h3>
 <dl class="option">
-<dt id="cmdoption-E">
-<code class="descname">-E</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-E" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-e">
+<code class="descname">-E</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-e" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the preprocessor stage.</p>
 </dd></dl>
 
@@ -121,8 +119,8 @@ on how to use the static analyzer.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-S">
-<code class="descname">-S</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-S" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-s">
+<code class="descname">-S</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-s" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the previous stages as well as LLVM generation and optimization stages
 and target-specific code generation, producing an assembly file.</p>
 </dd></dl>
@@ -130,7 +128,7 @@ and target-specific code generation, producing an assembly file.</p>
 <dl class="option">
 <dt id="cmdoption-c">
 <code class="descname">-c</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-c" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run all of the above, plus the assembler, generating a target &#8221;.o&#8221; object file.</p>
+<dd><p>Run all of the above, plus the assembler, generating a target “.o” object file.</p>
 </dd></dl>
 
 <dl class="option">
@@ -176,8 +174,8 @@ compiler-rt. If not specified, platform default will be used.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-ObjC">
-<span id="cmdoption-ObjC"></span><code class="descname">-ObjC</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-ObjC</code><code class="descclassname">++</code><a class="headerlink" href="#cmdoption-ObjC" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-objc">
+<code class="descname">-ObjC</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-ObjC++</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-objc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Treat source input files as Objective-C and Object-C++ inputs respectively.</p>
 </dd></dl>
 
@@ -210,7 +208,7 @@ environment.</p>
 <dl class="option">
 <dt id="cmdoption-fpascal-strings">
 <code class="descname">-fpascal-strings</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fpascal-strings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enable support for Pascal-style strings with &#8220;\pfoo&#8221;.</p>
+<dd><p>Enable support for Pascal-style strings with “\pfoo”.</p>
 </dd></dl>
 
 <dl class="option">
@@ -247,14 +245,14 @@ strings and other optimizations.</p>
 <dl class="option">
 <dt id="cmdoption-fblocks">
 <code class="descname">-fblocks</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fblocks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enable the &#8220;Blocks&#8221; language feature.</p>
+<dd><p>Enable the “Blocks” language feature.</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-fobjc-abi-version">
 <code class="descname">-fobjc-abi-version</code><code class="descclassname">=version</code><a class="headerlink" href="#cmdoption-fobjc-abi-version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select the Objective-C ABI version to use. Available versions are 1 (legacy
-&#8220;fragile&#8221; ABI), 2 (non-fragile ABI 1), and 3 (non-fragile ABI 2).</p>
+“fragile” ABI), 2 (non-fragile ABI 1), and 3 (non-fragile ABI 2).</p>
 </dd></dl>
 
 <dl class="option">
@@ -268,9 +266,9 @@ default).</p>
 
 <dl class="option">
 <dt id="cmdoption-fobjc-nonfragile-abi">
-<span id="cmdoption-fno-objc-nonfragile-abi"></span><code class="descname">-fobjc-nonfragile-abi</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-objc-nonfragile-abi</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fobjc-nonfragile-abi" title="Permalink to this definition">¶</a></dt>
+<code class="descname">-fobjc-nonfragile-abi</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-objc-nonfragile-abi</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fobjc-nonfragile-abi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enable use of the Objective-C non-fragile ABI. On platforms for which this is
-the default ABI, it can be disabled with <a class="reference internal" href="#cmdoption-fno-objc-nonfragile-abi"><code class="xref std std-option docutils literal"><span class="pre">-fno-objc-nonfragile-abi</span></code></a>.</p>
+the default ABI, it can be disabled with <a class="reference internal" href="#cmdoption-fobjc-nonfragile-abi"><code class="xref std std-option docutils literal"><span class="pre">-fno-objc-nonfragile-abi</span></code></a>.</p>
 </dd></dl>
 
 </div>
@@ -312,46 +310,46 @@ but which may not exist on earlier ones.</p>
 <div class="section" id="code-generation-options">
 <h3>Code Generation Options<a class="headerlink" href="#code-generation-options" title="Permalink to this headline">¶</a></h3>
 <dl class="option">
-<dt id="cmdoption-O0">
-<span id="cmdoption-O1"></span><span id="cmdoption-O2"></span><span id="cmdoption-O3"></span><span id="cmdoption-Ofast"></span><span id="cmdoption-Os"></span><span id="cmdoption-Oz"></span><span id="cmdoption-Og"></span><span id="cmdoption-O"></span><span id="cmdoption-O4"></span><code class="descname">-O0</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-O1</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-O2</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-O3</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-Ofast</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-Os</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-Oz</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-Og</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-O</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-O4</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-O0" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-o0">
+<code class="descname">-O0</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-O1</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-O2</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-O3</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-Ofast</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-Os</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-Oz</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-Og</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-O</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-O4</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-o0" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify which optimization level to use:</p>
 <blockquote>
-<div><p><a class="reference internal" href="#cmdoption-O0"><code class="xref std std-option docutils literal"><span class="pre">-O0</span></code></a> Means &#8220;no optimization&#8221;: this level compiles the fastest and
+<div><p><a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O0</span></code></a> Means “no optimization”: this level compiles the fastest and
 generates the most debuggable code.</p>
-<p><a class="reference internal" href="#cmdoption-O1"><code class="xref std std-option docutils literal"><span class="pre">-O1</span></code></a> Somewhere between <a class="reference internal" href="#cmdoption-O0"><code class="xref std std-option docutils literal"><span class="pre">-O0</span></code></a> and <a class="reference internal" href="#cmdoption-O2"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a>.</p>
-<p><a class="reference internal" href="#cmdoption-O2"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a> Moderate level of optimization which enables most
+<p><a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O1</span></code></a> Somewhere between <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O0</span></code></a> and <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a>.</p>
+<p><a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a> Moderate level of optimization which enables most
 optimizations.</p>
-<p><a class="reference internal" href="#cmdoption-O3"><code class="xref std std-option docutils literal"><span class="pre">-O3</span></code></a> Like <a class="reference internal" href="#cmdoption-O2"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a>, except that it enables optimizations that
+<p><a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O3</span></code></a> Like <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a>, except that it enables optimizations that
 take longer to perform or that may generate larger code (in an attempt to
 make the program run faster).</p>
-<p><a class="reference internal" href="#cmdoption-Ofast"><code class="xref std std-option docutils literal"><span class="pre">-Ofast</span></code></a> Enables all the optimizations from <a class="reference internal" href="#cmdoption-O3"><code class="xref std std-option docutils literal"><span class="pre">-O3</span></code></a> along
+<p><a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-Ofast</span></code></a> Enables all the optimizations from <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O3</span></code></a> along
 with other aggressive optimizations that may violate strict compliance with
 language standards.</p>
-<p><a class="reference internal" href="#cmdoption-Os"><code class="xref std std-option docutils literal"><span class="pre">-Os</span></code></a> Like <a class="reference internal" href="#cmdoption-O2"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a> with extra optimizations to reduce code
+<p><a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-Os</span></code></a> Like <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a> with extra optimizations to reduce code
 size.</p>
-<p><a class="reference internal" href="#cmdoption-Oz"><code class="xref std std-option docutils literal"><span class="pre">-Oz</span></code></a> Like <a class="reference internal" href="#cmdoption-Os"><code class="xref std std-option docutils literal"><span class="pre">-Os</span></code></a> (and thus <a class="reference internal" href="#cmdoption-O2"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a>), but reduces code
+<p><a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-Oz</span></code></a> Like <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-Os</span></code></a> (and thus <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a>), but reduces code
 size further.</p>
-<p><a class="reference internal" href="#cmdoption-Og"><code class="xref std std-option docutils literal"><span class="pre">-Og</span></code></a> Like <a class="reference internal" href="#cmdoption-O1"><code class="xref std std-option docutils literal"><span class="pre">-O1</span></code></a>. In future versions, this option might
+<p><a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-Og</span></code></a> Like <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O1</span></code></a>. In future versions, this option might
 disable different optimizations in order to improve debuggability.</p>
-<p><a class="reference internal" href="#cmdoption-O"><code class="xref std std-option docutils literal"><span class="pre">-O</span></code></a> Equivalent to <a class="reference internal" href="#cmdoption-O2"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a>.</p>
-<p><a class="reference internal" href="#cmdoption-O4"><code class="xref std std-option docutils literal"><span class="pre">-O4</span></code></a> and higher</p>
+<p><a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O</span></code></a> Equivalent to <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O2</span></code></a>.</p>
+<p><a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O4</span></code></a> and higher</p>
 <blockquote>
-<div>Currently equivalent to <a class="reference internal" href="#cmdoption-O3"><code class="xref std std-option docutils literal"><span class="pre">-O3</span></code></a></div></blockquote>
+<div>Currently equivalent to <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O3</span></code></a></div></blockquote>
 </div></blockquote>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-g">
-<span id="cmdoption-gline-tables-only"></span><span id="cmdoption-gmodules"></span><code class="descname">-g</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-gline-tables-only</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-gmodules</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-g" title="Permalink to this definition">¶</a></dt>
+<code class="descname">-g</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-gline-tables-only</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-gmodules</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-g" title="Permalink to this definition">¶</a></dt>
 <dd><p>Control debug information output.  Note that Clang debug information works
-best at <a class="reference internal" href="#cmdoption-O0"><code class="xref std std-option docutils literal"><span class="pre">-O0</span></code></a>.  When more than one option starting with <cite>-g</cite> is
+best at <a class="reference internal" href="#cmdoption-o0"><code class="xref std std-option docutils literal"><span class="pre">-O0</span></code></a>.  When more than one option starting with <cite>-g</cite> is
 specified, the last one wins:</p>
 <blockquote>
 <div><p><a class="reference internal" href="../UsersManual.html#cmdoption-g"><code class="xref std std-option docutils literal"><span class="pre">-g</span></code></a> Generate debug information.</p>
 <p><a class="reference internal" href="../UsersManual.html#cmdoption-gline-tables-only"><code class="xref std std-option docutils literal"><span class="pre">-gline-tables-only</span></code></a> Generate only line table debug information. This
 allows for symbolicated backtraces with inlining information, but does not
 include any information about variables, their locations or types.</p>
-<p><a class="reference internal" href="#cmdoption-gmodules"><code class="xref std std-option docutils literal"><span class="pre">-gmodules</span></code></a> Generate debug information that contains external
+<p><a class="reference internal" href="#cmdoption-g"><code class="xref std std-option docutils literal"><span class="pre">-gmodules</span></code></a> Generate debug information that contains external
 references to types defined in Clang modules or precompiled headers instead
 of emitting redundant debug type information into every object file.  This
 option transparently switches the Clang module format to object file
@@ -377,7 +375,7 @@ needed by a module and could be replaced with a forward declaration.
 Further, Clang will only emit type info for a dynamic C++ class in the
 module that contains the vtable for the class.</p>
 <p>The <a class="reference internal" href="../UsersManual.html#cmdoption-fstandalone-debug"><code class="xref std std-option docutils literal"><span class="pre">-fstandalone-debug</span></code></a> option turns off these optimizations.
-This is useful when working with 3rd-party libraries that don&#8217;t come with
+This is useful when working with 3rd-party libraries that don’t come with
 debug information.  This is the default on Darwin.  Note that Clang will
 never emit type information for types that are not referenced at all by the
 program.</p>
@@ -406,32 +404,32 @@ abort when it happens.</p>
 
 <dl class="option">
 <dt id="cmdoption-fcommon">
-<span id="cmdoption-fno-common"></span><code class="descname">-fcommon</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-common</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fcommon" title="Permalink to this definition">¶</a></dt>
+<code class="descname">-fcommon</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-common</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fcommon" title="Permalink to this definition">¶</a></dt>
 <dd><p>This flag specifies that variables without initializers get common linkage.
-It can be disabled with <a class="reference internal" href="#cmdoption-fno-common"><code class="xref std std-option docutils literal"><span class="pre">-fno-common</span></code></a>.</p>
+It can be disabled with <a class="reference internal" href="#cmdoption-fcommon"><code class="xref std std-option docutils literal"><span class="pre">-fno-common</span></code></a>.</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-ftls-model">
 <code class="descname">-ftls-model</code><code class="descclassname">=&lt;model&gt;</code><a class="headerlink" href="#cmdoption-ftls-model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the default thread-local storage (TLS) model to use for thread-local
-variables. Valid values are: &#8220;global-dynamic&#8221;, &#8220;local-dynamic&#8221;,
-&#8220;initial-exec&#8221; and &#8220;local-exec&#8221;. The default is &#8220;global-dynamic&#8221;. The default
+variables. Valid values are: “global-dynamic”, “local-dynamic”,
+“initial-exec” and “local-exec”. The default is “global-dynamic”. The default
 model can be overridden with the tls_model attribute. The compiler will try
 to choose a more efficient model if possible.</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-flto">
-<span id="cmdoption-flto"></span><span id="cmdoption-flto"></span><span id="cmdoption-emit-llvm"></span><code class="descname">-flto</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-flto</code><code class="descclassname">=full</code><code class="descclassname">, </code><code class="descname">-flto</code><code class="descclassname">=thin</code><code class="descclassname">, </code><code class="descname">-emit-llvm</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-flto" title="Permalink to this definition">¶</a></dt>
+<code class="descname">-flto</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-flto</code><code class="descclassname">=full</code><code class="descclassname">, </code><code class="descname">-flto</code><code class="descclassname">=thin</code><code class="descclassname">, </code><code class="descname">-emit-llvm</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-flto" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate output files in LLVM formats, suitable for link time optimization.
-When used with <a class="reference internal" href="#cmdoption-S"><code class="xref std std-option docutils literal"><span class="pre">-S</span></code></a> this generates LLVM intermediate language
+When used with <a class="reference internal" href="#cmdoption-s"><code class="xref std std-option docutils literal"><span class="pre">-S</span></code></a> this generates LLVM intermediate language
 assembly files, otherwise this generates LLVM bitcode format object files
 (which may be passed to the linker depending on the stage selection options).</p>
-<p>The default for <a class="reference internal" href="#cmdoption-flto"><code class="xref std std-option docutils literal"><span class="pre">-flto</span></code></a> is &#8220;full&#8221;, in which the
+<p>The default for <a class="reference internal" href="#cmdoption-flto"><code class="xref std std-option docutils literal"><span class="pre">-flto</span></code></a> is “full”, in which the
 LLVM bitcode is suitable for monolithic Link Time Optimization (LTO), where
 the linker merges all such modules into a single combined module for
-optimization. With &#8220;thin&#8221;, <a class="reference internal" href="../ThinLTO.html"><em>ThinLTO</em></a>
+optimization. With “thin”, <a class="reference internal" href="../ThinLTO.html"><span class="doc">ThinLTO</span></a>
 compilation is invoked instead.</p>
 </dd></dl>
 
@@ -439,62 +437,62 @@ compilation is invoked instead.</p>
 <div class="section" id="driver-options">
 <h3>Driver Options<a class="headerlink" href="#driver-options" title="Permalink to this headline">¶</a></h3>
 <dl class="option">
-<dt id="cmdoption-###">
-<code class="descname">-###</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-###" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption">
+<code class="descname">-###</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print (but do not run) the commands to run for this compilation.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption--help">
-<code class="descname">--help</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption--help" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-help">
+<code class="descname">--help</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-help" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display available options.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-Qunused-arguments">
-<code class="descname">-Qunused-arguments</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-Qunused-arguments" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-qunused-arguments">
+<code class="descname">-Qunused-arguments</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-qunused-arguments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do not emit any warnings for unused driver arguments.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-Wa">
-<code class="descname">-Wa</code><code class="descclassname">,&lt;args&gt;</code><a class="headerlink" href="#cmdoption-Wa" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-wa-args">
+<code class="descname">-Wa,&lt;args&gt;</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-wa-args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pass the comma separated arguments in args to the assembler.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-Wl">
-<code class="descname">-Wl</code><code class="descclassname">,&lt;args&gt;</code><a class="headerlink" href="#cmdoption-Wl" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-wl-args">
+<code class="descname">-Wl,&lt;args&gt;</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-wl-args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pass the comma separated arguments in args to the linker.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-Wp">
-<code class="descname">-Wp</code><code class="descclassname">,&lt;args&gt;</code><a class="headerlink" href="#cmdoption-Wp" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-wp-args">
+<code class="descname">-Wp,&lt;args&gt;</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-wp-args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pass the comma separated arguments in args to the preprocessor.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-Xanalyzer">
-<code class="descname">-Xanalyzer</code><code class="descclassname"> &lt;arg&gt;</code><a class="headerlink" href="#cmdoption-Xanalyzer" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-xanalyzer">
+<code class="descname">-Xanalyzer</code><code class="descclassname"> &lt;arg&gt;</code><a class="headerlink" href="#cmdoption-xanalyzer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pass arg to the static analyzer.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-Xassembler">
-<code class="descname">-Xassembler</code><code class="descclassname"> &lt;arg&gt;</code><a class="headerlink" href="#cmdoption-Xassembler" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-xassembler">
+<code class="descname">-Xassembler</code><code class="descclassname"> &lt;arg&gt;</code><a class="headerlink" href="#cmdoption-xassembler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pass arg to the assembler.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-Xlinker">
-<code class="descname">-Xlinker</code><code class="descclassname"> &lt;arg&gt;</code><a class="headerlink" href="#cmdoption-Xlinker" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-xlinker">
+<code class="descname">-Xlinker</code><code class="descclassname"> &lt;arg&gt;</code><a class="headerlink" href="#cmdoption-xlinker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pass arg to the linker.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-Xpreprocessor">
-<code class="descname">-Xpreprocessor</code><code class="descclassname"> &lt;arg&gt;</code><a class="headerlink" href="#cmdoption-Xpreprocessor" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-xpreprocessor">
+<code class="descname">-Xpreprocessor</code><code class="descclassname"> &lt;arg&gt;</code><a class="headerlink" href="#cmdoption-xpreprocessor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pass arg to the preprocessor.</p>
 </dd></dl>
 
@@ -514,7 +512,7 @@ compilation is invoked instead.</p>
 <dt id="cmdoption-print-libgcc-file-name">
 <code class="descname">-print-libgcc-file-name</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-print-libgcc-file-name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the library path for the currently used compiler runtime library
-(&#8220;libgcc.a&#8221; or &#8220;libclang_rt.builtins.*.a&#8221;).</p>
+(“libgcc.a” or “libclang_rt.builtins.*.a”).</p>
 </dd></dl>
 
 <dl class="option">
@@ -537,15 +535,15 @@ compilation is invoked instead.</p>
 
 <dl class="option">
 <dt id="cmdoption-save-stats">
-<span id="cmdoption-save-stats"></span><span id="cmdoption-save-stats"></span><code class="descname">-save-stats</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-save-stats</code><code class="descclassname">=cwd</code><code class="descclassname">, </code><code class="descname">-save-stats</code><code class="descclassname">=obj</code><a class="headerlink" href="#cmdoption-save-stats" title="Permalink to this definition">¶</a></dt>
+<code class="descname">-save-stats</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-save-stats</code><code class="descclassname">=cwd</code><code class="descclassname">, </code><code class="descname">-save-stats</code><code class="descclassname">=obj</code><a class="headerlink" href="#cmdoption-save-stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save internal code generation (LLVM) statistics to a file in the current
-directory (<a class="reference internal" href="#cmdoption-save-stats"><code class="xref std std-option docutils literal"><span class="pre">-save-stats</span></code></a>/&#8221;-save-stats=cwd&#8221;) or the directory
-of the output file (&#8220;-save-state=obj&#8221;).</p>
+directory (<a class="reference internal" href="#cmdoption-save-stats"><code class="xref std std-option docutils literal"><span class="pre">-save-stats</span></code></a>/”-save-stats=cwd”) or the directory
+of the output file (“-save-state=obj”).</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-integrated-as">
-<span id="cmdoption-no-integrated-as"></span><code class="descname">-integrated-as</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-no-integrated-as</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-integrated-as" title="Permalink to this definition">¶</a></dt>
+<code class="descname">-integrated-as</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-no-integrated-as</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-integrated-as" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used to enable and disable, respectively, the use of the integrated
 assembler. Whether the integrated assembler is on by default is target
 dependent.</p>
@@ -574,24 +572,24 @@ dependent.</p>
 <h3>Diagnostics Options<a class="headerlink" href="#diagnostics-options" title="Permalink to this headline">¶</a></h3>
 <dl class="option">
 <dt id="cmdoption-fshow-column">
-<span id="cmdoption-fshow-source-location"></span><span id="cmdoption-fcaret-diagnostics"></span><span id="cmdoption-fdiagnostics-fixit-info"></span><span id="cmdoption-fdiagnostics-parseable-fixits"></span><span id="cmdoption-fdiagnostics-print-source-range-info"></span><span id="cmdoption-fprint-source-range-info"></span><span id="cmdoption-fdiagnostics-show-option"></span><span id="cmdoption-fmessage-length"></span><code class="descname">-fshow-column</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fshow-source-location</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fcaret-diagnostics</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fdiagnostics-fixit-info</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fdiagnostics-parseable-fixits</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fdiagnostics-print-source-range-info</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fprint-source-range-info</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fdiagnostics-show-option</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fmessage-length</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fshow-column" title="Permalink to this definition">¶</a></dt>
+<code class="descname">-fshow-column</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fshow-source-location</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fcaret-diagnostics</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fdiagnostics-fixit-info</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fdiagnostics-parseable-fixits</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fdiagnostics-print-source-range-info</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fprint-source-range-info</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fdiagnostics-show-option</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fmessage-length</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-fshow-column" title="Permalink to this definition">¶</a></dt>
 <dd><p>These options control how Clang prints out information about diagnostics
-(errors and warnings). Please see the Clang User&#8217;s Manual for more information.</p>
+(errors and warnings). Please see the Clang User’s Manual for more information.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="preprocessor-options">
 <h3>Preprocessor Options<a class="headerlink" href="#preprocessor-options" title="Permalink to this headline">¶</a></h3>
 <dl class="option">
-<dt id="cmdoption-D">
-<code class="descname">-D</code><code class="descclassname">&lt;macroname&gt;=&lt;value&gt;</code><a class="headerlink" href="#cmdoption-D" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-d-macroname">
+<code class="descname">-D&lt;macroname&gt;</code><code class="descclassname">=&lt;value&gt;</code><a class="headerlink" href="#cmdoption-d-macroname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an implicit #define into the predefines buffer which is read before the
 source file is preprocessed.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-U">
-<code class="descname">-U</code><code class="descclassname">&lt;macroname&gt;</code><a class="headerlink" href="#cmdoption-U" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-u-macroname">
+<code class="descname">-U&lt;macroname&gt;</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-u-macroname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an implicit #undef into the predefines buffer which is read before the
 source file is preprocessed.</p>
 </dd></dl>
@@ -604,14 +602,14 @@ source file is preprocessed.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-I">
-<code class="descname">-I</code><code class="descclassname">&lt;directory&gt;</code><a class="headerlink" href="#cmdoption-I" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-i-directory">
+<code class="descname">-I&lt;directory&gt;</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-i-directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the specified directory to the search path for include files.</p>
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-F">
-<code class="descname">-F</code><code class="descclassname">&lt;directory&gt;</code><a class="headerlink" href="#cmdoption-F" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-f-directory">
+<code class="descname">-F&lt;directory&gt;</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-f-directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the specified directory to the search path for framework include files.</p>
 </dd></dl>
 
@@ -632,7 +630,7 @@ search compiler builtin include directories.</p>
 <dl class="option">
 <dt id="cmdoption-nobuiltininc">
 <code class="descname">-nobuiltininc</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-nobuiltininc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do not search clang&#8217;s builtin directory for include files.</p>
+<dd><p>Do not search clang’s builtin directory for include files.</p>
 </dd></dl>
 
 </div>
@@ -674,7 +672,7 @@ Darwin targets.</p>
 <div class="section" id="bugs">
 <h2>BUGS<a class="headerlink" href="#bugs" title="Permalink to this headline">¶</a></h2>
 <p>To report bugs, please visit &lt;<a class="reference external" href="http://llvm.org/bugs/">http://llvm.org/bugs/</a>&gt;.  Most bug reports should
-include preprocessed source files (use the <a class="reference internal" href="#cmdoption-E"><code class="xref std std-option docutils literal"><span class="pre">-E</span></code></a> option) and the full
+include preprocessed source files (use the <a class="reference internal" href="#cmdoption-e"><code class="xref std std-option docutils literal"><span class="pre">-E</span></code></a> option) and the full
 output of the compiler, along with information to reproduce.</p>
 </div>
 <div class="section" id="see-also">
@@ -688,7 +686,7 @@ output of the compiler, along with information to reproduce.</p>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="index.html">Clang &#8220;man&#8221; pages</a>
+        «&#160;&#160;<a href="index.html">Clang “man” pages</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="../index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -698,8 +696,8 @@ output of the compiler, along with information to reproduce.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

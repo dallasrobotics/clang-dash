@@ -1,42 +1,41 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Assembling a Complete Toolchain &mdash; Clang 4 documentation</title>
-    
+    <title>Assembling a Complete Toolchain &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Clang Language Extensions" href="LanguageExtensions.html" />
     <link rel="prev" title="Clang Compiler User’s Manual" href="UsersManual.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>Assembling a Complete Toolchain</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="UsersManual.html">Clang Compiler User&#8217;s Manual</a>
+        «&#160;&#160;<a href="UsersManual.html">Clang Compiler User’s Manual</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -100,10 +99,10 @@ in some compilations:</p>
 expanding #includes and #defines.
 The <code class="docutils literal"><span class="pre">-E</span></code> flag instructs Clang to stop after this step.</li>
 <li><strong>Parsing</strong>: This parses and semantically analyzes the source language and
-builds a source-level intermediate representation (&#8220;AST&#8221;), producing a
-<a class="reference internal" href="UsersManual.html#usersmanual-precompiled-headers"><span>precompiled header (PCH)</span></a>,
+builds a source-level intermediate representation (“AST”), producing a
+<a class="reference internal" href="UsersManual.html#usersmanual-precompiled-headers"><span class="std std-ref">precompiled header (PCH)</span></a>,
 preamble, or
-<a class="reference internal" href="Modules.html"><em>precompiled module file (PCM)</em></a>,
+<a class="reference internal" href="Modules.html"><span class="doc">precompiled module file (PCM)</span></a>,
 depending on the input.
 The <code class="docutils literal"><span class="pre">-precompile</span></code> flag instructs Clang to stop after this step. This is
 the default when the input is a header file.</li>
@@ -152,10 +151,10 @@ currently-supported languages are:</p>
 </div>
 <div class="section" id="assember">
 <h3><a class="toc-backref" href="#id12">Assember</a><a class="headerlink" href="#assember" title="Permalink to this headline">¶</a></h3>
-<p>Clang can either use LLVM&#8217;s integrated assembler or an external system-specific
+<p>Clang can either use LLVM’s integrated assembler or an external system-specific
 tool (for instance, the GNU Assembler on GNU OSes) to produce machine code from
 assembly.
-By default, Clang uses LLVM&#8217;s integrataed assembler on all targets where it is
+By default, Clang uses LLVM’s integrataed assembler on all targets where it is
 supported. If you wish to use the system assember instead, use the
 <code class="docutils literal"><span class="pre">-fno-integrated-as</span></code> option.</p>
 </div>
@@ -165,8 +164,8 @@ supported. If you wish to use the system assember instead, use the
 <ul class="simple">
 <li>GNU ld</li>
 <li>GNU gold</li>
-<li>LLVM&#8217;s <a class="reference external" href="http://lld.llvm.org">lld</a></li>
-<li>MSVC&#8217;s link.exe</li>
+<li>LLVM’s <a class="reference external" href="http://lld.llvm.org">lld</a></li>
+<li>MSVC’s link.exe</li>
 </ul>
 <p>Link-time optimization is natively supported by lld, and supported via
 a <a class="reference external" href="http://llvm.org/docs/GoldPlugin.html">linker plugin</a> when using gold.</p>
@@ -201,7 +200,7 @@ the dominant compiler, Clang currently defaults to using libgcc_s. On most
 other targets, compiler-rt is used by default.</p>
 <div class="section" id="compiler-rt-llvm">
 <h4>compiler-rt (LLVM)<a class="headerlink" href="#compiler-rt-llvm" title="Permalink to this headline">¶</a></h4>
-<p><a class="reference external" href="http://compiler-rt.llvm.org/">LLVM&#8217;s compiler runtime library</a> provides a
+<p><a class="reference external" href="http://compiler-rt.llvm.org/">LLVM’s compiler runtime library</a> provides a
 complete set of runtime library functions containing all functions that
 Clang will implicitly call, in <code class="docutils literal"><span class="pre">libclang_rt.builtins.&lt;arch&gt;.a</span></code>.</p>
 <p>You can instruct Clang to use compiler-rt with the <code class="docutils literal"><span class="pre">--rtlib=compiler-rt</span></code> flag.
@@ -214,9 +213,9 @@ typically harmless, but wasteful).</p>
 </div>
 <div class="section" id="libgcc-s-gnu">
 <h4>libgcc_s (GNU)<a class="headerlink" href="#libgcc-s-gnu" title="Permalink to this headline">¶</a></h4>
-<p><a class="reference external" href="https://gcc.gnu.org/onlinedocs/gccint/Libgcc.html">GCC&#8217;s runtime library</a>
+<p><a class="reference external" href="https://gcc.gnu.org/onlinedocs/gccint/Libgcc.html">GCC’s runtime library</a>
 can be used in place of compiler-rt. However, it lacks several functions
-that LLVM may emit references to, particularly when using Clang&#8217;s
+that LLVM may emit references to, particularly when using Clang’s
 <code class="docutils literal"><span class="pre">__builtin_*_overflow</span></code> family of intrinsics.</p>
 <p>You can instruct Clang to use libgcc_s with the <code class="docutils literal"><span class="pre">--rtlib=libgcc</span></code> flag.
 This is not supported on every platform.</p>
@@ -237,7 +236,7 @@ necessary for such programs.</p>
 <div class="section" id="libatomic-gnu">
 <h4>libatomic (GNU)<a class="headerlink" href="#libatomic-gnu" title="Permalink to this headline">¶</a></h4>
 <p>libgcc_s does not provide an implementation of an atomics library. Instead,
-<a class="reference external" href="https://gcc.gnu.org/wiki/Atomic/GCCMM">GCC&#8217;s libatomic library</a> can be
+<a class="reference external" href="https://gcc.gnu.org/wiki/Atomic/GCCMM">GCC’s libatomic library</a> can be
 used to supply these when using libgcc_s.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -257,8 +256,8 @@ It is a dependency of the C++ ABI library, and sometimes is a dependency
 of other runtimes.</p>
 <div class="section" id="libunwind-llvm">
 <h4>libunwind (LLVM)<a class="headerlink" href="#libunwind-llvm" title="Permalink to this headline">¶</a></h4>
-<p>LLVM&#8217;s unwinder library can be obtained from subversion:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">llvm-src$ svn co http://llvm.org/svn/llvm-project/libunwind/trunk projects/libunwind</span>
+<p>LLVM’s unwinder library can be obtained from subversion:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">llvm-src$ svn co http://llvm.org/svn/llvm-project/libunwind/trunk projects/libunwind</span>
 </pre></div>
 </div>
 <p>When checked out into projects/libunwind within an LLVM checkout,
@@ -287,11 +286,11 @@ See <a class="reference external" href="https://github.com/pathscale/libunwind">
 </div>
 <div class="section" id="sanitizer-runtime">
 <h3><a class="toc-backref" href="#id18">Sanitizer runtime</a><a class="headerlink" href="#sanitizer-runtime" title="Permalink to this headline">¶</a></h3>
-<p>The instrumentation added by Clang&#8217;s sanitizers (<code class="docutils literal"><span class="pre">-fsanitize=...</span></code>) implicitly
+<p>The instrumentation added by Clang’s sanitizers (<code class="docutils literal"><span class="pre">-fsanitize=...</span></code>) implicitly
 makes calls to a runtime library, in order to maintain side state about the
 execution of the program and to issue diagnostic messages when a problem is
 detected.</p>
-<p>The only supported implementation of these runtimes is provided by LLVM&#8217;s
+<p>The only supported implementation of these runtimes is provided by LLVM’s
 compiler-rt, and the relevant portion of that library
 (<code class="docutils literal"><span class="pre">libclang_rt.&lt;sanitizer&gt;.&lt;arch&gt;.a</span></code>)
 will be implicitly linked when linking with a <code class="docutils literal"><span class="pre">-fsanitize=...</span></code> flag.</p>
@@ -319,12 +318,12 @@ chosen C++ standard library was linked against. Several implementations are
 available:</p>
 <div class="section" id="libc-abi-llvm">
 <h4>libc++abi (LLVM)<a class="headerlink" href="#libc-abi-llvm" title="Permalink to this headline">¶</a></h4>
-<p><a class="reference external" href="http://libcxxabi.llvm.org/">libc++abi</a> is LLVM&#8217;s implementation of this
+<p><a class="reference external" href="http://libcxxabi.llvm.org/">libc++abi</a> is LLVM’s implementation of this
 specification.</p>
 </div>
 <div class="section" id="libsupc-gnu">
 <h4>libsupc++ (GNU)<a class="headerlink" href="#libsupc-gnu" title="Permalink to this headline">¶</a></h4>
-<p>libsupc++ is GCC&#8217;s implementation of this specification. However, this
+<p>libsupc++ is GCC’s implementation of this specification. However, this
 library is only used when libstdc++ is linked statically. The dynamic
 library version of libstdc++ contains a copy of libsupc++.</p>
 <div class="admonition note">
@@ -342,18 +341,18 @@ See <a class="reference external" href="https://github.com/pathscale/libcxxrt">l
 </div>
 <div class="section" id="id6">
 <h3><a class="toc-backref" href="#id21">C++ standard library</a><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
-<p>Clang supports use of either LLVM&#8217;s libc++ or GCC&#8217;s libstdc++ implementation
+<p>Clang supports use of either LLVM’s libc++ or GCC’s libstdc++ implementation
 of the <a class="reference external" href="http://en.cppreference.com/w/cpp">C++ standard library</a>.</p>
 <div class="section" id="libc-llvm">
 <h4>libc++ (LLVM)<a class="headerlink" href="#libc-llvm" title="Permalink to this headline">¶</a></h4>
-<p><a class="reference external" href="http://libcxx.llvm.org/">libc++</a> is LLVM&#8217;s implementation of the C++
+<p><a class="reference external" href="http://libcxx.llvm.org/">libc++</a> is LLVM’s implementation of the C++
 standard library, aimed at being a complete implementation of the C++
 standards from C++11 onwards.</p>
 <p>You can instruct Clang to use libc++ with the <code class="docutils literal"><span class="pre">-stdlib=libc++</span></code> flag.</p>
 </div>
 <div class="section" id="libstdc-gnu">
 <h4>libstdc++ (GNU)<a class="headerlink" href="#libstdc-gnu" title="Permalink to this headline">¶</a></h4>
-<p><a class="reference external" href="https://gcc.gnu.org/onlinedocs/libstdc++/">libstdc++</a> is GCC&#8217;s implementation
+<p><a class="reference external" href="https://gcc.gnu.org/onlinedocs/libstdc++/">libstdc++</a> is GCC’s implementation
 of the C++ standard library. Clang supports a wide range of versions of
 libstdc++, from around version 4.2 onwards, and will implicitly work around
 some bugs in older versions of libstdc++.</p>
@@ -368,7 +367,7 @@ some bugs in older versions of libstdc++.</p>
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="UsersManual.html">Clang Compiler User&#8217;s Manual</a>
+        «&#160;&#160;<a href="UsersManual.html">Clang Compiler User’s Manual</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
@@ -378,8 +377,8 @@ some bugs in older versions of libstdc++.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

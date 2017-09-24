@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>How to write RecursiveASTVisitor based ASTFrontendActions. &mdash; Clang 4 documentation</title>
-    
+    <title>How to write RecursiveASTVisitor based ASTFrontendActions. &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Tutorial for building tools using LibTooling and LibASTMatchers" href="LibASTMatchersTutorial.html" />
     <link rel="prev" title="Clang Plugins" href="ClangPlugins.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>How to write RecursiveASTVisitor based ASTFrontendActions.</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -65,14 +64,14 @@ provides the convenience interface ASTFrontendAction, which takes care
 of executing the action. The only part left is to implement the
 CreateASTConsumer method that returns an ASTConsumer per translation
 unit.</p>
-<div class="highlight-python"><div class="highlight"><pre>class FindNamedClassAction : public clang::ASTFrontendAction {
-public:
-  virtual std::unique_ptr&lt;clang::ASTConsumer&gt; CreateASTConsumer(
-    clang::CompilerInstance &amp;Compiler, llvm::StringRef InFile) {
-    return std::unique_ptr&lt;clang::ASTConsumer&gt;(
-        new FindNamedClassConsumer);
-  }
-};
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FindNamedClassAction</span> <span class="p">:</span> <span class="n">public</span> <span class="n">clang</span><span class="p">::</span><span class="n">ASTFrontendAction</span> <span class="p">{</span>
+<span class="n">public</span><span class="p">:</span>
+  <span class="n">virtual</span> <span class="n">std</span><span class="p">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">clang</span><span class="p">::</span><span class="n">ASTConsumer</span><span class="o">&gt;</span> <span class="n">CreateASTConsumer</span><span class="p">(</span>
+    <span class="n">clang</span><span class="p">::</span><span class="n">CompilerInstance</span> <span class="o">&amp;</span><span class="n">Compiler</span><span class="p">,</span> <span class="n">llvm</span><span class="p">::</span><span class="n">StringRef</span> <span class="n">InFile</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">std</span><span class="p">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">clang</span><span class="p">::</span><span class="n">ASTConsumer</span><span class="o">&gt;</span><span class="p">(</span>
+        <span class="n">new</span> <span class="n">FindNamedClassConsumer</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 </div>
@@ -83,17 +82,17 @@ regardless of how the AST was produced. ASTConsumer provides many
 different entry points, but for our use case the only one needed is
 HandleTranslationUnit, which is called with the ASTContext for the
 translation unit.</p>
-<div class="highlight-python"><div class="highlight"><pre>class FindNamedClassConsumer : public clang::ASTConsumer {
-public:
-  virtual void HandleTranslationUnit(clang::ASTContext &amp;Context) {
-    // Traversing the translation unit decl via a RecursiveASTVisitor
-    // will visit all nodes in the AST.
-    Visitor.TraverseDecl(Context.getTranslationUnitDecl());
-  }
-private:
-  // A RecursiveASTVisitor implementation.
-  FindNamedClassVisitor Visitor;
-};
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FindNamedClassConsumer</span> <span class="p">:</span> <span class="n">public</span> <span class="n">clang</span><span class="p">::</span><span class="n">ASTConsumer</span> <span class="p">{</span>
+<span class="n">public</span><span class="p">:</span>
+  <span class="n">virtual</span> <span class="n">void</span> <span class="n">HandleTranslationUnit</span><span class="p">(</span><span class="n">clang</span><span class="p">::</span><span class="n">ASTContext</span> <span class="o">&amp;</span><span class="n">Context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">Traversing</span> <span class="n">the</span> <span class="n">translation</span> <span class="n">unit</span> <span class="n">decl</span> <span class="n">via</span> <span class="n">a</span> <span class="n">RecursiveASTVisitor</span>
+    <span class="o">//</span> <span class="n">will</span> <span class="n">visit</span> <span class="nb">all</span> <span class="n">nodes</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">AST</span><span class="o">.</span>
+    <span class="n">Visitor</span><span class="o">.</span><span class="n">TraverseDecl</span><span class="p">(</span><span class="n">Context</span><span class="o">.</span><span class="n">getTranslationUnitDecl</span><span class="p">());</span>
+  <span class="p">}</span>
+<span class="n">private</span><span class="p">:</span>
+  <span class="o">//</span> <span class="n">A</span> <span class="n">RecursiveASTVisitor</span> <span class="n">implementation</span><span class="o">.</span>
+  <span class="n">FindNamedClassVisitor</span> <span class="n">Visitor</span><span class="p">;</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 </div>
@@ -105,32 +104,32 @@ RecursiveASTVisitor to extract the relevant information from the AST.</p>
 VisitNodeType(NodeType *) for most AST nodes; the exception are TypeLoc
 nodes, which are passed by-value. We only need to implement the methods
 for the relevant node types.</p>
-<p>Let&#8217;s start by writing a RecursiveASTVisitor that visits all
-CXXRecordDecl&#8217;s.</p>
-<div class="highlight-python"><div class="highlight"><pre>class FindNamedClassVisitor
-  : public RecursiveASTVisitor&lt;FindNamedClassVisitor&gt; {
-public:
-  bool VisitCXXRecordDecl(CXXRecordDecl *Declaration) {
-    // For debugging, dumping the AST nodes will show which nodes are already
-    // being visited.
-    Declaration-&gt;dump();
+<p>Let’s start by writing a RecursiveASTVisitor that visits all
+CXXRecordDecl’s.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FindNamedClassVisitor</span>
+  <span class="p">:</span> <span class="n">public</span> <span class="n">RecursiveASTVisitor</span><span class="o">&lt;</span><span class="n">FindNamedClassVisitor</span><span class="o">&gt;</span> <span class="p">{</span>
+<span class="n">public</span><span class="p">:</span>
+  <span class="nb">bool</span> <span class="n">VisitCXXRecordDecl</span><span class="p">(</span><span class="n">CXXRecordDecl</span> <span class="o">*</span><span class="n">Declaration</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">For</span> <span class="n">debugging</span><span class="p">,</span> <span class="n">dumping</span> <span class="n">the</span> <span class="n">AST</span> <span class="n">nodes</span> <span class="n">will</span> <span class="n">show</span> <span class="n">which</span> <span class="n">nodes</span> <span class="n">are</span> <span class="n">already</span>
+    <span class="o">//</span> <span class="n">being</span> <span class="n">visited</span><span class="o">.</span>
+    <span class="n">Declaration</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">();</span>
 
-    // The return value indicates whether we want the visitation to proceed.
-    // Return false to stop the traversal of the AST.
-    return true;
-  }
-};
+    <span class="o">//</span> <span class="n">The</span> <span class="k">return</span> <span class="n">value</span> <span class="n">indicates</span> <span class="n">whether</span> <span class="n">we</span> <span class="n">want</span> <span class="n">the</span> <span class="n">visitation</span> <span class="n">to</span> <span class="n">proceed</span><span class="o">.</span>
+    <span class="o">//</span> <span class="n">Return</span> <span class="n">false</span> <span class="n">to</span> <span class="n">stop</span> <span class="n">the</span> <span class="n">traversal</span> <span class="n">of</span> <span class="n">the</span> <span class="n">AST</span><span class="o">.</span>
+    <span class="k">return</span> <span class="n">true</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 <p>In the methods of our RecursiveASTVisitor we can now use the full power
 of the Clang AST to drill through to the parts that are interesting for
 us. For example, to find all class declaration with a certain name, we
 can check for a specific qualified name:</p>
-<div class="highlight-python"><div class="highlight"><pre>bool VisitCXXRecordDecl(CXXRecordDecl *Declaration) {
-  if (Declaration-&gt;getQualifiedNameAsString() == &quot;n::m::C&quot;)
-    Declaration-&gt;dump();
-  return true;
-}
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">bool</span> <span class="n">VisitCXXRecordDecl</span><span class="p">(</span><span class="n">CXXRecordDecl</span> <span class="o">*</span><span class="n">Declaration</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Declaration</span><span class="o">-&gt;</span><span class="n">getQualifiedNameAsString</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;n::m::C&quot;</span><span class="p">)</span>
+    <span class="n">Declaration</span><span class="o">-&gt;</span><span class="n">dump</span><span class="p">();</span>
+  <span class="k">return</span> <span class="n">true</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -143,101 +142,101 @@ need to hand the ASTContext into our RecursiveASTVisitor implementation.</p>
 <p>The ASTContext is available from the CompilerInstance during the call to
 CreateASTConsumer. We can thus extract it there and hand it into our
 freshly created FindNamedClassConsumer:</p>
-<div class="highlight-python"><div class="highlight"><pre>virtual std::unique_ptr&lt;clang::ASTConsumer&gt; CreateASTConsumer(
-  clang::CompilerInstance &amp;Compiler, llvm::StringRef InFile) {
-  return std::unique_ptr&lt;clang::ASTConsumer&gt;(
-      new FindNamedClassConsumer(&amp;Compiler.getASTContext()));
-}
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">virtual</span> <span class="n">std</span><span class="p">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">clang</span><span class="p">::</span><span class="n">ASTConsumer</span><span class="o">&gt;</span> <span class="n">CreateASTConsumer</span><span class="p">(</span>
+  <span class="n">clang</span><span class="p">::</span><span class="n">CompilerInstance</span> <span class="o">&amp;</span><span class="n">Compiler</span><span class="p">,</span> <span class="n">llvm</span><span class="p">::</span><span class="n">StringRef</span> <span class="n">InFile</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">std</span><span class="p">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">clang</span><span class="p">::</span><span class="n">ASTConsumer</span><span class="o">&gt;</span><span class="p">(</span>
+      <span class="n">new</span> <span class="n">FindNamedClassConsumer</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Compiler</span><span class="o">.</span><span class="n">getASTContext</span><span class="p">()));</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Now that the ASTContext is available in the RecursiveASTVisitor, we can
 do more interesting things with AST nodes, like looking up their source
 locations:</p>
-<div class="highlight-python"><div class="highlight"><pre>bool VisitCXXRecordDecl(CXXRecordDecl *Declaration) {
-  if (Declaration-&gt;getQualifiedNameAsString() == &quot;n::m::C&quot;) {
-    // getFullLoc uses the ASTContext&#39;s SourceManager to resolve the source
-    // location and break it up into its line and column parts.
-    FullSourceLoc FullLocation = Context-&gt;getFullLoc(Declaration-&gt;getLocStart());
-    if (FullLocation.isValid())
-      llvm::outs() &lt;&lt; &quot;Found declaration at &quot;
-                   &lt;&lt; FullLocation.getSpellingLineNumber() &lt;&lt; &quot;:&quot;
-                   &lt;&lt; FullLocation.getSpellingColumnNumber() &lt;&lt; &quot;\n&quot;;
-  }
-  return true;
-}
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">bool</span> <span class="n">VisitCXXRecordDecl</span><span class="p">(</span><span class="n">CXXRecordDecl</span> <span class="o">*</span><span class="n">Declaration</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">Declaration</span><span class="o">-&gt;</span><span class="n">getQualifiedNameAsString</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;n::m::C&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">getFullLoc</span> <span class="n">uses</span> <span class="n">the</span> <span class="n">ASTContext</span><span class="s1">&#39;s SourceManager to resolve the source</span>
+    <span class="o">//</span> <span class="n">location</span> <span class="ow">and</span> <span class="k">break</span> <span class="n">it</span> <span class="n">up</span> <span class="n">into</span> <span class="n">its</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">column</span> <span class="n">parts</span><span class="o">.</span>
+    <span class="n">FullSourceLoc</span> <span class="n">FullLocation</span> <span class="o">=</span> <span class="n">Context</span><span class="o">-&gt;</span><span class="n">getFullLoc</span><span class="p">(</span><span class="n">Declaration</span><span class="o">-&gt;</span><span class="n">getLocStart</span><span class="p">());</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">FullLocation</span><span class="o">.</span><span class="n">isValid</span><span class="p">())</span>
+      <span class="n">llvm</span><span class="p">::</span><span class="n">outs</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Found declaration at &quot;</span>
+                   <span class="o">&lt;&lt;</span> <span class="n">FullLocation</span><span class="o">.</span><span class="n">getSpellingLineNumber</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;:&quot;</span>
+                   <span class="o">&lt;&lt;</span> <span class="n">FullLocation</span><span class="o">.</span><span class="n">getSpellingColumnNumber</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">true</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="putting-it-all-together">
 <h2>Putting it all together<a class="headerlink" href="#putting-it-all-together" title="Permalink to this headline">¶</a></h2>
 <p>Now we can combine all of the above into a small example program:</p>
-<div class="highlight-python"><div class="highlight"><pre>#include &quot;clang/AST/ASTConsumer.h&quot;
-#include &quot;clang/AST/RecursiveASTVisitor.h&quot;
-#include &quot;clang/Frontend/CompilerInstance.h&quot;
-#include &quot;clang/Frontend/FrontendAction.h&quot;
-#include &quot;clang/Tooling/Tooling.h&quot;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#include &quot;clang/AST/ASTConsumer.h&quot;</span>
+<span class="c1">#include &quot;clang/AST/RecursiveASTVisitor.h&quot;</span>
+<span class="c1">#include &quot;clang/Frontend/CompilerInstance.h&quot;</span>
+<span class="c1">#include &quot;clang/Frontend/FrontendAction.h&quot;</span>
+<span class="c1">#include &quot;clang/Tooling/Tooling.h&quot;</span>
 
-using namespace clang;
+<span class="n">using</span> <span class="n">namespace</span> <span class="n">clang</span><span class="p">;</span>
 
-class FindNamedClassVisitor
-  : public RecursiveASTVisitor&lt;FindNamedClassVisitor&gt; {
-public:
-  explicit FindNamedClassVisitor(ASTContext *Context)
-    : Context(Context) {}
+<span class="k">class</span> <span class="nc">FindNamedClassVisitor</span>
+  <span class="p">:</span> <span class="n">public</span> <span class="n">RecursiveASTVisitor</span><span class="o">&lt;</span><span class="n">FindNamedClassVisitor</span><span class="o">&gt;</span> <span class="p">{</span>
+<span class="n">public</span><span class="p">:</span>
+  <span class="n">explicit</span> <span class="n">FindNamedClassVisitor</span><span class="p">(</span><span class="n">ASTContext</span> <span class="o">*</span><span class="n">Context</span><span class="p">)</span>
+    <span class="p">:</span> <span class="n">Context</span><span class="p">(</span><span class="n">Context</span><span class="p">)</span> <span class="p">{}</span>
 
-  bool VisitCXXRecordDecl(CXXRecordDecl *Declaration) {
-    if (Declaration-&gt;getQualifiedNameAsString() == &quot;n::m::C&quot;) {
-      FullSourceLoc FullLocation = Context-&gt;getFullLoc(Declaration-&gt;getLocStart());
-      if (FullLocation.isValid())
-        llvm::outs() &lt;&lt; &quot;Found declaration at &quot;
-                     &lt;&lt; FullLocation.getSpellingLineNumber() &lt;&lt; &quot;:&quot;
-                     &lt;&lt; FullLocation.getSpellingColumnNumber() &lt;&lt; &quot;\n&quot;;
-    }
-    return true;
-  }
+  <span class="nb">bool</span> <span class="n">VisitCXXRecordDecl</span><span class="p">(</span><span class="n">CXXRecordDecl</span> <span class="o">*</span><span class="n">Declaration</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">Declaration</span><span class="o">-&gt;</span><span class="n">getQualifiedNameAsString</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;n::m::C&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">FullSourceLoc</span> <span class="n">FullLocation</span> <span class="o">=</span> <span class="n">Context</span><span class="o">-&gt;</span><span class="n">getFullLoc</span><span class="p">(</span><span class="n">Declaration</span><span class="o">-&gt;</span><span class="n">getLocStart</span><span class="p">());</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">FullLocation</span><span class="o">.</span><span class="n">isValid</span><span class="p">())</span>
+        <span class="n">llvm</span><span class="p">::</span><span class="n">outs</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Found declaration at &quot;</span>
+                     <span class="o">&lt;&lt;</span> <span class="n">FullLocation</span><span class="o">.</span><span class="n">getSpellingLineNumber</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;:&quot;</span>
+                     <span class="o">&lt;&lt;</span> <span class="n">FullLocation</span><span class="o">.</span><span class="n">getSpellingColumnNumber</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">true</span><span class="p">;</span>
+  <span class="p">}</span>
 
-private:
-  ASTContext *Context;
-};
+<span class="n">private</span><span class="p">:</span>
+  <span class="n">ASTContext</span> <span class="o">*</span><span class="n">Context</span><span class="p">;</span>
+<span class="p">};</span>
 
-class FindNamedClassConsumer : public clang::ASTConsumer {
-public:
-  explicit FindNamedClassConsumer(ASTContext *Context)
-    : Visitor(Context) {}
+<span class="k">class</span> <span class="nc">FindNamedClassConsumer</span> <span class="p">:</span> <span class="n">public</span> <span class="n">clang</span><span class="p">::</span><span class="n">ASTConsumer</span> <span class="p">{</span>
+<span class="n">public</span><span class="p">:</span>
+  <span class="n">explicit</span> <span class="n">FindNamedClassConsumer</span><span class="p">(</span><span class="n">ASTContext</span> <span class="o">*</span><span class="n">Context</span><span class="p">)</span>
+    <span class="p">:</span> <span class="n">Visitor</span><span class="p">(</span><span class="n">Context</span><span class="p">)</span> <span class="p">{}</span>
 
-  virtual void HandleTranslationUnit(clang::ASTContext &amp;Context) {
-    Visitor.TraverseDecl(Context.getTranslationUnitDecl());
-  }
-private:
-  FindNamedClassVisitor Visitor;
-};
+  <span class="n">virtual</span> <span class="n">void</span> <span class="n">HandleTranslationUnit</span><span class="p">(</span><span class="n">clang</span><span class="p">::</span><span class="n">ASTContext</span> <span class="o">&amp;</span><span class="n">Context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Visitor</span><span class="o">.</span><span class="n">TraverseDecl</span><span class="p">(</span><span class="n">Context</span><span class="o">.</span><span class="n">getTranslationUnitDecl</span><span class="p">());</span>
+  <span class="p">}</span>
+<span class="n">private</span><span class="p">:</span>
+  <span class="n">FindNamedClassVisitor</span> <span class="n">Visitor</span><span class="p">;</span>
+<span class="p">};</span>
 
-class FindNamedClassAction : public clang::ASTFrontendAction {
-public:
-  virtual std::unique_ptr&lt;clang::ASTConsumer&gt; CreateASTConsumer(
-    clang::CompilerInstance &amp;Compiler, llvm::StringRef InFile) {
-    return std::unique_ptr&lt;clang::ASTConsumer&gt;(
-        new FindNamedClassConsumer(&amp;Compiler.getASTContext()));
-  }
-};
+<span class="k">class</span> <span class="nc">FindNamedClassAction</span> <span class="p">:</span> <span class="n">public</span> <span class="n">clang</span><span class="p">::</span><span class="n">ASTFrontendAction</span> <span class="p">{</span>
+<span class="n">public</span><span class="p">:</span>
+  <span class="n">virtual</span> <span class="n">std</span><span class="p">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">clang</span><span class="p">::</span><span class="n">ASTConsumer</span><span class="o">&gt;</span> <span class="n">CreateASTConsumer</span><span class="p">(</span>
+    <span class="n">clang</span><span class="p">::</span><span class="n">CompilerInstance</span> <span class="o">&amp;</span><span class="n">Compiler</span><span class="p">,</span> <span class="n">llvm</span><span class="p">::</span><span class="n">StringRef</span> <span class="n">InFile</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">std</span><span class="p">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">clang</span><span class="p">::</span><span class="n">ASTConsumer</span><span class="o">&gt;</span><span class="p">(</span>
+        <span class="n">new</span> <span class="n">FindNamedClassConsumer</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Compiler</span><span class="o">.</span><span class="n">getASTContext</span><span class="p">()));</span>
+  <span class="p">}</span>
+<span class="p">};</span>
 
-int main(int argc, char **argv) {
-  if (argc &gt; 1) {
-    clang::tooling::runToolOnCode(new FindNamedClassAction, argv[1]);
-  }
-}
+<span class="nb">int</span> <span class="n">main</span><span class="p">(</span><span class="nb">int</span> <span class="n">argc</span><span class="p">,</span> <span class="n">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">clang</span><span class="p">::</span><span class="n">tooling</span><span class="p">::</span><span class="n">runToolOnCode</span><span class="p">(</span><span class="n">new</span> <span class="n">FindNamedClassAction</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>We store this into a file called FindClassDecls.cpp and create the
 following CMakeLists.txt to link it:</p>
-<div class="highlight-python"><div class="highlight"><pre>add_clang_executable(find-class-decls FindClassDecls.cpp)
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">add_clang_executable</span><span class="p">(</span><span class="n">find</span><span class="o">-</span><span class="n">class</span><span class="o">-</span><span class="n">decls</span> <span class="n">FindClassDecls</span><span class="o">.</span><span class="n">cpp</span><span class="p">)</span>
 
-target_link_libraries(find-class-decls clangTooling)
+<span class="n">target_link_libraries</span><span class="p">(</span><span class="n">find</span><span class="o">-</span><span class="n">class</span><span class="o">-</span><span class="n">decls</span> <span class="n">clangTooling</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>When running this tool over a small code snippet it will output all
 declarations of a class n::m::C it found:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ ./bin/find-class-decls &quot;namespace n { namespace m { class C {}; } }&quot;
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ ./bin/find-class-decls &quot;namespace n { namespace m { class C {}; } }&quot;
 Found declaration at 1:29
 </pre></div>
 </div>
@@ -259,8 +258,8 @@ Found declaration at 1:29
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

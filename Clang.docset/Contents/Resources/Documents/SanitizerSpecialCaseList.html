@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Sanitizer special case list &mdash; Clang 4 documentation</title>
-    
+    <title>Sanitizer special case list &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Control Flow Integrity" href="ControlFlowIntegrity.html" />
     <link rel="prev" title="SanitizerStats" href="SanitizerStats.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>Sanitizer special case list</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -65,8 +64,8 @@ file at compile-time.</p>
 </div>
 <div class="section" id="goal-and-usage">
 <h2><a class="toc-backref" href="#id2">Goal and usage</a><a class="headerlink" href="#goal-and-usage" title="Permalink to this headline">¶</a></h2>
-<p>User of sanitizer tools, such as <a class="reference internal" href="AddressSanitizer.html"><em>AddressSanitizer</em></a>, <a class="reference internal" href="ThreadSanitizer.html"><em>ThreadSanitizer</em></a>
-or <a class="reference internal" href="MemorySanitizer.html"><em>MemorySanitizer</em></a> may want to disable or alter some checks for
+<p>User of sanitizer tools, such as <a class="reference internal" href="AddressSanitizer.html"><span class="doc">AddressSanitizer</span></a>, <a class="reference internal" href="ThreadSanitizer.html"><span class="doc">ThreadSanitizer</span></a>
+or <a class="reference internal" href="MemorySanitizer.html"><span class="doc">MemorySanitizer</span></a> may want to disable or alter some checks for
 certain source-level entities to:</p>
 <ul class="simple">
 <li>speedup hot function, which is known to be correct;</li>
@@ -76,15 +75,15 @@ thread stack, bypassing the frame boundaries);</li>
 </ul>
 <p>To achieve this, user may create a file listing the entities they want to
 ignore, and pass it to clang at compile-time using
-<code class="docutils literal"><span class="pre">-fsanitize-blacklist</span></code> flag. See <a class="reference internal" href="UsersManual.html"><em>Clang Compiler User&#8217;s Manual</em></a> for details.</p>
+<code class="docutils literal"><span class="pre">-fsanitize-blacklist</span></code> flag. See <a class="reference internal" href="UsersManual.html"><span class="doc">Clang Compiler User’s Manual</span></a> for details.</p>
 </div>
 <div class="section" id="example">
 <h2><a class="toc-backref" href="#id3">Example</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash"><div class="highlight"><pre>$ cat foo.c
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ cat foo.c
 <span class="c1">#include &lt;stdlib.h&gt;</span>
 void bad_foo<span class="o">()</span> <span class="o">{</span>
-  int *a <span class="o">=</span> <span class="o">(</span>int*<span class="o">)</span>malloc<span class="o">(</span>40<span class="o">)</span><span class="p">;</span>
-  a<span class="o">[</span>10<span class="o">]</span> <span class="o">=</span> 1<span class="p">;</span>
+  int *a <span class="o">=</span> <span class="o">(</span>int*<span class="o">)</span>malloc<span class="o">(</span><span class="m">40</span><span class="o">)</span><span class="p">;</span>
+  a<span class="o">[</span><span class="m">10</span><span class="o">]</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span>
 <span class="o">}</span>
 int main<span class="o">()</span> <span class="o">{</span> bad_foo<span class="o">()</span><span class="p">;</span> <span class="o">}</span>
 $ cat blacklist.txt
@@ -102,12 +101,12 @@ $ clang -fsanitize<span class="o">=</span>address -fsanitize-blacklist<span clas
 <p>Each line contains an entity type, followed by a colon and a regular
 expression, specifying the names of the entities, optionally followed by
 an equals sign and a tool-specific category. Empty lines and lines starting
-with &#8220;#&#8221; are ignored. The meanining of <code class="docutils literal"><span class="pre">*</span></code> in regular expression for entity
+with “#” are ignored. The meanining of <code class="docutils literal"><span class="pre">*</span></code> in regular expression for entity
 names is different - it is treated as in shell wildcarding. Two generic
 entity types are <code class="docutils literal"><span class="pre">src</span></code> and <code class="docutils literal"><span class="pre">fun</span></code>, which allow user to add, respectively,
 source files and functions to special case list. Some sanitizer tools may
 introduce custom entity types - refer to tool-specific docs.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c1"># Lines starting with # are ignored.</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Lines starting with # are ignored.</span>
 <span class="c1"># Turn off checks for the source file (use absolute path or path relative</span>
 <span class="c1"># to the current working directory):</span>
 src:/path/to/source/file.c
@@ -116,7 +115,7 @@ fun:MyFooBar
 fun:_Z8MyFooBarv
 <span class="c1"># Extended regular expressions are supported:</span>
 fun:bad_<span class="o">(</span>foo<span class="p">|</span>bar<span class="o">)</span>
-src:bad_source<span class="o">[</span>1-9<span class="o">]</span>.c
+src:bad_source<span class="o">[</span><span class="m">1</span>-9<span class="o">]</span>.c
 <span class="c1"># Shell like usage of * is supported (* is treated as .*):</span>
 src:bad/sources/*
 fun:*BadFunction*
@@ -142,8 +141,8 @@ src:/special/path/*<span class="o">=</span>special_sources
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

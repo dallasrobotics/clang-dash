@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>SanitizerStats &mdash; Clang 4 documentation</title>
-    
+    <title>SanitizerStats &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Sanitizer special case list" href="SanitizerSpecialCaseList.html" />
     <link rel="prev" title="SanitizerCoverage" href="SanitizerCoverage.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>SanitizerStats</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -62,7 +61,7 @@ to help understand the overhead associated with sanitizers.</p>
 </div>
 <div class="section" id="how-to-build-and-run">
 <h2><a class="toc-backref" href="#id2">How to build and run</a><a class="headerlink" href="#how-to-build-and-run" title="Permalink to this headline">¶</a></h2>
-<p>SanitizerStats can currently only be used with <a class="reference internal" href="ControlFlowIntegrity.html"><em>Control Flow Integrity</em></a>.
+<p>SanitizerStats can currently only be used with <a class="reference internal" href="ControlFlowIntegrity.html"><span class="doc">Control Flow Integrity</span></a>.
 In addition to <code class="docutils literal"><span class="pre">-fsanitize=cfi*</span></code>, pass the <code class="docutils literal"><span class="pre">-fsanitize-stats</span></code> flag.
 This will cause the program to count the number of times that each control
 flow integrity check in the program fires.</p>
@@ -71,8 +70,8 @@ statistics output to a file. The file will be written on process exit.
 The following substitutions will be applied to the environment variable:</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal"><span class="pre">%b</span></code> &#8211; The executable basename.</li>
-<li><code class="docutils literal"><span class="pre">%p</span></code> &#8211; The process ID.</li>
+<li><code class="docutils literal"><span class="pre">%b</span></code> – The executable basename.</li>
+<li><code class="docutils literal"><span class="pre">%p</span></code> – The process ID.</li>
 </ul>
 </div></blockquote>
 <p>You can also send the <code class="docutils literal"><span class="pre">SIGUSR2</span></code> signal to a process to make it write
@@ -86,7 +85,7 @@ the function name. The third column is the type of statistic gathered (in
 this case, the type of control flow integrity check). The fourth column is
 the call count.</p>
 <p>Example:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> cat -n vcall.cc
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> cat -n vcall.cc
 <span class="go">     1 struct A {</span>
 <span class="go">     2   virtual void f() {}</span>
 <span class="go">     3 };</span>
@@ -123,8 +122,8 @@ the call count.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

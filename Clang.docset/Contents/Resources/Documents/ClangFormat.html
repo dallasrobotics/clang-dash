@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>ClangFormat &mdash; Clang 4 documentation</title>
-    
+    <title>ClangFormat &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Clang-Format Style Options" href="ClangFormatStyleOptions.html" />
     <link rel="prev" title="ClangCheck" href="ClangCheck.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>ClangFormat</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -50,13 +49,13 @@
   <div class="section" id="clangformat">
 <h1>ClangFormat<a class="headerlink" href="#clangformat" title="Permalink to this headline">¶</a></h1>
 <p><cite>ClangFormat</cite> describes a set of tools that are built on top of
-<a class="reference internal" href="LibFormat.html"><em>LibFormat</em></a>. It can support your workflow in a variety of ways including a
+<a class="reference internal" href="LibFormat.html"><span class="doc">LibFormat</span></a>. It can support your workflow in a variety of ways including a
 standalone tool and editor integrations.</p>
 <div class="section" id="standalone-tool">
 <h2>Standalone Tool<a class="headerlink" href="#standalone-tool" title="Permalink to this headline">¶</a></h2>
 <p><strong class="program">clang-format</strong> is located in <cite>clang/tools/clang-format</cite> and can be used
 to format C/C++/Obj-C code.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> clang-format -help
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> clang-format -help
 <span class="go">OVERVIEW: A tool to format C/C++/Java/JavaScript/Objective-C/Protobuf code.</span>
 
 <span class="go">If no arguments are specified, it formats the code from standard input</span>
@@ -123,12 +122,12 @@ to format C/C++/Obj-C code.</p>
 <p>When the desired code formatting style is different from the available options,
 the style can be customized using the <code class="docutils literal"><span class="pre">-style=&quot;{key:</span> <span class="pre">value,</span> <span class="pre">...}&quot;</span></code> option or
 by putting your style configuration in the <code class="docutils literal"><span class="pre">.clang-format</span></code> or <code class="docutils literal"><span class="pre">_clang-format</span></code>
-file in your project&#8217;s directory and using <code class="docutils literal"><span class="pre">clang-format</span> <span class="pre">-style=file</span></code>.</p>
+file in your project’s directory and using <code class="docutils literal"><span class="pre">clang-format</span> <span class="pre">-style=file</span></code>.</p>
 <p>An easy way to create the <code class="docutils literal"><span class="pre">.clang-format</span></code> file is:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">clang-format -style=llvm -dump-config &gt; .clang-format</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">clang-format -style=llvm -dump-config &gt; .clang-format</span>
 </pre></div>
 </div>
-<p>Available style options are described in <a class="reference internal" href="ClangFormatStyleOptions.html"><em>Clang-Format Style Options</em></a>.</p>
+<p>Available style options are described in <a class="reference internal" href="ClangFormatStyleOptions.html"><span class="doc">Clang-Format Style Options</span></a>.</p>
 </div>
 <div class="section" id="vim-integration">
 <h2>Vim Integration<a class="headerlink" href="#vim-integration" title="Permalink to this headline">¶</a></h2>
@@ -137,12 +136,12 @@ file in your project&#8217;s directory and using <code class="docutils literal">
 selecting regions to reformat. The integration has the form of a <cite>python</cite>-file
 which can be found under <cite>clang/tools/clang-format/clang-format.py</cite>.</p>
 <p>This can be integrated by adding the following to your <cite>.vimrc</cite>:</p>
-<div class="highlight-vim"><div class="highlight"><pre>map <span class="p">&lt;</span>C<span class="p">-</span>K<span class="p">&gt;</span> :<span class="k">pyf</span> <span class="p">&lt;</span><span class="nb">path</span><span class="p">-</span><span class="k">to</span><span class="p">-</span>this<span class="p">-</span><span class="k">file</span><span class="p">&gt;</span>/clang<span class="p">-</span>format.<span class="k">py</span><span class="p">&lt;</span><span class="k">cr</span><span class="p">&gt;</span>
+<div class="highlight-vim"><div class="highlight"><pre><span></span>map <span class="p">&lt;</span>C<span class="p">-</span>K<span class="p">&gt;</span> :<span class="k">pyf</span> <span class="p">&lt;</span><span class="nb">path</span><span class="p">-</span><span class="k">to</span><span class="p">-</span>this<span class="p">-</span><span class="k">file</span><span class="p">&gt;</span>/clang<span class="p">-</span>format.<span class="k">py</span><span class="p">&lt;</span><span class="k">cr</span><span class="p">&gt;</span>
 imap <span class="p">&lt;</span>C<span class="p">-</span>K<span class="p">&gt;</span> <span class="p">&lt;</span><span class="k">c</span><span class="p">-</span><span class="k">o</span><span class="p">&gt;</span>:<span class="k">pyf</span> <span class="p">&lt;</span><span class="nb">path</span><span class="p">-</span><span class="k">to</span><span class="p">-</span>this<span class="p">-</span><span class="k">file</span><span class="p">&gt;</span>/clang<span class="p">-</span>format.<span class="k">py</span><span class="p">&lt;</span><span class="k">cr</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 <p>The first line enables <strong class="program">clang-format</strong> for NORMAL and VISUAL mode, the
-second line adds support for INSERT mode. Change &#8220;C-K&#8221; to another binding if
+second line adds support for INSERT mode. Change “C-K” to another binding if
 you need <strong class="program">clang-format</strong> on a different key (C-K stands for Ctrl+k).</p>
 <p>With this integration you can press the bound key and clang-format will
 format the current line in NORMAL and INSERT mode or the selected region in
@@ -150,13 +149,23 @@ VISUAL mode. The line or region is extended to the next bigger syntactic
 entity.</p>
 <p>It operates on the current, potentially unsaved buffer and does not create
 or save any files. To revert a formatting, just undo.</p>
+<p>An alternative option is to format changes when saving a file and thus to
+have a zero-effort integration into the coding workflow. To do this, add this to
+your <cite>.vimrc</cite>:</p>
+<div class="highlight-vim"><div class="highlight"><pre><span></span><span class="k">function</span><span class="p">!</span> Formatonsave<span class="p">()</span>
+  <span class="k">let</span> <span class="k">l</span>:formatdiff <span class="p">=</span> <span class="m">1</span>
+  <span class="k">pyf</span> <span class="p">~</span><span class="sr">/llvm/</span>tools<span class="sr">/clang/</span>tools<span class="sr">/clang-format/</span>clang<span class="p">-</span>format.<span class="k">py</span>
+<span class="k">endfunction</span>
+autocmd <span class="nb">BufWritePre</span> *.<span class="k">h</span><span class="p">,</span>*.<span class="k">cc</span><span class="p">,</span>*.cpp <span class="k">call</span> Formatonsave<span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="emacs-integration">
 <h2>Emacs Integration<a class="headerlink" href="#emacs-integration" title="Permalink to this headline">¶</a></h2>
 <p>Similar to the integration for <strong class="program">vim</strong>, there is an integration for
 <strong class="program">emacs</strong>. It can be found at <cite>clang/tools/clang-format/clang-format.el</cite>
 and used by adding this to your <cite>.emacs</cite>:</p>
-<div class="highlight-common-lisp"><div class="highlight"><pre><span class="p">(</span><span class="nb">load</span> <span class="s">&quot;&lt;path-to-clang&gt;/tools/clang-format/clang-format.el&quot;</span><span class="p">)</span>
+<div class="highlight-common-lisp"><div class="highlight"><pre><span></span><span class="p">(</span><span class="nb">load</span> <span class="s">&quot;&lt;path-to-clang&gt;/tools/clang-format/clang-format.el&quot;</span><span class="p">)</span>
 <span class="p">(</span><span class="nv">global-set-key</span> <span class="nv">[C-M-tab]</span> <span class="ss">&#39;clang-format-region</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -181,9 +190,10 @@ shortcut in the BBEdit preferences, under Menus &amp; Shortcuts.</p>
 </div>
 <div class="section" id="script-for-patch-reformatting">
 <h2>Script for patch reformatting<a class="headerlink" href="#script-for-patch-reformatting" title="Permalink to this headline">¶</a></h2>
-<p>The python script <cite>clang/tools/clang-format-diff.py</cite> parses the output of
-a unified diff and reformats all contained lines with <strong class="program">clang-format</strong>.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">usage: clang-format-diff.py [-h] [-i] [-p NUM] [-regex PATTERN] [-style STYLE]</span>
+<p>The python script <cite>clang/tools/clang-format/clang-format-diff.py</cite> parses the
+output of a unified diff and reformats all contained lines with
+<strong class="program">clang-format</strong>.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: clang-format-diff.py [-h] [-i] [-p NUM] [-regex PATTERN] [-style STYLE]</span>
 
 <span class="go">Reformat changed lines in diff. Without -i option just output the diff that</span>
 <span class="go">would be introduced.</span>
@@ -198,11 +208,11 @@ a unified diff and reformats all contained lines with <strong class="program">cl
 </pre></div>
 </div>
 <p>So to reformat all the lines in the latest <strong class="program">git</strong> commit, just do:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">git diff -U0 --no-color HEAD^ | clang-format-diff.py -i -p1</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">git diff -U0 --no-color HEAD^ | clang-format-diff.py -i -p1</span>
 </pre></div>
 </div>
 <p>In an SVN client, you can do:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="go">svn diff --diff-cmd=diff -x -U0 | clang-format-diff.py -i</span>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">svn diff --diff-cmd=diff -x -U0 | clang-format-diff.py -i</span>
 </pre></div>
 </div>
 <p>The option <cite>-U0</cite> will create a diff without context lines (the script would format
@@ -225,8 +235,8 @@ those as well).</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

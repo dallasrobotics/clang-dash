@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>ThreadSanitizer &mdash; Clang 4 documentation</title>
-    
+    <title>ThreadSanitizer &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="MemorySanitizer" href="MemorySanitizer.html" />
     <link rel="prev" title="AddressSanitizer" href="AddressSanitizer.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>ThreadSanitizer</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -72,7 +71,7 @@ Support for 32-bit platforms is problematic and is not planned.</p>
 reasonable performance add <code class="docutils literal"><span class="pre">-O1</span></code> or higher.  Use <code class="docutils literal"><span class="pre">-g</span></code> to get file names
 and line numbers in the warning messages.</p>
 <p>Example:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> cat projects/compiler-rt/lib/tsan/lit_tests/tiny_race.c
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">%</span> cat projects/compiler-rt/lib/tsan/lit_tests/tiny_race.c
 <span class="gp">#</span>include &lt;pthread.h&gt;
 <span class="go">int Global;</span>
 <span class="go">void *Thread1(void *x) {</span>
@@ -93,8 +92,8 @@ and line numbers in the warning messages.</p>
 <p>If a bug is detected, the program will print an error message to stderr.
 Currently, ThreadSanitizer symbolizes its output using an external
 <code class="docutils literal"><span class="pre">addr2line</span></code> process (this will be fixed in future).</p>
-<div class="highlight-bash"><div class="highlight"><pre>% ./a.out
-WARNING: ThreadSanitizer: data race <span class="o">(</span><span class="nv">pid</span><span class="o">=</span>19219<span class="o">)</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>% ./a.out
+WARNING: ThreadSanitizer: data race <span class="o">(</span><span class="nv">pid</span><span class="o">=</span><span class="m">19219</span><span class="o">)</span>
   Write of size <span class="m">4</span> at 0x7fcf47b21bc0 by thread T1:
     <span class="c1">#0 Thread1 tiny_race.c:4 (exe+0x00000000a360)</span>
 
@@ -111,9 +110,9 @@ WARNING: ThreadSanitizer: data race <span class="o">(</span><span class="nv">pid
 <h2><code class="docutils literal"><span class="pre">__has_feature(thread_sanitizer)</span></code><a class="headerlink" href="#has-feature-thread-sanitizer" title="Permalink to this headline">¶</a></h2>
 <p>In some cases one may need to execute different code depending on whether
 ThreadSanitizer is enabled.
-<a class="reference internal" href="LanguageExtensions.html#langext-has-feature-has-extension"><span>__has_feature</span></a> can be used for
+<a class="reference internal" href="LanguageExtensions.html#langext-has-feature-has-extension"><span class="std std-ref">__has_feature</span></a> can be used for
 this purpose.</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="cp">#if defined(__has_feature)</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="cp">#if defined(__has_feature)</span>
 <span class="cp">#  if __has_feature(thread_sanitizer)</span>
 <span class="c1">// code that builds only under ThreadSanitizer</span>
 <span class="cp">#  endif</span>
@@ -133,7 +132,7 @@ to use it together with <code class="docutils literal"><span class="pre">__has_f
 <div class="section" id="blacklist">
 <h2>Blacklist<a class="headerlink" href="#blacklist" title="Permalink to this headline">¶</a></h2>
 <p>ThreadSanitizer supports <code class="docutils literal"><span class="pre">src</span></code> and <code class="docutils literal"><span class="pre">fun</span></code> entity types in
-<a class="reference internal" href="SanitizerSpecialCaseList.html"><em>Sanitizer special case list</em></a>, that can be used to suppress data race reports
+<a class="reference internal" href="SanitizerSpecialCaseList.html"><span class="doc">Sanitizer special case list</span></a>, that can be used to suppress data race reports
 in the specified source files or functions. Unlike functions marked with
 <code class="docutils literal"><span class="pre">no_sanitize(&quot;thread&quot;)</span></code> attribute, blacklisted functions are not instrumented
 at all. This can lead to false positives due to missed synchronization via
@@ -161,7 +160,7 @@ flag had been supplied if compiling without <code class="docutils literal"><span
 using pthreads, but we do not promise anything (yet).  C++11 threading is
 supported with llvm libc++.  The test suite is integrated into CMake build
 and can be run with <code class="docutils literal"><span class="pre">make</span> <span class="pre">check-tsan</span></code> command.</p>
-<p>We are actively working on enhancing the tool &#8212; stay tuned.  Any help,
+<p>We are actively working on enhancing the tool — stay tuned.  Any help,
 especially in the form of minimized standalone tests is more than welcome.</p>
 </div>
 <div class="section" id="more-information">
@@ -185,8 +184,8 @@ especially in the form of minimized standalone tests is more than welcome.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

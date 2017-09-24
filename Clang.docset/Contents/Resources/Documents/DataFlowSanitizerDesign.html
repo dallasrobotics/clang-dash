@@ -1,37 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>DataFlowSanitizer Design Document &mdash; Clang 4 documentation</title>
-    
+    <title>DataFlowSanitizer Design Document &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
-    <link rel="up" title="DataFlowSanitizer" href="DataFlowSanitizer.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="LeakSanitizer" href="LeakSanitizer.html" />
     <link rel="prev" title="DataFlowSanitizer" href="DataFlowSanitizer.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>DataFlowSanitizer Design Document</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -66,10 +64,10 @@ items may be analysed with each data item being tracked separately.</p>
 <div class="section" id="use-cases">
 <h2>Use Cases<a class="headerlink" href="#use-cases" title="Permalink to this headline">¶</a></h2>
 <p>This instrumentation can be used as a tool to help monitor how data
-flows from a program&#8217;s inputs (sources) to its outputs (sinks).
+flows from a program’s inputs (sources) to its outputs (sinks).
 This has applications from a privacy/security perspective in that
 one can audit how a sensitive data item is used within a program and
-ensure it isn&#8217;t exiting the program anywhere it shouldn&#8217;t be.</p>
+ensure it isn’t exiting the program anywhere it shouldn’t be.</p>
 </div>
 <div class="section" id="interface">
 <h2>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h2>
@@ -77,7 +75,7 @@ ensure it isn&#8217;t exiting the program anywhere it shouldn&#8217;t be.</p>
 attach labels to memory regions and extract the set of labels
 associated with a specific memory region. These functions are declared
 in the header file <code class="docutils literal"><span class="pre">sanitizer/dfsan_interface.h</span></code>.</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="c1">/// Creates and returns a base label with the given description and user data.</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="c1">/// Creates and returns a base label with the given description and user data.</span>
 <span class="n">dfsan_label</span> <span class="nf">dfsan_create_label</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">desc</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">userdata</span><span class="p">);</span>
 
 <span class="c1">/// Sets the label for each address in [addr,addr+size) to \c label.</span>
@@ -135,7 +133,7 @@ for new labels.</p>
 <p>Specifically, the instrumentation pass will insert code like this
 to decide the union label <code class="docutils literal"><span class="pre">lu</span></code> for a pair of labels <code class="docutils literal"><span class="pre">l1</span></code>
 and <code class="docutils literal"><span class="pre">l2</span></code>:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="n">l1</span> <span class="o">==</span> <span class="n">l2</span><span class="p">)</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">l1</span> <span class="o">==</span> <span class="n">l2</span><span class="p">)</span>
   <span class="n">lu</span> <span class="o">=</span> <span class="n">l1</span><span class="p">;</span>
 <span class="k">else</span>
   <span class="n">lu</span> <span class="o">=</span> <span class="n">__dfsan_union</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">);</span>
@@ -202,9 +200,9 @@ result in a copy of the label to the shadow of all bytes stored to.</p>
 DataFlowSanitizer changes the ABI of each function in the translation unit.
 There are currently two supported ABIs:</p>
 <ul class="simple">
-<li>Args &#8211; Argument and return value labels are passed through additional
+<li>Args – Argument and return value labels are passed through additional
 arguments and by modifying the return type.</li>
-<li>TLS &#8211; Argument and return value labels are passed through TLS variables
+<li>TLS – Argument and return value labels are passed through TLS variables
 <code class="docutils literal"><span class="pre">__dfsan_arg_tls</span></code> and <code class="docutils literal"><span class="pre">__dfsan_retval_tls</span></code>.</li>
 </ul>
 <p>The main advantage of the TLS ABI is that it is more tolerant of ABI mismatches
@@ -223,7 +221,7 @@ function with a reference to a function which uses the instrumented ABI.
 Such functions are automatically-generated wrappers for the native functions.
 For example, given the ABI list example provided in the user manual, the
 following wrappers will be generated under the args ABI:</p>
-<div class="highlight-llvm"><div class="highlight"><pre><span class="k">define</span> <span class="k">linkonce_odr</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="vg">@&quot;dfsw$malloc&quot;</span><span class="p">(</span><span class="k">i64</span> <span class="nv nv-Anonymous">%0</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%1</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-llvm"><div class="highlight"><pre><span></span><span class="k">define</span> <span class="k">linkonce_odr</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="vg">@&quot;dfsw$malloc&quot;</span><span class="p">(</span><span class="k">i64</span> <span class="nv nv-Anonymous">%0</span><span class="p">,</span> <span class="k">i16</span> <span class="nv nv-Anonymous">%1</span><span class="p">)</span> <span class="p">{</span>
 <span class="nl">entry:</span>
   <span class="nv nv-Anonymous">%2</span> <span class="p">=</span> <span class="k">call</span> <span class="k">i8</span><span class="p">*</span> <span class="vg">@malloc</span><span class="p">(</span><span class="k">i64</span> <span class="nv nv-Anonymous">%0</span><span class="p">)</span>
   <span class="nv nv-Anonymous">%3</span> <span class="p">=</span> <span class="k">insertvalue</span> <span class="p">{</span> <span class="k">i8</span><span class="p">*,</span> <span class="k">i16</span> <span class="p">}</span> <span class="k">undef</span><span class="p">,</span> <span class="k">i8</span><span class="p">*</span> <span class="nv nv-Anonymous">%2</span><span class="p">,</span> <span class="m">0</span>
@@ -262,7 +260,7 @@ functions, or <code class="docutils literal"><span class="pre">functional</span>
 for a function with the native ABI to be called with the instrumented ABI,
 or vice versa, thus possibly invoking undefined behavior.  A simple way
 of statically detecting instances of this problem is to prepend the prefix
-&#8220;dfs$&#8221; to the name of each instrumented-ABI function.</p>
+“dfs$” to the name of each instrumented-ABI function.</p>
 <p>This will not catch every such problem; in particular function pointers passed
 across the instrumented-native barrier cannot be used on the other side.
 These problems could potentially be caught dynamically.</p>
@@ -284,8 +282,8 @@ These problems could potentially be caught dynamically.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

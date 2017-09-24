@@ -1,36 +1,35 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>AddressSanitizer &mdash; Clang 4 documentation</title>
-    
+    <title>AddressSanitizer &#8212; Clang 5 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4',
+        VERSION:     '5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Clang 4 documentation" href="index.html" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="ThreadSanitizer" href="ThreadSanitizer.html" />
     <link rel="prev" title="Thread Safety Analysis" href="ThreadSafetyAnalysis.html" /> 
   </head>
-  <body role="document">
+  <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 4 documentation</span></a></h1>
+          <span>Clang 5 documentation</span></a></h1>
         <h2 class="heading"><span>AddressSanitizer</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -99,12 +98,12 @@ following types of bugs:</p>
 AddressSanitizer run-time library should be linked to the final executable, so
 make sure to use <code class="docutils literal"><span class="pre">clang</span></code> (not <code class="docutils literal"><span class="pre">ld</span></code>) for the final link step.  When linking
 shared libraries, the AddressSanitizer run-time is not linked, so
-<code class="docutils literal"><span class="pre">-Wl,-z,defs</span></code> may cause link errors (don&#8217;t use it with AddressSanitizer).  To
+<code class="docutils literal"><span class="pre">-Wl,-z,defs</span></code> may cause link errors (don’t use it with AddressSanitizer).  To
 get a reasonable performance add <code class="docutils literal"><span class="pre">-O1</span></code> or higher.  To get nicer stack traces
 in error messages add <code class="docutils literal"><span class="pre">-fno-omit-frame-pointer</span></code>.  To get perfect stack traces
 you may need to disable inlining (just use <code class="docutils literal"><span class="pre">-O1</span></code>) and tail call elimination
 (<code class="docutils literal"><span class="pre">-fno-optimize-sibling-calls</span></code>).</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> cat example_UseAfterFree.cc
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">%</span> cat example_UseAfterFree.cc
 <span class="go">int main(int argc, char **argv) {</span>
 <span class="go">  int *array = new int[100];</span>
 <span class="go">  delete [] array;</span>
@@ -116,7 +115,7 @@ you may need to disable inlining (just use <code class="docutils literal"><span 
 </pre></div>
 </div>
 <p>or:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">#</span> Compile
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">#</span> Compile
 <span class="gp">%</span> clang++ -O1 -g -fsanitize<span class="o">=</span>address -fno-omit-frame-pointer -c example_UseAfterFree.cc
 <span class="gp">#</span> Link
 <span class="gp">%</span> clang++ -g -fsanitize<span class="o">=</span>address example_UseAfterFree.o
@@ -147,7 +146,7 @@ the ASan library will also need to be copied over.</p>
 you need to set the <code class="docutils literal"><span class="pre">ASAN_SYMBOLIZER_PATH</span></code> environment variable to point to
 the <code class="docutils literal"><span class="pre">llvm-symbolizer</span></code> binary (or make sure <code class="docutils literal"><span class="pre">llvm-symbolizer</span></code> is in your
 <code class="docutils literal"><span class="pre">$PATH</span></code>):</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> <span class="nv">ASAN_SYMBOLIZER_PATH</span><span class="o">=</span>/usr/local/bin/llvm-symbolizer ./a.out
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">%</span> <span class="nv">ASAN_SYMBOLIZER_PATH</span><span class="o">=</span>/usr/local/bin/llvm-symbolizer ./a.out
 <span class="go">==9442== ERROR: AddressSanitizer heap-use-after-free on address 0x7f7ddab8c084 at pc 0x403c8c bp 0x7fff87fb82d0 sp 0x7fff87fb82c8</span>
 <span class="go">READ of size 4 at 0x7f7ddab8c084 thread T0</span>
 <span class="gp">    #</span><span class="m">0</span> 0x403c8c in main example_UseAfterFree.cc:4
@@ -167,7 +166,7 @@ the <code class="docutils literal"><span class="pre">llvm-symbolizer</span></cod
 <p>If that does not work for you (e.g. your process is sandboxed), you can use a
 separate script to symbolize the result offline (online symbolization can be
 force disabled by setting <code class="docutils literal"><span class="pre">ASAN_OPTIONS=symbolize=0</span></code>):</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">%</span> <span class="nv">ASAN_OPTIONS</span><span class="o">=</span><span class="nv">symbolize</span><span class="o">=</span><span class="m">0</span> ./a.out 2&gt; log
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">%</span> <span class="nv">ASAN_OPTIONS</span><span class="o">=</span><span class="nv">symbolize</span><span class="o">=</span><span class="m">0</span> ./a.out <span class="m">2</span>&gt; log
 <span class="gp">%</span> projects/compiler-rt/lib/asan/scripts/asan_symbolize.py / &lt; log <span class="p">|</span> c++filt
 <span class="go">==9442== ERROR: AddressSanitizer heap-use-after-free on address 0x7f7ddab8c084 at pc 0x403c8c bp 0x7fff87fb82d0 sp 0x7fff87fb82c8</span>
 <span class="go">READ of size 4 at 0x7f7ddab8c084 thread T0</span>
@@ -193,7 +192,7 @@ you should set environment variable
 <div class="section" id="memory-leak-detection">
 <h3><a class="toc-backref" href="#id7">Memory leak detection</a><a class="headerlink" href="#memory-leak-detection" title="Permalink to this headline">¶</a></h3>
 <p>For more information on leak detector in AddressSanitizer, see
-<a class="reference internal" href="LeakSanitizer.html"><em>LeakSanitizer</em></a>. The leak detection is turned on by default on Linux;
+<a class="reference internal" href="LeakSanitizer.html"><span class="doc">LeakSanitizer</span></a>. The leak detection is turned on by default on Linux;
 however, it is not yet supported on other platforms.</p>
 </div>
 </div>
@@ -213,14 +212,14 @@ does not work on code recompiled with AddressSanitizer. To suppress errors
 in external libraries, set the <code class="docutils literal"><span class="pre">ASAN_OPTIONS</span></code> environment variable to point
 to a suppression file. You can either specify the full path to the file or the
 path of the file relative to the location of your executable.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">ASAN_OPTIONS</span><span class="o">=</span><span class="nv">suppressions</span><span class="o">=</span>MyASan.supp
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">ASAN_OPTIONS</span><span class="o">=</span><span class="nv">suppressions</span><span class="o">=</span>MyASan.supp
 </pre></div>
 </div>
 <p>Use the following format to specify the names of the functions or libraries
 you want to suppress. You can see these in the error report. Remember that
 the narrower the scope of the suppression, the more bugs you will be able to
 catch.</p>
-<div class="highlight-bash"><div class="highlight"><pre>interceptor_via_fun:NameOfCFunctionToSuppress
+<div class="highlight-bash"><div class="highlight"><pre><span></span>interceptor_via_fun:NameOfCFunctionToSuppress
 interceptor_via_fun:-<span class="o">[</span>ClassName objCMethodToSuppress:<span class="o">]</span>
 interceptor_via_lib:NameOfTheLibraryToSuppress
 </pre></div>
@@ -230,9 +229,9 @@ interceptor_via_lib:NameOfTheLibraryToSuppress
 <h3><a class="toc-backref" href="#id10">Conditional Compilation with <code class="docutils literal"><span class="pre">__has_feature(address_sanitizer)</span></code></a><a class="headerlink" href="#conditional-compilation-with-has-feature-address-sanitizer" title="Permalink to this headline">¶</a></h3>
 <p>In some cases one may need to execute different code depending on whether
 AddressSanitizer is enabled.
-<a class="reference internal" href="LanguageExtensions.html#langext-has-feature-has-extension"><span>__has_feature</span></a> can be used for
+<a class="reference internal" href="LanguageExtensions.html#langext-has-feature-has-extension"><span class="std std-ref">__has_feature</span></a> can be used for
 this purpose.</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="cp">#if defined(__has_feature)</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="cp">#if defined(__has_feature)</span>
 <span class="cp">#  if __has_feature(address_sanitizer)</span>
 <span class="c1">// code that builds only under AddressSanitizer</span>
 <span class="cp">#  endif</span>
@@ -252,14 +251,14 @@ supported by other compilers, so we suggest to use it together with
 <div class="section" id="suppressing-errors-in-recompiled-code-blacklist">
 <h3><a class="toc-backref" href="#id12">Suppressing Errors in Recompiled Code (Blacklist)</a><a class="headerlink" href="#suppressing-errors-in-recompiled-code-blacklist" title="Permalink to this headline">¶</a></h3>
 <p>AddressSanitizer supports <code class="docutils literal"><span class="pre">src</span></code> and <code class="docutils literal"><span class="pre">fun</span></code> entity types in
-<a class="reference internal" href="SanitizerSpecialCaseList.html"><em>Sanitizer special case list</em></a>, that can be used to suppress error reports
+<a class="reference internal" href="SanitizerSpecialCaseList.html"><span class="doc">Sanitizer special case list</span></a>, that can be used to suppress error reports
 in the specified source files or functions. Additionally, AddressSanitizer
 introduces <code class="docutils literal"><span class="pre">global</span></code> and <code class="docutils literal"><span class="pre">type</span></code> entity types that can be used to
 suppress error reports for out-of-bound access to globals with certain
 names and types (you may only specify class or struct types).</p>
 <p>You may use an <code class="docutils literal"><span class="pre">init</span></code> category to suppress reports about initialization-order
 problems happening in certain source files or with certain global variables.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c1"># Suppress error reports for code in a file or in a function:</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Suppress error reports for code in a file or in a function:</span>
 src:bad_file.cpp
 <span class="c1"># Ignore all functions with names containing MyFooBar:</span>
 fun:*MyFooBar*
@@ -278,9 +277,9 @@ src:bad/init/files/*<span class="o">=</span>init
 </div>
 <div class="section" id="suppressing-memory-leaks">
 <h3><a class="toc-backref" href="#id13">Suppressing memory leaks</a><a class="headerlink" href="#suppressing-memory-leaks" title="Permalink to this headline">¶</a></h3>
-<p>Memory leak reports produced by <a class="reference internal" href="LeakSanitizer.html"><em>LeakSanitizer</em></a> (if it is run as a part
+<p>Memory leak reports produced by <a class="reference internal" href="LeakSanitizer.html"><span class="doc">LeakSanitizer</span></a> (if it is run as a part
 of AddressSanitizer) can be suppressed by a separate file passed as</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nv">LSAN_OPTIONS</span><span class="o">=</span><span class="nv">suppressions</span><span class="o">=</span>MyLSan.supp
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">LSAN_OPTIONS</span><span class="o">=</span><span class="nv">suppressions</span><span class="o">=</span>MyLSan.supp
 </pre></div>
 </div>
 <p>which contains lines of the form <cite>leak:&lt;pattern&gt;</cite>. Memory leak will be
@@ -342,8 +341,8 @@ usually expected.</li>
       </div>
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2007-2017, The Clang Team.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2007-2017, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

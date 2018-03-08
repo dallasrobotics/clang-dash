@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup as bs
 from shutil import rmtree
 
 # CONFIGURATION
-clang_version = '5.0.0'
-clang_tarball_md5sum = '699c448c6d6d0edb693c87beb1cc8c6e'
+clang_version = '6.0.0'
+clang_tarball_md5sum = '121b3896cb0c7765d690acc5d9495d24'
 tarball_name = 'cfe-%s.src.tar.xz' % clang_version
 docset_name = 'Clang.docset'
 online_docpath = 'releases.llvm.org/%s/tools/clang/docs' % clang_version

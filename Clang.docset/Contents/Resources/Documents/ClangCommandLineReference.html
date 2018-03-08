@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Clang command line argument reference &#8212; Clang 5 documentation</title>
+    <title>Clang command line argument reference &#8212; Clang 6 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '5',
+        VERSION:     '6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -29,7 +29,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 5 documentation</span></a></h1>
+          <span>Clang 6 documentation</span></a></h1>
         <h2 class="heading"><span>Clang command line argument reference</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -50,49 +50,50 @@
 <h1>Clang command line argument reference<a class="headerlink" href="#clang-command-line-argument-reference" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#introduction" id="id3">Introduction</a></li>
-<li><a class="reference internal" href="#actions" id="id4">Actions</a></li>
-<li><a class="reference internal" href="#compilation-flags" id="id5">Compilation flags</a><ul>
-<li><a class="reference internal" href="#preprocessor-flags" id="id6">Preprocessor flags</a><ul>
-<li><a class="reference internal" href="#include-path-management" id="id7">Include path management</a></li>
-<li><a class="reference internal" href="#dependency-file-generation" id="id8">Dependency file generation</a></li>
-<li><a class="reference internal" href="#dumping-preprocessor-state" id="id9">Dumping preprocessor state</a></li>
+<li><a class="reference internal" href="#introduction" id="id4">Introduction</a></li>
+<li><a class="reference internal" href="#actions" id="id5">Actions</a></li>
+<li><a class="reference internal" href="#compilation-flags" id="id6">Compilation flags</a><ul>
+<li><a class="reference internal" href="#preprocessor-flags" id="id7">Preprocessor flags</a><ul>
+<li><a class="reference internal" href="#include-path-management" id="id8">Include path management</a></li>
+<li><a class="reference internal" href="#dependency-file-generation" id="id9">Dependency file generation</a></li>
+<li><a class="reference internal" href="#dumping-preprocessor-state" id="id10">Dumping preprocessor state</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#diagnostic-flags" id="id10">Diagnostic flags</a></li>
-<li><a class="reference internal" href="#target-independent-compilation-options" id="id11">Target-independent compilation options</a><ul>
-<li><a class="reference internal" href="#opencl-flags" id="id12">OpenCL flags</a></li>
+<li><a class="reference internal" href="#diagnostic-flags" id="id11">Diagnostic flags</a></li>
+<li><a class="reference internal" href="#target-independent-compilation-options" id="id12">Target-independent compilation options</a><ul>
+<li><a class="reference internal" href="#opencl-flags" id="id13">OpenCL flags</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#target-dependent-compilation-options" id="id13">Target-dependent compilation options</a><ul>
-<li><a class="reference internal" href="#aarch64" id="id14">AARCH64</a></li>
-<li><a class="reference internal" href="#amdgpu" id="id15">AMDGPU</a></li>
-<li><a class="reference internal" href="#arm" id="id16">ARM</a></li>
-<li><a class="reference internal" href="#hexagon" id="id17">Hexagon</a></li>
-<li><a class="reference internal" href="#powerpc" id="id18">PowerPC</a></li>
-<li><a class="reference internal" href="#webassembly" id="id19">WebAssembly</a></li>
-<li><a class="reference internal" href="#x86" id="id20">X86</a></li>
+<li><a class="reference internal" href="#target-dependent-compilation-options" id="id14">Target-dependent compilation options</a><ul>
+<li><a class="reference internal" href="#aarch64" id="id15">AARCH64</a></li>
+<li><a class="reference internal" href="#amdgpu" id="id16">AMDGPU</a></li>
+<li><a class="reference internal" href="#arm" id="id17">ARM</a></li>
+<li><a class="reference internal" href="#hexagon" id="id18">Hexagon</a></li>
+<li><a class="reference internal" href="#id1" id="id19">Hexagon</a></li>
+<li><a class="reference internal" href="#powerpc" id="id20">PowerPC</a></li>
+<li><a class="reference internal" href="#webassembly" id="id21">WebAssembly</a></li>
+<li><a class="reference internal" href="#x86" id="id22">X86</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#optimization-level" id="id21">Optimization level</a></li>
-<li><a class="reference internal" href="#debug-information-generation" id="id22">Debug information generation</a><ul>
-<li><a class="reference internal" href="#kind-and-level-of-debug-information" id="id23">Kind and level of debug information</a><ul>
-<li><a class="reference internal" href="#debug-level" id="id24">Debug level</a></li>
-<li><a class="reference internal" href="#debugger-to-tune-debug-information-for" id="id25">Debugger to tune debug information for</a></li>
+<li><a class="reference internal" href="#optimization-level" id="id23">Optimization level</a></li>
+<li><a class="reference internal" href="#debug-information-generation" id="id24">Debug information generation</a><ul>
+<li><a class="reference internal" href="#kind-and-level-of-debug-information" id="id25">Kind and level of debug information</a><ul>
+<li><a class="reference internal" href="#debug-level" id="id26">Debug level</a></li>
+<li><a class="reference internal" href="#debugger-to-tune-debug-information-for" id="id27">Debugger to tune debug information for</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#debug-information-flags" id="id26">Debug information flags</a></li>
+<li><a class="reference internal" href="#debug-information-flags" id="id28">Debug information flags</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#static-analyzer-flags" id="id27">Static analyzer flags</a></li>
-<li><a class="reference internal" href="#fortran-compilation-flags" id="id28">Fortran compilation flags</a></li>
-<li><a class="reference internal" href="#linker-flags" id="id29">Linker flags</a></li>
+<li><a class="reference internal" href="#static-analyzer-flags" id="id29">Static analyzer flags</a></li>
+<li><a class="reference internal" href="#fortran-compilation-flags" id="id30">Fortran compilation flags</a></li>
+<li><a class="reference internal" href="#linker-flags" id="id31">Linker flags</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
-<h2><a class="toc-backref" href="#id3">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This page lists the command line arguments currently supported by the
 GCC-compatible <code class="docutils literal"><span class="pre">clang</span></code> and <code class="docutils literal"><span class="pre">clang++</span></code> drivers.</p>
 <dl class="option">
@@ -153,6 +154,18 @@ GCC-compatible <code class="docutils literal"><span class="pre">clang</span></co
 <dd></dd></dl>
 
 <p>Pass &lt;arg&gt; to the ptxas assembler</p>
+<dl class="option">
+<dt id="cmdoption-clang-xopenmp-target">
+<code class="descname">-Xopenmp-target</code><code class="descclassname"> &lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang-xopenmp-target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Pass &lt;arg&gt; to the target offloading toolchain.</p>
+<dl class="option">
+<dt id="cmdoption-clang1-xopenmp-target">
+<code class="descname">-Xopenmp-target</code><code class="descclassname">=&lt;arg&gt; &lt;arg2&gt;</code><a class="headerlink" href="#cmdoption-clang1-xopenmp-target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Pass &lt;arg&gt; to the specified target offloading toolchain. The triple that identifies the toolchain must be provided after the equals sign.</p>
 <dl class="option">
 <dt id="cmdoption-clang-z-arg">
 <code class="descname">-Z&lt;arg&gt;</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-z-arg" title="Permalink to this definition">¶</a></dt>
@@ -257,6 +270,12 @@ GCC-compatible <code class="docutils literal"><span class="pre">clang</span></co
 <code class="descname">-compatibility_version&lt;arg&gt;</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-compatibility-version-arg" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="option">
+<dt id="cmdoption-clang-config">
+<code class="descname">--config</code><code class="descclassname"> &lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang-config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Specifies configuration file</p>
 <dl class="option">
 <dt id="cmdoption-clang-constant-cfstrings">
 <code class="descname">--constant-cfstrings</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-constant-cfstrings" title="Permalink to this definition">¶</a></dt>
@@ -645,6 +664,11 @@ GCC-compatible <code class="docutils literal"><span class="pre">clang</span></co
 <dd></dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-clang1-nostdlib">
+<code class="descname">-nostdlib++</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang1-nostdlib" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
 <dt id="cmdoption-clang-nostdlibinc">
 <code class="descname">-nostdlibinc</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-nostdlibinc" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -992,13 +1016,13 @@ GCC-compatible <code class="docutils literal"><span class="pre">clang</span></co
 <dd></dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-clang-shared-libasan">
-<code class="descname">-shared-libasan</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-shared-libasan" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-clang-shared-libgcc">
+<code class="descname">-shared-libgcc</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-shared-libgcc" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-clang-shared-libgcc">
-<code class="descname">-shared-libgcc</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-shared-libgcc" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-clang-shared-libsan">
+<code class="descname">-shared-libsan</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-shared-libasan</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-shared-libsan" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="option">
@@ -1019,6 +1043,11 @@ GCC-compatible <code class="docutils literal"><span class="pre">clang</span></co
 <dl class="option">
 <dt id="cmdoption-clang-static-libgcc">
 <code class="descname">-static-libgcc</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-static-libgcc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-clang-static-libsan">
+<code class="descname">-static-libsan</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-static-libsan" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="option">
@@ -1117,6 +1146,7 @@ GCC-compatible <code class="docutils literal"><span class="pre">clang</span></co
 <code class="descname">--version</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<p>Print version information</p>
 <dl class="option">
 <dt id="cmdoption-clang-w">
 <code class="descname">-w</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--no-warnings</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-w" title="Permalink to this definition">¶</a></dt>
@@ -1172,7 +1202,7 @@ GCC-compatible <code class="docutils literal"><span class="pre">clang</span></co
 
 </div>
 <div class="section" id="actions">
-<h2><a class="toc-backref" href="#id4">Actions</a><a class="headerlink" href="#actions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Actions</a><a class="headerlink" href="#actions" title="Permalink to this headline">¶</a></h2>
 <p>The action to perform on the input.</p>
 <dl class="option">
 <dt id="cmdoption-clang-e">
@@ -1229,7 +1259,7 @@ GCC-compatible <code class="docutils literal"><span class="pre">clang</span></co
 <p>Load and verify that a pre-compiled header file is not stale</p>
 </div>
 <div class="section" id="compilation-flags">
-<h2><a class="toc-backref" href="#id5">Compilation flags</a><a class="headerlink" href="#compilation-flags" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">Compilation flags</a><a class="headerlink" href="#compilation-flags" title="Permalink to this headline">¶</a></h2>
 <p>Flags controlling the behavior of Clang during compilation. These flags have
 no effect during actions that do not perform compilation.</p>
 <dl class="option">
@@ -1295,11 +1325,23 @@ no effect during actions that do not perform compilation.</p>
 <dd></dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-clang-fexperimental-isel">
+<code class="descname">-fexperimental-isel</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-experimental-isel</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fexperimental-isel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Enables the experimental global instruction selector</p>
+<dl class="option">
 <dt id="cmdoption-clang-fexperimental-new-pass-manager">
 <code class="descname">-fexperimental-new-pass-manager</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-experimental-new-pass-manager</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fexperimental-new-pass-manager" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Enables an experimental new pass manager in LLVM.</p>
+<dl class="option">
+<dt id="cmdoption-clang-ffine-grained-bitfield-accesses">
+<code class="descname">-ffine-grained-bitfield-accesses</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-fine-grained-bitfield-accesses</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-ffine-grained-bitfield-accesses" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Use separate accesses for bitfields with legal widths and alignments.</p>
 <dl class="option">
 <dt id="cmdoption-clang-finline-functions">
 <code class="descname">-finline-functions</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-inline-functions</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-finline-functions" title="Permalink to this definition">¶</a></dt>
@@ -1360,6 +1402,12 @@ no effect during actions that do not perform compilation.</p>
 
 <p>Enable control flow integrity (CFI) checks for cross-DSO calls.</p>
 <dl class="option">
+<dt id="cmdoption-clang-fsanitize-cfi-icall-generalize-pointers">
+<code class="descname">-fsanitize-cfi-icall-generalize-pointers</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fsanitize-cfi-icall-generalize-pointers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Generalize pointers in CFI indirect call type signature checks</p>
+<dl class="option">
 <dt id="cmdoption-clang-fsanitize-coverage">
 <code class="descname">-fsanitize-coverage</code><code class="descclassname">=&lt;arg1&gt;,&lt;arg2&gt;...</code><code class="descclassname">, </code><code class="descname">-fno-sanitize-coverage</code><code class="descclassname">=&lt;arg1&gt;,&lt;arg2&gt;...</code><a class="headerlink" href="#cmdoption-clang-fsanitize-coverage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1384,10 +1432,15 @@ no effect during actions that do not perform compilation.</p>
 <p>Enable origins tracking in MemorySanitizer</p>
 <dl class="option">
 <dt id="cmdoption-clang-fsanitize-memory-use-after-dtor">
-<code class="descname">-fsanitize-memory-use-after-dtor</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fsanitize-memory-use-after-dtor" title="Permalink to this definition">¶</a></dt>
+<code class="descname">-fsanitize-memory-use-after-dtor</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-sanitize-memory-use-after-dtor</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fsanitize-memory-use-after-dtor" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Enable use-after-destroy detection in MemorySanitizer</p>
+<dl class="option">
+<dt id="cmdoption-clang-fsanitize-minimal-runtime">
+<code class="descname">-fsanitize-minimal-runtime</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-sanitize-minimal-runtime</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fsanitize-minimal-runtime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="option">
 <dt id="cmdoption-clang-fsanitize-recover">
 <code class="descname">-fsanitize-recover</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-sanitize-recover</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fsanitize-recover" title="Permalink to this definition">¶</a></dt>
@@ -1458,7 +1511,7 @@ no effect during actions that do not perform compilation.</p>
 
 <p>Language standard to compile for</p>
 <div class="section" id="preprocessor-flags">
-<h3><a class="toc-backref" href="#id6">Preprocessor flags</a><a class="headerlink" href="#preprocessor-flags" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Preprocessor flags</a><a class="headerlink" href="#preprocessor-flags" title="Permalink to this headline">¶</a></h3>
 <p>Flags controlling the behavior of the Clang preprocessor.</p>
 <dl class="option">
 <dt id="cmdoption-clang-comments">
@@ -1509,7 +1562,7 @@ no effect during actions that do not perform compilation.</p>
 
 <p>Pass &lt;arg&gt; to the preprocessor</p>
 <div class="section" id="include-path-management">
-<h4><a class="toc-backref" href="#id7">Include path management</a><a class="headerlink" href="#include-path-management" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id8">Include path management</a><a class="headerlink" href="#include-path-management" title="Permalink to this headline">¶</a></h4>
 <p>Flags controlling how <code class="docutils literal"><span class="pre">#include</span></code>s are resolved to files.</p>
 <dl class="option">
 <dt id="cmdoption-clang-i-dir">
@@ -1547,6 +1600,12 @@ no effect during actions that do not perform compilation.</p>
 <dd></dd></dl>
 
 <p>Time when the current build session started</p>
+<dl class="option">
+<dt id="cmdoption-clang-fmodule-file">
+<code class="descname">-fmodule-file</code><code class="descclassname">=[&lt;name&gt;=]&lt;file&gt;</code><a class="headerlink" href="#cmdoption-clang-fmodule-file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Specify the mapping of module name to precompiled module file, or load a module file if name is omitted.</p>
 <dl class="option">
 <dt id="cmdoption-clang-fmodules-cache-path">
 <code class="descname">-fmodules-cache-path</code><code class="descclassname">=&lt;directory&gt;</code><a class="headerlink" href="#cmdoption-clang-fmodules-cache-path" title="Permalink to this definition">¶</a></dt>
@@ -1704,7 +1763,7 @@ no effect during actions that do not perform compilation.</p>
 <p>Treat all #include paths starting with &lt;prefix&gt; as including a system header.</p>
 </div>
 <div class="section" id="dependency-file-generation">
-<h4><a class="toc-backref" href="#id8">Dependency file generation</a><a class="headerlink" href="#dependency-file-generation" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id9">Dependency file generation</a><a class="headerlink" href="#dependency-file-generation" title="Permalink to this headline">¶</a></h4>
 <p>Flags controlling generation of a dependency file for <code class="docutils literal"><span class="pre">make</span></code>-like build
 systems.</p>
 <dl class="option">
@@ -1775,7 +1834,7 @@ systems.</p>
 <p>Use NMake/Jom format for the depfile</p>
 </div>
 <div class="section" id="dumping-preprocessor-state">
-<h4><a class="toc-backref" href="#id9">Dumping preprocessor state</a><a class="headerlink" href="#dumping-preprocessor-state" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id10">Dumping preprocessor state</a><a class="headerlink" href="#dumping-preprocessor-state" title="Permalink to this headline">¶</a></h4>
 <p>Flags allowing the state of the preprocessor to be dumped in various ways.</p>
 <dl class="option">
 <dt id="cmdoption-clang-d">
@@ -1813,7 +1872,7 @@ systems.</p>
 </div>
 </div>
 <div class="section" id="diagnostic-flags">
-<h3><a class="toc-backref" href="#id10">Diagnostic flags</a><a class="headerlink" href="#diagnostic-flags" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id11">Diagnostic flags</a><a class="headerlink" href="#diagnostic-flags" title="Permalink to this headline">¶</a></h3>
 <p>Flags controlling which warnings, errors, and remarks Clang will generate.
 See the <a class="reference internal" href="DiagnosticsReference.html"><span class="doc">full list of warning and remark flags</span></a>.</p>
 <dl class="option">
@@ -1859,7 +1918,7 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 
 </div>
 <div class="section" id="target-independent-compilation-options">
-<h3><a class="toc-backref" href="#id11">Target-independent compilation options</a><a class="headerlink" href="#target-independent-compilation-options" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id12">Target-independent compilation options</a><a class="headerlink" href="#target-independent-compilation-options" title="Permalink to this headline">¶</a></h3>
 <dl class="option">
 <dt id="cmdoption-clang-wframe-larger-than">
 <code class="descname">-Wframe-larger-than</code><code class="descclassname">=&lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang-wframe-larger-than" title="Permalink to this definition">¶</a></dt>
@@ -2187,10 +2246,22 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 
 <p>Allow ‘$’ in identifiers</p>
 <dl class="option">
+<dt id="cmdoption-clang-fdouble-square-bracket-attributes">
+<code class="descname">-fdouble-square-bracket-attributes</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-double-square-bracket-attributes</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fdouble-square-bracket-attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Enable ‘[[]]’ attributes in all C and C++ language modes</p>
+<dl class="option">
 <dt id="cmdoption-clang-fdwarf-directory-asm">
 <code class="descname">-fdwarf-directory-asm</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-dwarf-directory-asm</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fdwarf-directory-asm" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="option">
+<dt id="cmdoption-clang-fdwarf-exceptions">
+<code class="descname">-fdwarf-exceptions</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fdwarf-exceptions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Use DWARF style exceptions</p>
 <dl class="option">
 <dt id="cmdoption-clang-felide-constructors">
 <code class="descname">-felide-constructors</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-elide-constructors</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-felide-constructors" title="Permalink to this definition">¶</a></dt>
@@ -2334,11 +2405,23 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-clang-finstrument-function-entry-bare">
+<code class="descname">-finstrument-function-entry-bare</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-finstrument-function-entry-bare" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Instrument function entry only, after inlining, without arguments to the instrumentation call</p>
+<dl class="option">
 <dt id="cmdoption-clang-finstrument-functions">
 <code class="descname">-finstrument-functions</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-finstrument-functions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>Generate calls to instrument function entry and exit</p>
+<dl class="option">
+<dt id="cmdoption-clang-finstrument-functions-after-inlining">
+<code class="descname">-finstrument-functions-after-inlining</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-finstrument-functions-after-inlining" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Like -finstrument-functions, but insert the calls after inlining</p>
 <dl class="option">
 <dt id="cmdoption-clang-fintegrated-as">
 <code class="descname">-fintegrated-as</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-integrated-as</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-integrated-as</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fintegrated-as" title="Permalink to this definition">¶</a></dt>
@@ -2410,12 +2493,6 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <code class="descname">-fmodule-file-deps</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-module-file-deps</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fmodule-file-deps" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="option">
-<dt id="cmdoption-clang-fmodule-file">
-<code class="descname">-fmodule-file</code><code class="descclassname">=&lt;file&gt;</code><a class="headerlink" href="#cmdoption-clang-fmodule-file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>Load this precompiled module file</p>
 <dl class="option">
 <dt id="cmdoption-clang-fmodule-map-file">
 <code class="descname">-fmodule-map-file</code><code class="descclassname">=&lt;file&gt;</code><a class="headerlink" href="#cmdoption-clang-fmodule-map-file" title="Permalink to this definition">¶</a></dt>
@@ -2558,6 +2635,12 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-clang-fnoopenmp-relocatable-target">
+<code class="descname">-fnoopenmp-relocatable-target</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fnoopenmp-relocatable-target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Do not compile OpenMP target code as relocatable.</p>
+<dl class="option">
 <dt id="cmdoption-clang-fnoopenmp-use-tls">
 <code class="descname">-fnoopenmp-use-tls</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fnoopenmp-use-tls" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2643,6 +2726,18 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-clang-fopenmp-relocatable-target">
+<code class="descname">-fopenmp-relocatable-target</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fopenmp-relocatable-target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>OpenMP target code is compiled as relocatable using the -c flag. For OpenMP targets the code is relocatable by default.</p>
+<dl class="option">
+<dt id="cmdoption-clang-fopenmp-simd">
+<code class="descname">-fopenmp-simd</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-openmp-simd</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fopenmp-simd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Emit OpenMP code only for SIMD-based constructs.</p>
+<dl class="option">
 <dt id="cmdoption-clang-fopenmp-use-tls">
 <code class="descname">-fopenmp-use-tls</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fopenmp-use-tls" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2717,6 +2812,12 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-clang-fplt">
+<code class="descname">-fplt</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-plt</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fplt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Use the PLT to make function calls</p>
+<dl class="option">
 <dt id="cmdoption-clang-fplugin">
 <code class="descname">-fplugin</code><code class="descclassname">=&lt;dsopath&gt;</code><a class="headerlink" href="#cmdoption-clang-fplugin" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2772,6 +2873,17 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <p>Use instrumentation data for profile-guided optimization</p>
+<dl class="option">
+<dt id="cmdoption-clang-fprofile-sample-accurate">
+<code class="descname">-fprofile-sample-accurate</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fauto-profile-accurate</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-profile-sample-accurate</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fprofile-sample-accurate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="docutils">
+<dt>Specifies that the sample profile is accurate. If the sample</dt>
+<dd>profile is accurate, callsites without profile samples are marked
+as cold. Otherwise, treat callsites without profile samples as if
+we have no profile</dd>
+</dl>
 <dl class="option">
 <dt id="cmdoption-clang-fprofile-sample-use">
 <code class="descname">-fprofile-sample-use</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fauto-profile</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-profile-sample-use</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fprofile-sample-use" title="Permalink to this definition">¶</a></dt>
@@ -2859,6 +2971,12 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <p>Generate a YAML optimization record file</p>
+<dl class="option">
+<dt id="cmdoption-clang-fseh-exceptions">
+<code class="descname">-fseh-exceptions</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fseh-exceptions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Use SEH style exceptions</p>
 <dl class="option">
 <dt id="cmdoption-clang-fshort-enums">
 <code class="descname">-fshort-enums</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-short-enums</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fshort-enums" title="Permalink to this definition">¶</a></dt>
@@ -3195,6 +3313,12 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 
 <p>Store string literals as writable data</p>
 <dl class="option">
+<dt id="cmdoption-clang-fxray-always-emit-customevents">
+<code class="descname">-fxray-always-emit-customevents</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-fno-xray-always-emit-customevents</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-fxray-always-emit-customevents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Determine whether to always emit __xray_customevent(…) calls even if the function it appears in is not always instrumented.</p>
+<dl class="option">
 <dt id="cmdoption-clang-fxray-always-instrument">
 <code class="descname">-fxray-always-instrument</code><code class="descclassname">=&lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang-fxray-always-instrument" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3245,7 +3369,7 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <div class="section" id="opencl-flags">
-<h4><a class="toc-backref" href="#id12">OpenCL flags</a><a class="headerlink" href="#opencl-flags" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id13">OpenCL flags</a><a class="headerlink" href="#opencl-flags" title="Permalink to this headline">¶</a></h4>
 <dl class="option">
 <dt id="cmdoption-clang-cl-denorms-are-zero">
 <code class="descname">-cl-denorms-are-zero</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-cl-denorms-are-zero" title="Permalink to this definition">¶</a></dt>
@@ -3321,7 +3445,7 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 </div>
 </div>
 <div class="section" id="target-dependent-compilation-options">
-<h3><a class="toc-backref" href="#id13">Target-dependent compilation options</a><a class="headerlink" href="#target-dependent-compilation-options" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id14">Target-dependent compilation options</a><a class="headerlink" href="#target-dependent-compilation-options" title="Permalink to this headline">¶</a></h3>
 <dl class="option">
 <dt id="cmdoption-clang-g-size">
 <code class="descname">-G&lt;size&gt;</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-G</code><code class="descclassname">=&lt;arg&gt;</code><code class="descclassname">, </code><code class="descname">-msmall-data-threshold</code><code class="descclassname">=&lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang-g-size" title="Permalink to this definition">¶</a></dt>
@@ -3354,6 +3478,11 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <p>Enable SVR4-style position-independent code (Mips only)</p>
+<dl class="option">
+<dt id="cmdoption-clang-mabs">
+<code class="descname">-mabs</code><code class="descclassname">=&lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang-mabs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="option">
 <dt id="cmdoption-clang-malign-double">
 <code class="descname">-malign-double</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-malign-double" title="Permalink to this definition">¶</a></dt>
@@ -3398,7 +3527,7 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 
 <dl class="option">
 <dt id="cmdoption-clang-mcpu">
-<code class="descname">-mcpu</code><code class="descclassname">=&lt;arg&gt;</code><code class="descclassname">, </code><code class="descname">-mv4</code><code class="descclassname"> (equivalent to -mcpu=hexagonv4)</code><code class="descclassname">, </code><code class="descname">-mv5</code><code class="descclassname"> (equivalent to -mcpu=hexagonv5)</code><code class="descclassname">, </code><code class="descname">-mv55</code><code class="descclassname"> (equivalent to -mcpu=hexagonv55)</code><code class="descclassname">, </code><code class="descname">-mv60</code><code class="descclassname"> (equivalent to -mcpu=hexagonv60)</code><code class="descclassname">, </code><code class="descname">-mv62</code><code class="descclassname"> (equivalent to -mcpu=hexagonv62)</code><a class="headerlink" href="#cmdoption-clang-mcpu" title="Permalink to this definition">¶</a></dt>
+<code class="descname">-mcpu</code><code class="descclassname">=&lt;arg&gt;</code><code class="descclassname">, </code><code class="descname">-mv4</code><code class="descclassname"> (equivalent to -mcpu=hexagonv4)</code><code class="descclassname">, </code><code class="descname">-mv5</code><code class="descclassname"> (equivalent to -mcpu=hexagonv5)</code><code class="descclassname">, </code><code class="descname">-mv55</code><code class="descclassname"> (equivalent to -mcpu=hexagonv55)</code><code class="descclassname">, </code><code class="descname">-mv60</code><code class="descclassname"> (equivalent to -mcpu=hexagonv60)</code><code class="descclassname">, </code><code class="descname">-mv62</code><code class="descclassname"> (equivalent to -mcpu=hexagonv62)</code><code class="descclassname">, </code><code class="descname">-mv65</code><code class="descclassname"> (equivalent to -mcpu=hexagonv65)</code><a class="headerlink" href="#cmdoption-clang-mcpu" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="option">
@@ -3438,6 +3567,18 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 
 <p>Set EABI type, e.g. 4, 5 or gnu (default depends on triple)</p>
 <dl class="option">
+<dt id="cmdoption-clang-membedded-data">
+<code class="descname">-membedded-data</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-embedded-data</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-membedded-data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Place constants in the .rodata section instead of the .sdata section even if they meet the -G &lt;size&gt; threshold (MIPS)</p>
+<dl class="option">
+<dt id="cmdoption-clang-mextern-sdata">
+<code class="descname">-mextern-sdata</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-extern-sdata</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mextern-sdata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Assume that externally defined data is in the small data if it meets the -G &lt;size&gt; threshold (MIPS)</p>
+<dl class="option">
 <dt id="cmdoption-clang-mfentry">
 <code class="descname">-mfentry</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mfentry" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3476,6 +3617,12 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <p>Enable merging of globals</p>
+<dl class="option">
+<dt id="cmdoption-clang-mgpopt">
+<code class="descname">-mgpopt</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-gpopt</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mgpopt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Use GP relative accesses for symbols known to be in a small data section (MIPS)</p>
 <dl class="option">
 <dt id="cmdoption-clang-mhard-float">
 <code class="descname">-mhard-float</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mhard-float" title="Permalink to this definition">¶</a></dt>
@@ -3528,6 +3675,12 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <code class="descname">-mldc1-sdc1</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-ldc1-sdc1</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mldc1-sdc1" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="option">
+<dt id="cmdoption-clang-mlocal-sdata">
+<code class="descname">-mlocal-sdata</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-local-sdata</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mlocal-sdata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Extend the -G behaviour to object local data (MIPS)</p>
 <dl class="option">
 <dt id="cmdoption-clang-mlong-calls">
 <code class="descname">-mlong-calls</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-long-calls</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mlong-calls" title="Permalink to this definition">¶</a></dt>
@@ -3601,6 +3754,12 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <p>Use copy relocations support for PIE builds</p>
+<dl class="option">
+<dt id="cmdoption-clang-mprefer-vector-width">
+<code class="descname">-mprefer-vector-width</code><code class="descclassname">=&lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang-mprefer-vector-width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Specifies preferred vector width for auto-vectorization. Defaults to ‘none’ which allows target specific decisions.</p>
 <dl class="option">
 <dt id="cmdoption-clang-mqdsp6-compat">
 <code class="descname">-mqdsp6-compat</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mqdsp6-compat" title="Permalink to this definition">¶</a></dt>
@@ -3730,7 +3889,7 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <div class="section" id="aarch64">
-<h4><a class="toc-backref" href="#id14">AARCH64</a><a class="headerlink" href="#aarch64" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id15">AARCH64</a><a class="headerlink" href="#aarch64" title="Permalink to this headline">¶</a></h4>
 <dl class="option">
 <dt id="cmdoption-clang-ffixed-x18">
 <code class="descname">-ffixed-x18</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-ffixed-x18" title="Permalink to this definition">¶</a></dt>
@@ -3751,10 +3910,16 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <p>Generate code which only uses the general purpose registers (AArch64 only)</p>
 </div>
 <div class="section" id="amdgpu">
-<h4><a class="toc-backref" href="#id15">AMDGPU</a><a class="headerlink" href="#amdgpu" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id16">AMDGPU</a><a class="headerlink" href="#amdgpu" title="Permalink to this headline">¶</a></h4>
+<dl class="option">
+<dt id="cmdoption-clang-mxnack">
+<code class="descname">-mxnack</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-xnack</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mxnack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Enable XNACK (AMDGPU only)</p>
 </div>
 <div class="section" id="arm">
-<h4><a class="toc-backref" href="#id16">ARM</a><a class="headerlink" href="#arm" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id17">ARM</a><a class="headerlink" href="#arm" title="Permalink to this headline">¶</a></h4>
 <dl class="option">
 <dt id="cmdoption-clang-ffixed-r9">
 <code class="descname">-ffixed-r9</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-ffixed-r9" title="Permalink to this definition">¶</a></dt>
@@ -3798,6 +3963,12 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 
 <p>Disallow generation of deprecated IT blocks for ARMv8. It is on by default for ARMv8 Thumb mode.</p>
 <dl class="option">
+<dt id="cmdoption-clang-mtp">
+<code class="descname">-mtp</code><code class="descclassname">=&lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang-mtp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Read thread pointer from coprocessor register (ARM only)</p>
+<dl class="option">
 <dt id="cmdoption-clang-munaligned-access">
 <code class="descname">-munaligned-access</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-unaligned-access</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-munaligned-access" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3805,7 +3976,15 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <p>Allow memory accesses to be unaligned (AArch32/AArch64 only)</p>
 </div>
 <div class="section" id="hexagon">
-<h4><a class="toc-backref" href="#id17">Hexagon</a><a class="headerlink" href="#hexagon" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id18">Hexagon</a><a class="headerlink" href="#hexagon" title="Permalink to this headline">¶</a></h4>
+<dl class="option">
+<dt id="cmdoption-clang-mieee-rnd-near">
+<code class="descname">-mieee-rnd-near</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mieee-rnd-near" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="id1">
+<h4><a class="toc-backref" href="#id19">Hexagon</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
 <dl class="option">
 <dt id="cmdoption-clang-mhvx">
 <code class="descname">-mhvx</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-hvx</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mhvx" title="Permalink to this definition">¶</a></dt>
@@ -3819,13 +3998,20 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 
 <p>Enable Hexagon Double Vector eXtensions</p>
 <dl class="option">
-<dt id="cmdoption-clang-mieee-rnd-near">
-<code class="descname">-mieee-rnd-near</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mieee-rnd-near" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-clang-mhvx-length">
+<code class="descname">-mhvx-length</code><code class="descclassname">=&lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang-mhvx-length" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<p>Set Hexagon Vector Length</p>
+<dl class="option">
+<dt id="cmdoption-clang1-mhvx">
+<code class="descname">-mhvx</code><code class="descclassname">=&lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang1-mhvx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Enable Hexagon Vector eXtensions</p>
 </div>
 <div class="section" id="powerpc">
-<h4><a class="toc-backref" href="#id18">PowerPC</a><a class="headerlink" href="#powerpc" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id20">PowerPC</a><a class="headerlink" href="#powerpc" title="Permalink to this headline">¶</a></h4>
 <dl class="option">
 <dt id="cmdoption-clang-maltivec">
 <code class="descname">-maltivec</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-altivec</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-maltivec" title="Permalink to this definition">¶</a></dt>
@@ -3913,7 +4099,12 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 
 </div>
 <div class="section" id="webassembly">
-<h4><a class="toc-backref" href="#id19">WebAssembly</a><a class="headerlink" href="#webassembly" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id21">WebAssembly</a><a class="headerlink" href="#webassembly" title="Permalink to this headline">¶</a></h4>
+<dl class="option">
+<dt id="cmdoption-clang-mnontrapping-fptoint">
+<code class="descname">-mnontrapping-fptoint</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-nontrapping-fptoint</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mnontrapping-fptoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="option">
 <dt id="cmdoption-clang-msimd128">
 <code class="descname">-msimd128</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-simd128</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-msimd128" title="Permalink to this definition">¶</a></dt>
@@ -3921,7 +4112,7 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 
 </div>
 <div class="section" id="x86">
-<h4><a class="toc-backref" href="#id20">X86</a><a class="headerlink" href="#x86" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id22">X86</a><a class="headerlink" href="#x86" title="Permalink to this headline">¶</a></h4>
 <dl class="option">
 <dt id="cmdoption-clang-m3dnow">
 <code class="descname">-m3dnow</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-3dnow</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-m3dnow" title="Permalink to this definition">¶</a></dt>
@@ -3950,6 +4141,11 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dl class="option">
 <dt id="cmdoption-clang-mavx2">
 <code class="descname">-mavx2</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-avx2</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mavx2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-clang-mavx512bitalg">
+<code class="descname">-mavx512bitalg</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-avx512bitalg</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mavx512bitalg" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="option">
@@ -3993,8 +4189,18 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-clang-mavx512vbmi2">
+<code class="descname">-mavx512vbmi2</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-avx512vbmi2</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mavx512vbmi2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
 <dt id="cmdoption-clang-mavx512vl">
 <code class="descname">-mavx512vl</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-avx512vl</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mavx512vl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-clang-mavx512vnni">
+<code class="descname">-mavx512vnni</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-avx512vnni</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mavx512vnni" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="option">
@@ -4055,6 +4261,16 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dl class="option">
 <dt id="cmdoption-clang-mfxsr">
 <code class="descname">-mfxsr</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-fxsr</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mfxsr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-clang-mgfni">
+<code class="descname">-mgfni</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-gfni</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mgfni" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-clang-mibt">
+<code class="descname">-mibt</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-ibt</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mibt" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="option">
@@ -4123,6 +4339,16 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-clang-mretpoline">
+<code class="descname">-mretpoline</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-retpoline</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mretpoline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-clang-mretpoline-external-thunk">
+<code class="descname">-mretpoline-external-thunk</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-retpoline-external-thunk</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mretpoline-external-thunk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
 <dt id="cmdoption-clang-mrtm">
 <code class="descname">-mrtm</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-rtm</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mrtm" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4135,6 +4361,11 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dl class="option">
 <dt id="cmdoption-clang-msha">
 <code class="descname">-msha</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-sha</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-msha" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-clang-mshstk">
+<code class="descname">-mshstk</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-shstk</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mshstk" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="option">
@@ -4178,6 +4409,16 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 <dd></dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-clang-mvaes">
+<code class="descname">-mvaes</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-vaes</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mvaes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-clang-mvpclmulqdq">
+<code class="descname">-mvpclmulqdq</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-vpclmulqdq</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mvpclmulqdq" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="option">
 <dt id="cmdoption-clang-mx87">
 <code class="descname">-mx87</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-m80387</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-mno-x87</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-mx87" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -4210,7 +4451,7 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 </div>
 </div>
 <div class="section" id="optimization-level">
-<h3><a class="toc-backref" href="#id21">Optimization level</a><a class="headerlink" href="#optimization-level" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id23">Optimization level</a><a class="headerlink" href="#optimization-level" title="Permalink to this headline">¶</a></h3>
 <p>Flags controlling how much optimization should be performed.</p>
 <dl class="option">
 <dt id="cmdoption-clang-o-arg">
@@ -4224,11 +4465,11 @@ See the <a class="reference internal" href="DiagnosticsReference.html"><span cla
 
 </div>
 <div class="section" id="debug-information-generation">
-<h3><a class="toc-backref" href="#id22">Debug information generation</a><a class="headerlink" href="#debug-information-generation" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id24">Debug information generation</a><a class="headerlink" href="#debug-information-generation" title="Permalink to this headline">¶</a></h3>
 <p>Flags controlling how much and what kind of debug information should be
 generated.</p>
 <div class="section" id="kind-and-level-of-debug-information">
-<h4><a class="toc-backref" href="#id23">Kind and level of debug information</a><a class="headerlink" href="#kind-and-level-of-debug-information" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id25">Kind and level of debug information</a><a class="headerlink" href="#kind-and-level-of-debug-information" title="Permalink to this headline">¶</a></h4>
 <dl class="option">
 <dt id="cmdoption-clang-g">
 <code class="descname">-g</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--debug</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--debug</code><code class="descclassname">=&lt;arg&gt;</code><a class="headerlink" href="#cmdoption-clang-g" title="Permalink to this definition">¶</a></dt>
@@ -4270,7 +4511,7 @@ generated.</p>
 <dd></dd></dl>
 
 <div class="section" id="debug-level">
-<h5><a class="toc-backref" href="#id24">Debug level</a><a class="headerlink" href="#debug-level" title="Permalink to this headline">¶</a></h5>
+<h5><a class="toc-backref" href="#id26">Debug level</a><a class="headerlink" href="#debug-level" title="Permalink to this headline">¶</a></h5>
 <dl class="option">
 <dt id="cmdoption-clang-g0">
 <code class="descname">-g0</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-g0" title="Permalink to this definition">¶</a></dt>
@@ -4320,7 +4561,7 @@ generated.</p>
 <p>Generate debug info with external references to clang modules or precompiled headers</p>
 </div>
 <div class="section" id="debugger-to-tune-debug-information-for">
-<h5><a class="toc-backref" href="#id25">Debugger to tune debug information for</a><a class="headerlink" href="#debugger-to-tune-debug-information-for" title="Permalink to this headline">¶</a></h5>
+<h5><a class="toc-backref" href="#id27">Debugger to tune debug information for</a><a class="headerlink" href="#debugger-to-tune-debug-information-for" title="Permalink to this headline">¶</a></h5>
 <dl class="option">
 <dt id="cmdoption-clang-ggdb">
 <code class="descname">-ggdb</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-ggdb" title="Permalink to this definition">¶</a></dt>
@@ -4339,7 +4580,7 @@ generated.</p>
 </div>
 </div>
 <div class="section" id="debug-information-flags">
-<h4><a class="toc-backref" href="#id26">Debug information flags</a><a class="headerlink" href="#debug-information-flags" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id28">Debug information flags</a><a class="headerlink" href="#debug-information-flags" title="Permalink to this headline">¶</a></h4>
 <dl class="option">
 <dt id="cmdoption-clang-gcolumn-info">
 <code class="descname">-gcolumn-info</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">-gno-column-info</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-clang-gcolumn-info" title="Permalink to this definition">¶</a></dt>
@@ -4386,7 +4627,7 @@ generated.</p>
 </div>
 </div>
 <div class="section" id="static-analyzer-flags">
-<h2><a class="toc-backref" href="#id27">Static analyzer flags</a><a class="headerlink" href="#static-analyzer-flags" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id29">Static analyzer flags</a><a class="headerlink" href="#static-analyzer-flags" title="Permalink to this headline">¶</a></h2>
 <p>Flags controlling the behavior of the Clang Static Analyzer.</p>
 <dl class="option">
 <dt id="cmdoption-clang-xanalyzer">
@@ -4396,7 +4637,7 @@ generated.</p>
 <p>Pass &lt;arg&gt; to the static analyzer</p>
 </div>
 <div class="section" id="fortran-compilation-flags">
-<h2><a class="toc-backref" href="#id28">Fortran compilation flags</a><a class="headerlink" href="#fortran-compilation-flags" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id30">Fortran compilation flags</a><a class="headerlink" href="#fortran-compilation-flags" title="Permalink to this headline">¶</a></h2>
 <p>Flags that will be passed onto the <code class="docutils literal"><span class="pre">gfortran</span></code> compiler when Clang is given
 a Fortran input.</p>
 <dl class="option">
@@ -4405,8 +4646,8 @@ a Fortran input.</p>
 <dd></dd></dl>
 
 <dl class="option">
-<dt id="id1">
-<code class="descname">-A-&lt;arg&gt;</code><code class="descclassname"></code><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dt id="id2">
+<code class="descname">-A-&lt;arg&gt;</code><code class="descclassname"></code><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="option">
@@ -4741,7 +4982,7 @@ a Fortran input.</p>
 
 </div>
 <div class="section" id="linker-flags">
-<h2><a class="toc-backref" href="#id29">Linker flags</a><a class="headerlink" href="#linker-flags" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id31">Linker flags</a><a class="headerlink" href="#linker-flags" title="Permalink to this headline">¶</a></h2>
 <p>Flags that are passed on to the linker</p>
 <dl class="option">
 <dt id="cmdoption-clang-l-dir">
@@ -4826,8 +5067,8 @@ a Fortran input.</p>
 <dd></dd></dl>
 
 <dl class="option">
-<dt id="id2">
-<code class="descname">-s</code><code class="descclassname"></code><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dt id="id3">
+<code class="descname">-s</code><code class="descclassname"></code><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="option">
@@ -4875,7 +5116,7 @@ a Fortran input.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007-2017, The Clang Team.
+        &#169; Copyright 2007-2018, The Clang Team.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>

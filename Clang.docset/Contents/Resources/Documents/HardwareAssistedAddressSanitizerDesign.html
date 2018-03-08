@@ -1,0 +1,204 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Hardware-assisted AddressSanitizer Design Documentation &#8212; Clang 6 documentation</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="ABI tags" href="ItaniumMangleAbiTags.html" /> 
+  </head>
+  <body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Clang 6 documentation</span></a></h1>
+        <h2 class="heading"><span>Hardware-assisted AddressSanitizer Design Documentation</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="ItaniumMangleAbiTags.html">ABI tags</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="hardware-assisted-addresssanitizer-design-documentation">
+<h1>Hardware-assisted AddressSanitizer Design Documentation<a class="headerlink" href="#hardware-assisted-addresssanitizer-design-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This page is a design document for
+<strong>hardware-assisted AddressSanitizer</strong> (or <strong>HWASAN</strong>)
+a tool similar to <a class="reference internal" href="AddressSanitizer.html"><span class="doc">AddressSanitizer</span></a>,
+but based on partial hardware assistance.</p>
+<p>The document is a draft, suggestions are welcome.</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="AddressSanitizer.html"><span class="doc">AddressSanitizer</span></a>
+tags every 8 bytes of the application memory with a 1 byte tag (using <em>shadow memory</em>),
+uses <em>redzones</em> to find buffer-overflows and
+<em>quarantine</em> to find use-after-free.
+The redzones, the quarantine, and, to a less extent, the shadow, are the
+sources of AddressSanitizer’s memory overhead.
+See the <a class="reference external" href="https://www.usenix.org/system/files/conference/atc12/atc12-final39.pdf">AddressSanitizer paper</a> for details.</p>
+<p>AArch64 has the <a class="reference external" href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.den0024a/ch12s05s01.html">Address Tagging</a> (or top-byte-ignore, TBI), a hardware feature that allows
+software to use 8 most significant bits of a 64-bit pointer as
+a tag. HWASAN uses <a class="reference external" href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.den0024a/ch12s05s01.html">Address Tagging</a>
+to implement a memory safety tool, similar to <a class="reference internal" href="AddressSanitizer.html"><span class="doc">AddressSanitizer</span></a>,
+but with smaller memory overhead and slightly different (mostly better)
+accuracy guarantees.</p>
+</div>
+<div class="section" id="algorithm">
+<h2>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Every heap/stack/global memory object is forcibly aligned by <cite>N</cite> bytes
+(<cite>N</cite> is e.g. 16 or 64). We call <cite>N</cite> the <strong>granularity</strong> of tagging.</li>
+<li>For every such object a random <cite>K</cite>-bit tag <cite>T</cite> is chosen (<cite>K</cite> is e.g. 4 or 8)</li>
+<li>The pointer to the object is tagged with <cite>T</cite>.</li>
+<li>The memory for the object is also tagged with <cite>T</cite>
+(using a <cite>N=&gt;1</cite> shadow memory)</li>
+<li>Every load and store is instrumented to read the memory tag and compare it
+with the pointer tag, exception is raised on tag mismatch.</li>
+</ul>
+</div>
+<div class="section" id="instrumentation">
+<h2>Instrumentation<a class="headerlink" href="#instrumentation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="memory-accesses">
+<h3>Memory Accesses<a class="headerlink" href="#memory-accesses" title="Permalink to this headline">¶</a></h3>
+<p>All memory accesses are prefixed with an inline instruction sequence that
+verifies the tags. Currently, the following sequence is used:</p>
+<div class="highlight-asm"><div class="highlight"><pre><span></span>// int foo(int *a) { return *a; }
+// clang -O2 --target=aarch64-linux -fsanitize=hwaddress -c load.c
+foo:
+     0:       08 dc 44 d3     ubfx    x8, x0, #4, #52  // shadow address
+     4:       08 01 40 39     ldrb    w8, [x8]         // load shadow
+     8:       09 fc 78 d3     lsr     x9, x0, #56      // address tag
+     c:       3f 01 08 6b     cmp     w9, w8           // compare tags
+    10:       61 00 00 54     b.ne    #12              // jump on mismatch
+    14:       00 00 40 b9     ldr     w0, [x0]         // original load
+    18:       c0 03 5f d6     ret
+    1c:       40 20 40 d4     hlt     #0x102           // halt
+    20:       00 00 40 b9     ldr     w0, [x0]         // original load
+    24:       c0 03 5f d6     ret
+</pre></div>
+</div>
+<p>Alternatively, memory accesses are prefixed with a function call.</p>
+</div>
+<div class="section" id="heap">
+<h3>Heap<a class="headerlink" href="#heap" title="Permalink to this headline">¶</a></h3>
+<p>Tagging the heap memory/pointers is done by <cite>malloc</cite>.
+This can be based on any malloc that forces all objects to be N-aligned.
+<cite>free</cite> tags the memory with a different tag.</p>
+</div>
+<div class="section" id="stack">
+<h3>Stack<a class="headerlink" href="#stack" title="Permalink to this headline">¶</a></h3>
+<p>Special compiler instrumentation is required to align the local variables
+by N, tag the memory and the pointers.
+Stack instrumentation is expected to be a major source of overhead,
+but could be optional.
+TODO: details.</p>
+</div>
+<div class="section" id="globals">
+<h3>Globals<a class="headerlink" href="#globals" title="Permalink to this headline">¶</a></h3>
+<p>TODO: details.</p>
+</div>
+<div class="section" id="error-reporting">
+<h3>Error reporting<a class="headerlink" href="#error-reporting" title="Permalink to this headline">¶</a></h3>
+<p>Errors are generated by the <cite>HLT</cite> instruction and are handled by a signal handler.</p>
+</div>
+<div class="section" id="attribute">
+<h3>Attribute<a class="headerlink" href="#attribute" title="Permalink to this headline">¶</a></h3>
+<p>HWASAN uses its own LLVM IR Attribute <cite>sanitize_hwaddress</cite> and a matching
+C function attribute. An alternative would be to re-use ASAN’s attribute
+<cite>sanitize_address</cite>. The reasons to use a separate attribute are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Users may need to disable ASAN but not HWASAN, or vise versa,
+because the tools have different trade-offs and compatibility issues.</li>
+<li>LLVM (ideally) does not use flags to decide which pass is being used,
+ASAN or HWASAN are being applied, based on the function attributes.</li>
+</ul>
+</div></blockquote>
+<p>This does mean that users of HWASAN may need to add the new attribute
+to the code that already uses the old attribute.</p>
+</div>
+</div>
+<div class="section" id="comparison-with-addresssanitizer">
+<h2>Comparison with AddressSanitizer<a class="headerlink" href="#comparison-with-addresssanitizer" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>HWASAN:</dt>
+<dd><ul class="first last simple">
+<li>Is less portable than <a class="reference internal" href="AddressSanitizer.html"><span class="doc">AddressSanitizer</span></a>
+as it relies on hardware <a class="reference external" href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.den0024a/ch12s05s01.html">Address Tagging</a> (AArch64).
+Address Tagging can be emulated with compiler instrumentation,
+but it will require the instrumentation to remove the tags before
+any load or store, which is infeasible in any realistic environment
+that contains non-instrumented code.</li>
+<li>May have compatibility problems if the target code uses higher
+pointer bits for other purposes.</li>
+<li>May require changes in the OS kernels (e.g. Linux seems to dislike
+tagged pointers passed from address space:
+<a class="reference external" href="https://www.kernel.org/doc/Documentation/arm64/tagged-pointers.txt">https://www.kernel.org/doc/Documentation/arm64/tagged-pointers.txt</a>).</li>
+<li><strong>Does not require redzones to detect buffer overflows</strong>,
+but the buffer overflow detection is probabilistic, with roughly
+<cite>(2**K-1)/(2**K)</cite> probability of catching a bug.</li>
+<li><strong>Does not require quarantine to detect heap-use-after-free,
+or stack-use-after-return</strong>.
+The detection is similarly probabilistic.</li>
+</ul>
+</dd>
+</dl>
+<p>The memory overhead of HWASAN is expected to be much smaller
+than that of AddressSanitizer:
+<cite>1/N</cite> extra memory for the shadow
+and some overhead due to <cite>N</cite>-aligning all objects.</p>
+</div>
+<div class="section" id="related-work">
+<h2>Related Work<a class="headerlink" href="#related-work" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://lazytyped.blogspot.com/2017/09/getting-started-with-adi.html">SPARC ADI</a> implements a similar tool mostly in hardware.</li>
+<li><a class="reference external" href="https://www.cc.gatech.edu/~orso/papers/clause.doudalis.orso.prvulovic.pdf">Effective and Efficient Memory Protection Using Dynamic Tainting</a> discusses
+similar approaches (“lock &amp; key”).</li>
+<li><a class="reference external" href="http://www.cis.upenn.edu/acg/papers/isca12_watchdog.pdf">Watchdog</a> discussed a heavier, but still somewhat similar
+“lock &amp; key” approach.</li>
+<li><em>TODO: add more “related work” links. Suggestions are welcome.</em></li>
+</ul>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="ItaniumMangleAbiTags.html">ABI tags</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007-2018, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

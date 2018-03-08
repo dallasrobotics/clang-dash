@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Clang-Format Style Options &#8212; Clang 5 documentation</title>
+    <title>Clang-Format Style Options &#8212; Clang 6 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '5',
+        VERSION:     '6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -29,7 +29,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 5 documentation</span></a></h1>
+          <span>Clang 6 documentation</span></a></h1>
         <h2 class="heading"><span>Clang-Format Style Options</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -270,12 +270,19 @@ split over multiple lines, e.g.:</p>
 </div>
 </dd>
 <dt><strong>AllowAllParametersOfDeclarationOnNextLine</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
-<dd><p class="first">Allow putting all parameters of a function declaration onto
+<dd><p class="first">If the function declaration doesn’t fit on a line,
+allow putting all parameters of a function declaration onto
 the next line even if <code class="docutils literal"><span class="pre">BinPackParameters</span></code> is <code class="docutils literal"><span class="pre">false</span></code>.</p>
-<div class="last highlight-c++"><div class="highlight"><pre><span></span><span class="nb">true</span><span class="o">:</span>                                   <span class="nb">false</span><span class="o">:</span>
-<span class="n">myFunction</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span>                 <span class="n">vs</span><span class="p">.</span>     <span class="n">myFunction</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">plop</span><span class="p">);</span>
-           <span class="n">bar</span><span class="p">,</span>
-           <span class="n">plop</span><span class="p">);</span>
+<div class="last highlight-c++"><div class="highlight"><pre><span></span><span class="nb">true</span><span class="o">:</span>
+<span class="kt">void</span> <span class="n">myFunction</span><span class="p">(</span>
+    <span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">,</span> <span class="kt">int</span> <span class="n">c</span><span class="p">,</span> <span class="kt">int</span> <span class="n">d</span><span class="p">,</span> <span class="kt">int</span> <span class="n">e</span><span class="p">);</span>
+
+<span class="nb">false</span><span class="o">:</span>
+<span class="kt">void</span> <span class="n">myFunction</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span>
+                <span class="kt">int</span> <span class="n">b</span><span class="p">,</span>
+                <span class="kt">int</span> <span class="n">c</span><span class="p">,</span>
+                <span class="kt">int</span> <span class="n">d</span><span class="p">,</span>
+                <span class="kt">int</span> <span class="n">e</span><span class="p">);</span>
 </pre></div>
 </div>
 </dd>
@@ -505,6 +512,14 @@ parameters will either all be on the same line or will have one line each.</p>
 <dd><p class="first">Control of individual brace wrapping cases.</p>
 <p>If <code class="docutils literal"><span class="pre">BreakBeforeBraces</span></code> is set to <code class="docutils literal"><span class="pre">BS_Custom</span></code>, use this to specify how
 each individual brace case should be handled. Otherwise, this is ignored.</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="c1"># Example of usage:</span>
+<span class="l l-Scalar l-Scalar-Plain">BreakBeforeBraces</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Custom</span>
+<span class="l l-Scalar l-Scalar-Plain">BraceWrapping</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">AfterEnum</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="l l-Scalar l-Scalar-Plain">AfterStruct</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="l l-Scalar l-Scalar-Plain">SplitEmptyFunction</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
 <p>Nested configuration flags:</p>
 <ul class="last">
 <li><p class="first"><code class="docutils literal"><span class="pre">bool</span> <span class="pre">AfterClass</span></code> Wrap class definitions.</p>
@@ -609,6 +624,20 @@ each individual brace case should be handled. Otherwise, this is ignored.</p>
 </pre></div>
 </div>
 </li>
+<li><p class="first"><code class="docutils literal"><span class="pre">bool</span> <span class="pre">AfterExternBlock</span></code> Wrap extern blocks.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="nb">true</span><span class="o">:</span>
+<span class="k">extern</span> <span class="s">&quot;C&quot;</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">foo</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nb">false</span><span class="o">:</span>
+<span class="k">extern</span> <span class="s">&quot;C&quot;</span> <span class="p">{</span>
+<span class="kt">int</span> <span class="n">foo</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
 <li><p class="first"><code class="docutils literal"><span class="pre">bool</span> <span class="pre">BeforeCatch</span></code> Wrap before <code class="docutils literal"><span class="pre">catch</span></code>.</p>
 <div class="highlight-c++"><div class="highlight"><pre><span></span><span class="nb">true</span><span class="o">:</span>
 <span class="k">try</span> <span class="p">{</span>
@@ -641,7 +670,7 @@ each individual brace case should be handled. Otherwise, this is ignored.</p>
 </li>
 <li><p class="first"><code class="docutils literal"><span class="pre">bool</span> <span class="pre">IndentBraces</span></code> Indent the wrapped braces themselves.</p>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">bool</span> <span class="pre">SplitEmptyFunctionBody</span></code> If <code class="docutils literal"><span class="pre">false</span></code>, empty function body can be put on a single line.
+<li><p class="first"><code class="docutils literal"><span class="pre">bool</span> <span class="pre">SplitEmptyFunction</span></code> If <code class="docutils literal"><span class="pre">false</span></code>, empty function body can be put on a single line.
 This option is used only if the opening brace of the function has
 already been wrapped, i.e. the <cite>AfterFunction</cite> brace wrapping mode is
 set, and the function could/should not be put on a single line (as per
@@ -649,6 +678,26 @@ set, and the function could/should not be put on a single line (as per
 <div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">f</span><span class="p">()</span>   <span class="n">vs</span><span class="p">.</span>   <span class="n">inf</span> <span class="n">f</span><span class="p">()</span>
 <span class="p">{}</span>              <span class="p">{</span>
                 <span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">bool</span> <span class="pre">SplitEmptyRecord</span></code> If <code class="docutils literal"><span class="pre">false</span></code>, empty record (e.g. class, struct or union) body
+can be put on a single line. This option is used only if the opening
+brace of the record has already been wrapped, i.e. the <cite>AfterClass</cite>
+(for classes) brace wrapping mode is set.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Foo</span>   <span class="n">vs</span><span class="p">.</span>  <span class="k">class</span> <span class="nc">Foo</span>
+<span class="p">{}</span>               <span class="p">{</span>
+                 <span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">bool</span> <span class="pre">SplitEmptyNamespace</span></code> If <code class="docutils literal"><span class="pre">false</span></code>, empty namespace body can be put on a single line.
+This option is used only if the opening brace of the namespace has
+already been wrapped, i.e. the <cite>AfterNamespace</cite> brace wrapping mode is
+set.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="n">Foo</span>   <span class="n">vs</span><span class="p">.</span>  <span class="k">namespace</span> <span class="n">Foo</span>
+<span class="p">{}</span>                   <span class="p">{</span>
+                     <span class="p">}</span>
 </pre></div>
 </div>
 </li>
@@ -884,43 +933,28 @@ break before <code class="docutils literal"><span class="pre">:</span></code> an
 <ul class="last">
 <li><p class="first"><code class="docutils literal"><span class="pre">BCIS_BeforeColon</span></code> (in configuration: <code class="docutils literal"><span class="pre">BeforeColon</span></code>)
 Break constructor initializers before the colon and after the commas.</p>
-<div class="highlight-c++"><div class="highlight"><pre><span></span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">Constructor</span><span class="p">()</span>
+    <span class="o">:</span> <span class="n">initializer1</span><span class="p">(),</span>
+      <span class="n">initializer2</span><span class="p">()</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>Constructor()</dt>
-<dd><dl class="first last docutils">
-<dt>: initializer1(),</dt>
-<dd><p class="first last">initializer2()</p>
-</dd>
-</dl>
-</dd>
-</dl>
 </li>
 <li><p class="first"><code class="docutils literal"><span class="pre">BCIS_BeforeComma</span></code> (in configuration: <code class="docutils literal"><span class="pre">BeforeComma</span></code>)
 Break constructor initializers before the colon and commas, and align
 the commas with the colon.</p>
-<div class="highlight-c++"><div class="highlight"><pre><span></span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">Constructor</span><span class="p">()</span>
+    <span class="o">:</span> <span class="n">initializer1</span><span class="p">()</span>
+    <span class="p">,</span> <span class="n">initializer2</span><span class="p">()</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>Constructor()</dt>
-<dd><p class="first last">: initializer1()
-, initializer2()</p>
-</dd>
-</dl>
 </li>
 <li><p class="first"><code class="docutils literal"><span class="pre">BCIS_AfterColon</span></code> (in configuration: <code class="docutils literal"><span class="pre">AfterColon</span></code>)
 Break constructor initializers after the colon and commas.</p>
-<div class="highlight-c++"><div class="highlight"><pre><span></span>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="n">Constructor</span><span class="p">()</span> <span class="o">:</span>
+    <span class="n">initializer1</span><span class="p">(),</span>
+    <span class="n">initializer2</span><span class="p">()</span>
 </pre></div>
 </div>
-<dl class="docutils">
-<dt>Constructor() :</dt>
-<dd><p class="first last">initializer1(),
-initializer2()</p>
-</dd>
-</dl>
 </li>
 </ul>
 </dd>
@@ -1056,6 +1090,41 @@ instead of as function calls.</p>
 </div>
 <p class="last">For example: BOOST_FOREACH.</p>
 </dd>
+<dt><strong>IncludeBlocks</strong> (<code class="docutils literal"><span class="pre">IncludeBlocksStyle</span></code>)</dt>
+<dd><p class="first">Dependent on the value, multiple <code class="docutils literal"><span class="pre">#include</span></code> blocks can be sorted
+as one and divided based on category.</p>
+<p>Possible values:</p>
+<ul class="last">
+<li><p class="first"><code class="docutils literal"><span class="pre">IBS_Preserve</span></code> (in configuration: <code class="docutils literal"><span class="pre">Preserve</span></code>)
+Sort each <code class="docutils literal"><span class="pre">#include</span></code> block separately.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;b.h&quot;               into      #include &quot;b.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;lib/main.h&gt;                  #include &quot;a.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;a.h&quot;                         #include &lt;lib/main.h&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">IBS_Merge</span></code> (in configuration: <code class="docutils literal"><span class="pre">Merge</span></code>)
+Merge multiple <code class="docutils literal"><span class="pre">#include</span></code> blocks together and sort as one.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;b.h&quot;               into      #include &quot;a.h&quot;</span><span class="cp"></span>
+                                       <span class="cp">#include</span> <span class="cpf">&quot;b.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;lib/main.h&gt;                  #include &lt;lib/main.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;a.h&quot;</span><span class="cp"></span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">IBS_Regroup</span></code> (in configuration: <code class="docutils literal"><span class="pre">Regroup</span></code>)
+Merge multiple <code class="docutils literal"><span class="pre">#include</span></code> blocks together and sort as one.
+Then split into groups based on category priority. See <code class="docutils literal"><span class="pre">IncludeCategories</span></code>.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;b.h&quot;               into      #include &quot;a.h&quot;</span><span class="cp"></span>
+                                       <span class="cp">#include</span> <span class="cpf">&quot;b.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;lib/main.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;a.h&quot;                         #include &lt;lib/main.h&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+</li>
+</ul>
+</dd>
 <dt><strong>IncludeCategories</strong> (<code class="docutils literal"><span class="pre">std::vector&lt;IncludeCategory&gt;</span></code>)</dt>
 <dd><p class="first">Regular expressions denoting the different <code class="docutils literal"><span class="pre">#include</span></code> categories
 used for ordering <code class="docutils literal"><span class="pre">#includes</span></code>.</p>
@@ -1074,7 +1143,7 @@ always need to be first.</p>
 <div class="last highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">IncludeCategories</span><span class="p p-Indicator">:</span>
   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Regex</span><span class="p p-Indicator">:</span>           <span class="s">&#39;^&quot;(llvm|llvm-c|clang|clang-c)/&#39;</span>
     <span class="l l-Scalar l-Scalar-Plain">Priority</span><span class="p p-Indicator">:</span>        <span class="l l-Scalar l-Scalar-Plain">2</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Regex</span><span class="p p-Indicator">:</span>           <span class="s">&#39;^(&lt;|&quot;(gtest|isl|json)/)&#39;</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Regex</span><span class="p p-Indicator">:</span>           <span class="s">&#39;^(&lt;|&quot;(gtest|gmock|isl|json)/)&#39;</span>
     <span class="l l-Scalar l-Scalar-Plain">Priority</span><span class="p p-Indicator">:</span>        <span class="l l-Scalar l-Scalar-Plain">3</span>
   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Regex</span><span class="p p-Indicator">:</span>           <span class="s">&#39;.*&#39;</span>
     <span class="l l-Scalar l-Scalar-Plain">Priority</span><span class="p p-Indicator">:</span>        <span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -1106,6 +1175,32 @@ Switch statement body is always indented one level more than case labels.</p>
 <span class="p">}</span>                                      <span class="p">}</span>
 </pre></div>
 </div>
+</dd>
+<dt><strong>IndentPPDirectives</strong> (<code class="docutils literal"><span class="pre">PPDirectiveIndentStyle</span></code>)</dt>
+<dd><p class="first">The preprocessor directive indenting style to use.</p>
+<p>Possible values:</p>
+<ul class="last">
+<li><p class="first"><code class="docutils literal"><span class="pre">PPDIS_None</span></code> (in configuration: <code class="docutils literal"><span class="pre">None</span></code>)
+Does not indent any directives.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#if FOO</span>
+<span class="cp">#if BAR</span>
+<span class="cp">#include</span> <span class="cpf">&lt;foo&gt;</span><span class="cp"></span>
+<span class="cp">#endif</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">PPDIS_AfterHash</span></code> (in configuration: <code class="docutils literal"><span class="pre">AfterHash</span></code>)
+Indents directives after the hash.</p>
+<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#if FOO</span>
+<span class="cp">#  if BAR</span>
+<span class="cp">#    include &lt;foo&gt;</span>
+<span class="cp">#  endif</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</li>
+</ul>
 </dd>
 <dt><strong>IndentWidth</strong> (<code class="docutils literal"><span class="pre">unsigned</span></code>)</dt>
 <dd><p class="first">The number of columns to use for indentation.</p>
@@ -1203,6 +1298,9 @@ Should be used for Protocol Buffers
 (<a class="reference external" href="https://developers.google.com/protocol-buffers/">https://developers.google.com/protocol-buffers/</a>).</li>
 <li><code class="docutils literal"><span class="pre">LK_TableGen</span></code> (in configuration: <code class="docutils literal"><span class="pre">TableGen</span></code>)
 Should be used for TableGen code.</li>
+<li><code class="docutils literal"><span class="pre">LK_TextProto</span></code> (in configuration: <code class="docutils literal"><span class="pre">TextProto</span></code>)
+Should be used for Protocol Buffer messages in text format
+(<a class="reference external" href="https://developers.google.com/protocol-buffers/">https://developers.google.com/protocol-buffers/</a>).</li>
 </ul>
 </dd>
 <dt><strong>MacroBlockBegin</strong> (<code class="docutils literal"><span class="pre">std::string</span></code>)</dt>
@@ -1342,6 +1440,23 @@ Align pointer in the middle.</p>
 </li>
 </ul>
 </dd>
+<dt><strong>RawStringFormats</strong> (<code class="docutils literal"><span class="pre">std::vector&lt;RawStringFormat&gt;</span></code>)</dt>
+<dd><p class="first">Raw string delimiters denoting that the raw string contents are
+code in a particular language and can be reformatted.</p>
+<p>A raw string with a matching delimiter will be reformatted assuming the
+specified language based on a predefined style given by ‘BasedOnStyle’.
+If ‘BasedOnStyle’ is not found, the formatting is based on llvm style.</p>
+<p>To configure this in the .clang-format file, use:</p>
+<div class="last highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">RawStringFormats</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Delimiter</span><span class="p p-Indicator">:</span> <span class="s">&#39;pb&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">Language</span><span class="p p-Indicator">:</span>  <span class="l l-Scalar l-Scalar-Plain">TextProto</span>
+    <span class="l l-Scalar l-Scalar-Plain">BasedOnStyle</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">llvm</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Delimiter</span><span class="p p-Indicator">:</span> <span class="s">&#39;proto&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">Language</span><span class="p p-Indicator">:</span>  <span class="l l-Scalar l-Scalar-Plain">TextProto</span>
+    <span class="l l-Scalar l-Scalar-Plain">BasedOnStyle</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">google</span>
+</pre></div>
+</div>
+</dd>
 <dt><strong>ReflowComments</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd><p class="first">If <code class="docutils literal"><span class="pre">true</span></code>, clang-format will attempt to re-flow comments.</p>
 <div class="last highlight-c++"><div class="highlight"><pre><span></span><span class="nb">false</span><span class="o">:</span>
@@ -1366,6 +1481,13 @@ Align pointer in the middle.</p>
 </dd>
 <dt><strong>SortUsingDeclarations</strong> (<code class="docutils literal"><span class="pre">bool</span></code>)</dt>
 <dd><p class="first">If <code class="docutils literal"><span class="pre">true</span></code>, clang-format will sort using declarations.</p>
+<p>The order of using declarations is defined as follows:
+Split the strings by “::” and discard any initial empty strings. The last
+element of each list is a non-namespace name; all others are namespace
+names. Sort the lists of names lexicographically, where the sort order of
+individual names is that all non-namespace names come before all namespace
+names, and within those groups, names are in case-insensitive
+lexicographic order.</p>
 <div class="last highlight-c++"><div class="highlight"><pre><span></span><span class="nb">false</span><span class="o">:</span>                                 <span class="nb">true</span><span class="o">:</span>
 <span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">;</span>               <span class="n">vs</span><span class="p">.</span>     <span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="p">;</span>                        <span class="k">using</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">;</span>
@@ -1654,7 +1776,7 @@ options. Each new style option must ..</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007-2017, The Clang Team.
+        &#169; Copyright 2007-2018, The Clang Team.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>

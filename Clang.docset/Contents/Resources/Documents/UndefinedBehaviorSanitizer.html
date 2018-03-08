@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>UndefinedBehaviorSanitizer &#8212; Clang 5 documentation</title>
+    <title>UndefinedBehaviorSanitizer &#8212; Clang 6 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '5',
+        VERSION:     '6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -29,7 +29,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 5 documentation</span></a></h1>
+          <span>Clang 6 documentation</span></a></h1>
         <h2 class="heading"><span>UndefinedBehaviorSanitizer</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -57,20 +57,21 @@
 <li><a class="reference internal" href="#volatile" id="id5">Volatile</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#stack-traces-and-report-symbolization" id="id6">Stack traces and report symbolization</a></li>
-<li><a class="reference internal" href="#issue-suppression" id="id7">Issue Suppression</a><ul>
-<li><a class="reference internal" href="#disabling-instrumentation-with-attribute-no-sanitize-undefined" id="id8">Disabling Instrumentation with <code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;undefined&quot;)))</span></code></a></li>
-<li><a class="reference internal" href="#suppressing-errors-in-recompiled-code-blacklist" id="id9">Suppressing Errors in Recompiled Code (Blacklist)</a></li>
-<li><a class="reference internal" href="#runtime-suppressions" id="id10">Runtime suppressions</a></li>
+<li><a class="reference internal" href="#minimal-runtime" id="id6">Minimal Runtime</a></li>
+<li><a class="reference internal" href="#stack-traces-and-report-symbolization" id="id7">Stack traces and report symbolization</a></li>
+<li><a class="reference internal" href="#issue-suppression" id="id8">Issue Suppression</a><ul>
+<li><a class="reference internal" href="#disabling-instrumentation-with-attribute-no-sanitize-undefined" id="id9">Disabling Instrumentation with <code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;undefined&quot;)))</span></code></a></li>
+<li><a class="reference internal" href="#suppressing-errors-in-recompiled-code-blacklist" id="id10">Suppressing Errors in Recompiled Code (Blacklist)</a></li>
+<li><a class="reference internal" href="#runtime-suppressions" id="id11">Runtime suppressions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#supported-platforms" id="id11">Supported Platforms</a></li>
-<li><a class="reference internal" href="#current-status" id="id12">Current Status</a></li>
-<li><a class="reference internal" href="#additional-configuration" id="id13">Additional Configuration</a><ul>
-<li><a class="reference internal" href="#example" id="id14">Example</a></li>
+<li><a class="reference internal" href="#supported-platforms" id="id12">Supported Platforms</a></li>
+<li><a class="reference internal" href="#current-status" id="id13">Current Status</a></li>
+<li><a class="reference internal" href="#additional-configuration" id="id14">Additional Configuration</a><ul>
+<li><a class="reference internal" href="#example" id="id15">Example</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#more-information" id="id15">More Information</a></li>
+<li><a class="reference internal" href="#more-information" id="id16">More Information</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
@@ -133,6 +134,7 @@ pointer.</p>
 of a misaligned reference.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=bool</span></code>: Load of a <code class="docutils literal"><span class="pre">bool</span></code> value which is neither
 <code class="docutils literal"><span class="pre">true</span></code> nor <code class="docutils literal"><span class="pre">false</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=builtin</span></code>: Passing invalid values to compiler builtins.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=bounds</span></code>: Out of bounds array indexing, in cases
 where the array bound can be statically determined.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=enum</span></code>: Load of a value of an enumerated type which
@@ -144,7 +146,8 @@ destination.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=float-divide-by-zero</span></code>: Floating point division by
 zero.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=function</span></code>: Indirect call of a function through a
-function pointer of the wrong type (Linux, C++ and x86/x86_64 only).</li>
+function pointer of the wrong type (Darwin/Linux, C++ and x86/x86_64
+only).</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=integer-divide-by-zero</span></code>: Integer division by zero.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=nonnull-attribute</span></code>: Passing null pointer as a function
 parameter which is declared to never be null.</li>
@@ -180,19 +183,19 @@ right-hand side of shift operation, respectively.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=signed-integer-overflow</span></code>: Signed integer overflow,
 including all the checks added by <code class="docutils literal"><span class="pre">-ftrapv</span></code>, and checking for
 overflow in signed division (<code class="docutils literal"><span class="pre">INT_MIN</span> <span class="pre">/</span> <span class="pre">-1</span></code>).</li>
-<li><code class="docutils literal"><span class="pre">-fsanitize=unreachable</span></code>: If control flow reaches
-<code class="docutils literal"><span class="pre">__builtin_unreachable</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=unreachable</span></code>: If control flow reaches an unreachable
+program point.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=unsigned-integer-overflow</span></code>: Unsigned integer
 overflows. Note that unlike signed integer overflow, unsigned integer
 is not undefined behavior. However, while it has well-defined semantics,
 it is often unintentional, so UBSan offers to catch it.</li>
 <li><code class="docutils literal"><span class="pre">-fsanitize=vla-bound</span></code>: A variable-length array whose bound
 does not evaluate to a positive value.</li>
-<li><code class="docutils literal"><span class="pre">-fsanitize=vptr</span></code>: Use of an object whose vptr indicates that
-it is of the wrong dynamic type, or that its lifetime has not
-begun or has ended. Incompatible with <code class="docutils literal"><span class="pre">-fno-rtti</span></code>. Link must
-be performed by <code class="docutils literal"><span class="pre">clang++</span></code>, not <code class="docutils literal"><span class="pre">clang</span></code>, to make sure C++-specific
-parts of the runtime library and C++ standard libraries are present.</li>
+<li><code class="docutils literal"><span class="pre">-fsanitize=vptr</span></code>: Use of an object whose vptr indicates that it is of
+the wrong dynamic type, or that its lifetime has not begun or has ended.
+Incompatible with <code class="docutils literal"><span class="pre">-fno-rtti</span></code>. Link must be performed by <code class="docutils literal"><span class="pre">clang++</span></code>, not
+<code class="docutils literal"><span class="pre">clang</span></code>, to make sure C++-specific parts of the runtime library and C++
+standard libraries are present.</li>
 </ul>
 </div></blockquote>
 <dl class="docutils">
@@ -217,8 +220,19 @@ so UBSan offers to catch it.</li>
 to pointers to types with the <code class="docutils literal"><span class="pre">volatile</span></code> qualifier.</p>
 </div>
 </div>
+<div class="section" id="minimal-runtime">
+<h2><a class="toc-backref" href="#id6">Minimal Runtime</a><a class="headerlink" href="#minimal-runtime" title="Permalink to this headline">¶</a></h2>
+<p>There is a minimal UBSan runtime available suitable for use in production
+environments. This runtime has a small attack surface. It only provides very
+basic issue logging and deduplication, and does not support <code class="docutils literal"><span class="pre">-fsanitize=vptr</span></code>
+checking.</p>
+<p>To use the minimal runtime, add <code class="docutils literal"><span class="pre">-fsanitize-minimal-runtime</span></code> to the clang
+command line options. For example, if you’re used to compiling with
+<code class="docutils literal"><span class="pre">-fsanitize=undefined</span></code>, you could enable the minimal runtime with
+<code class="docutils literal"><span class="pre">-fsanitize=undefined</span> <span class="pre">-fsanitize-minimal-runtime</span></code>.</p>
+</div>
 <div class="section" id="stack-traces-and-report-symbolization">
-<h2><a class="toc-backref" href="#id6">Stack traces and report symbolization</a><a class="headerlink" href="#stack-traces-and-report-symbolization" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7">Stack traces and report symbolization</a><a class="headerlink" href="#stack-traces-and-report-symbolization" title="Permalink to this headline">¶</a></h2>
 <p>If you want UBSan to print symbolized stack trace for each error report, you
 will need to:</p>
 <ol class="arabic simple">
@@ -230,11 +244,11 @@ information in your binary.</li>
 </ol>
 </div>
 <div class="section" id="issue-suppression">
-<h2><a class="toc-backref" href="#id7">Issue Suppression</a><a class="headerlink" href="#issue-suppression" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8">Issue Suppression</a><a class="headerlink" href="#issue-suppression" title="Permalink to this headline">¶</a></h2>
 <p>UndefinedBehaviorSanitizer is not expected to produce false positives.
 If you see one, look again; most likely it is a true positive!</p>
 <div class="section" id="disabling-instrumentation-with-attribute-no-sanitize-undefined">
-<h3><a class="toc-backref" href="#id8">Disabling Instrumentation with <code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;undefined&quot;)))</span></code></a><a class="headerlink" href="#disabling-instrumentation-with-attribute-no-sanitize-undefined" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id9">Disabling Instrumentation with <code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;undefined&quot;)))</span></code></a><a class="headerlink" href="#disabling-instrumentation-with-attribute-no-sanitize-undefined" title="Permalink to this headline">¶</a></h3>
 <p>You disable UBSan checks for particular functions with
 <code class="docutils literal"><span class="pre">__attribute__((no_sanitize(&quot;undefined&quot;)))</span></code>. You can use all values of
 <code class="docutils literal"><span class="pre">-fsanitize=</span></code> flag in this attribute, e.g. if your function deliberately
@@ -245,13 +259,13 @@ supported by other compilers, so consider using it together with
 <code class="docutils literal"><span class="pre">#if</span> <span class="pre">defined(__clang__)</span></code>.</p>
 </div>
 <div class="section" id="suppressing-errors-in-recompiled-code-blacklist">
-<h3><a class="toc-backref" href="#id9">Suppressing Errors in Recompiled Code (Blacklist)</a><a class="headerlink" href="#suppressing-errors-in-recompiled-code-blacklist" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id10">Suppressing Errors in Recompiled Code (Blacklist)</a><a class="headerlink" href="#suppressing-errors-in-recompiled-code-blacklist" title="Permalink to this headline">¶</a></h3>
 <p>UndefinedBehaviorSanitizer supports <code class="docutils literal"><span class="pre">src</span></code> and <code class="docutils literal"><span class="pre">fun</span></code> entity types in
 <a class="reference internal" href="SanitizerSpecialCaseList.html"><span class="doc">Sanitizer special case list</span></a>, that can be used to suppress error reports
 in the specified source files or functions.</p>
 </div>
 <div class="section" id="runtime-suppressions">
-<h3><a class="toc-backref" href="#id10">Runtime suppressions</a><a class="headerlink" href="#runtime-suppressions" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id11">Runtime suppressions</a><a class="headerlink" href="#runtime-suppressions" title="Permalink to this headline">¶</a></h3>
 <p>Sometimes you can suppress UBSan error reports for specific files, functions,
 or libraries without recompiling the code. You need to pass a path to
 suppression file in a <code class="docutils literal"><span class="pre">UBSAN_OPTIONS</span></code> environment variable.</p>
@@ -280,7 +294,7 @@ fine-grained checks are supported.</li>
 </div>
 </div>
 <div class="section" id="supported-platforms">
-<h2><a class="toc-backref" href="#id11">Supported Platforms</a><a class="headerlink" href="#supported-platforms" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id12">Supported Platforms</a><a class="headerlink" href="#supported-platforms" title="Permalink to this headline">¶</a></h2>
 <p>UndefinedBehaviorSanitizer is supported on the following OS:</p>
 <ul class="simple">
 <li>Android</li>
@@ -298,13 +312,13 @@ fine-grained checks are supported.</li>
 </ul>
 </div>
 <div class="section" id="current-status">
-<h2><a class="toc-backref" href="#id12">Current Status</a><a class="headerlink" href="#current-status" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id13">Current Status</a><a class="headerlink" href="#current-status" title="Permalink to this headline">¶</a></h2>
 <p>UndefinedBehaviorSanitizer is available on selected platforms starting from LLVM
 3.3. The test suite is integrated into the CMake build and can be run with
 <code class="docutils literal"><span class="pre">check-ubsan</span></code> command.</p>
 </div>
 <div class="section" id="additional-configuration">
-<h2><a class="toc-backref" href="#id13">Additional Configuration</a><a class="headerlink" href="#additional-configuration" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14">Additional Configuration</a><a class="headerlink" href="#additional-configuration" title="Permalink to this headline">¶</a></h2>
 <p>UndefinedBehaviorSanitizer adds static check data for each check unless it is
 in trap mode. This check data includes the full file name. The option
 <code class="docutils literal"><span class="pre">-fsanitize-undefined-strip-path-components=N</span></code> can be used to trim this
@@ -312,7 +326,7 @@ information. If <code class="docutils literal"><span class="pre">N</span></code>
 UndefinedBehaviorSanitizer will drop the first <code class="docutils literal"><span class="pre">N</span></code> components from the file
 path. If <code class="docutils literal"><span class="pre">N</span></code> is negative, the last <code class="docutils literal"><span class="pre">N</span></code> components will be kept.</p>
 <div class="section" id="example">
-<h3><a class="toc-backref" href="#id14">Example</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id15">Example</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p>For a file called <code class="docutils literal"><span class="pre">/code/library/file.cpp</span></code>, here is what would be emitted:
 * Default (No flag, or <code class="docutils literal"><span class="pre">-fsanitize-undefined-strip-path-components=0</span></code>): <code class="docutils literal"><span class="pre">/code/library/file.cpp</span></code>
 * <code class="docutils literal"><span class="pre">-fsanitize-undefined-strip-path-components=1</span></code>: <code class="docutils literal"><span class="pre">code/library/file.cpp</span></code>
@@ -322,7 +336,7 @@ path. If <code class="docutils literal"><span class="pre">N</span></code> is neg
 </div>
 </div>
 <div class="section" id="more-information">
-<h2><a class="toc-backref" href="#id15">More Information</a><a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id16">More Information</a><a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>From LLVM project blog:
 <a class="reference external" href="http://blog.llvm.org/2011/05/what-every-c-programmer-should-know.html">What Every C Programmer Should Know About Undefined Behavior</a></li>
@@ -347,7 +361,7 @@ path. If <code class="docutils literal"><span class="pre">N</span></code> is neg
       </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007-2017, The Clang Team.
+        &#169; Copyright 2007-2018, The Clang Team.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>

@@ -1,0 +1,112 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>OpenMP Support &#8212; Clang 6 documentation</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ThinLTO" href="ThinLTO.html" />
+    <link rel="prev" title="MSVC compatibility" href="MSVCCompatibility.html" /> 
+  </head>
+  <body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Clang 6 documentation</span></a></h1>
+        <h2 class="heading"><span>OpenMP Support</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="MSVCCompatibility.html">MSVC compatibility</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="ThinLTO.html">ThinLTO</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <style type="text/css">
+  .none { background-color: #FFCCCC }
+  .partial { background-color: #FFFF99 }
+  .good { background-color: #CCFF99 }
+</style><div class="section" id="openmp-support">
+<h1>OpenMP Support<a class="headerlink" href="#openmp-support" title="Permalink to this headline">¶</a></h1>
+<p>Clang fully supports OpenMP 3.1 + some elements of OpenMP 4.5. Clang supports offloading to X86_64, AArch64 and PPC64[LE] devices.
+Support for Cuda devices is not ready yet.
+The status of major OpenMP 4.5 features support in Clang.</p>
+<div class="section" id="standalone-directives">
+<h2>Standalone directives<a class="headerlink" href="#standalone-directives" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>#pragma omp [for] simd: <span class="good">Complete</span>.</li>
+<li>#pragma omp declare simd: <span class="partial">Partial</span>.  We support parsing/semantic
+analysis + generation of special attributes for X86 target, but still
+missing the LLVM pass for vectorization.</li>
+<li>#pragma omp taskloop [simd]: <span class="good">Complete</span>.</li>
+<li>#pragma omp target [enter|exit] data: <span class="good">Complete</span>.</li>
+<li>#pragma omp target update: <span class="good">Complete</span>.</li>
+<li>#pragma omp target: <span class="partial">Partial</span>.  No support for the <cite>depend</cite> clauses.</li>
+<li>#pragma omp declare target: <span class="partial">Partial</span>.  No full codegen support.</li>
+<li>#pragma omp teams: <span class="good">Complete</span>.</li>
+<li>#pragma omp distribute [simd]: <span class="good">Complete</span>.</li>
+<li>#pragma omp distribute parallel for [simd]: <span class="good">Complete</span>.</li>
+</ul>
+</div>
+<div class="section" id="combined-directives">
+<h2>Combined directives<a class="headerlink" href="#combined-directives" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>#pragma omp parallel for simd: <span class="good">Complete</span>.</li>
+<li>#pragma omp target parallel: <span class="partial">Partial</span>.  No support for the <cite>depend</cite> clauses.</li>
+<li>#pragma omp target parallel for [simd]: <span class="partial">Partial</span>.  No support for the <cite>depend</cite> clauses.</li>
+<li>#pragma omp target simd: <span class="partial">Partial</span>.  No support for the <cite>depend</cite> clauses.</li>
+<li>#pragma omp target teams: <span class="partial">Partial</span>.  No support for the <cite>depend</cite> clauses.</li>
+<li>#pragma omp teams distribute [simd]: <span class="good">Complete</span>.</li>
+<li>#pragma omp target teams distribute [simd]: <span class="partial">Partial</span>.  No support for the and <cite>depend</cite> clauses.</li>
+<li>#pragma omp teams distribute parallel for [simd]: <span class="good">Complete</span>.</li>
+<li>#pragma omp target teams distribute parallel for [simd]: <span class="partial">Partial</span>.  No full codegen support.</li>
+</ul>
+<p>Clang does not support any constructs/updates from upcoming OpenMP 5.0 except for <cite>reduction</cite>-based clauses in the <cite>task</cite> and <cite>target</cite>-based directives.
+In addition, the LLVM OpenMP runtime <cite>libomp</cite> supports the OpenMP Tools Interface (OMPT) on x86, x86_64, AArch64, and PPC64 on Linux, Windows, and mac OS.</p>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="MSVCCompatibility.html">MSVC compatibility</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="ThinLTO.html">ThinLTO</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007-2018, The Clang Team.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Control Flow Integrity &#8212; Clang 5 documentation</title>
+    <title>Control Flow Integrity &#8212; Clang 6 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '5',
+        VERSION:     '6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -29,7 +29,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 5 documentation</span></a></h1>
+          <span>Clang 6 documentation</span></a></h1>
         <h2 class="heading"><span>Control Flow Integrity</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -65,13 +65,14 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#indirect-function-call-checking" id="id9">Indirect Function Call Checking</a><ul>
-<li><a class="reference internal" href="#fsanitize-cfi-icall-and-fsanitize-function" id="id10"><code class="docutils literal"><span class="pre">-fsanitize=cfi-icall</span></code> and <code class="docutils literal"><span class="pre">-fsanitize=function</span></code></a></li>
+<li><a class="reference internal" href="#fsanitize-cfi-icall-generalize-pointers" id="id10"><code class="docutils literal"><span class="pre">-fsanitize-cfi-icall-generalize-pointers</span></code></a></li>
+<li><a class="reference internal" href="#fsanitize-cfi-icall-and-fsanitize-function" id="id11"><code class="docutils literal"><span class="pre">-fsanitize=cfi-icall</span></code> and <code class="docutils literal"><span class="pre">-fsanitize=function</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#blacklist" id="id11">Blacklist</a></li>
-<li><a class="reference internal" href="#shared-library-support" id="id12">Shared library support</a></li>
-<li><a class="reference internal" href="#design" id="id13">Design</a></li>
-<li><a class="reference internal" href="#publications" id="id14">Publications</a></li>
+<li><a class="reference internal" href="#blacklist" id="id12">Blacklist</a></li>
+<li><a class="reference internal" href="#shared-library-support" id="id13">Shared library support</a></li>
+<li><a class="reference internal" href="#design" id="id14">Design</a></li>
+<li><a class="reference internal" href="#publications" id="id15">Publications</a></li>
 </ul>
 </div>
 <div class="section" id="introduction">
@@ -240,8 +241,21 @@ statically linked into the program or shared library, and calls across
 shared library boundaries are handled as if the callee was not compiled with
 <code class="docutils literal"><span class="pre">-fsanitize=cfi-icall</span></code>.</p>
 <p>This scheme is currently only supported on the x86 and x86_64 architectures.</p>
+<div class="section" id="fsanitize-cfi-icall-generalize-pointers">
+<h3><a class="toc-backref" href="#id10"><code class="docutils literal"><span class="pre">-fsanitize-cfi-icall-generalize-pointers</span></code></a><a class="headerlink" href="#fsanitize-cfi-icall-generalize-pointers" title="Permalink to this headline">¶</a></h3>
+<p>Mismatched pointer types are a common cause of cfi-icall check failures.
+Translation units compiled with the <code class="docutils literal"><span class="pre">-fsanitize-cfi-icall-generalize-pointers</span></code>
+flag relax pointer type checking for call sites in that translation unit,
+applied across all functions compiled with <code class="docutils literal"><span class="pre">-fsanitize=cfi-icall</span></code>.</p>
+<p>Specifically, pointers in return and argument types are treated as equivalent as
+long as the qualifiers for the type they point to match. For example, <code class="docutils literal"><span class="pre">char*</span></code>
+<code class="docutils literal"><span class="pre">char**`,</span> <span class="pre">and</span> <span class="pre">``int*</span></code> are considered equivalent types. However, <code class="docutils literal"><span class="pre">char*</span></code> and
+<code class="docutils literal"><span class="pre">const</span> <span class="pre">char*</span></code> are considered separate types.</p>
+<p><code class="docutils literal"><span class="pre">-fsanitize-cfi-icall-generalize-pointers</span></code> is not compatible with
+<code class="docutils literal"><span class="pre">-fsanitize-cfi-cross-dso</span></code>.</p>
+</div>
 <div class="section" id="fsanitize-cfi-icall-and-fsanitize-function">
-<h3><a class="toc-backref" href="#id10"><code class="docutils literal"><span class="pre">-fsanitize=cfi-icall</span></code> and <code class="docutils literal"><span class="pre">-fsanitize=function</span></code></a><a class="headerlink" href="#fsanitize-cfi-icall-and-fsanitize-function" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id11"><code class="docutils literal"><span class="pre">-fsanitize=cfi-icall</span></code> and <code class="docutils literal"><span class="pre">-fsanitize=function</span></code></a><a class="headerlink" href="#fsanitize-cfi-icall-and-fsanitize-function" title="Permalink to this headline">¶</a></h3>
 <p>This tool is similar to <code class="docutils literal"><span class="pre">-fsanitize=function</span></code> in that both tools check
 the types of function calls. However, the two tools occupy different points
 on the design space; <code class="docutils literal"><span class="pre">-fsanitize=function</span></code> is a developer tool designed
@@ -260,22 +274,29 @@ shared library.</p>
 </div>
 </div>
 <div class="section" id="blacklist">
-<span id="cfi-blacklist"></span><h2><a class="toc-backref" href="#id11">Blacklist</a><a class="headerlink" href="#blacklist" title="Permalink to this headline">¶</a></h2>
+<span id="cfi-blacklist"></span><h2><a class="toc-backref" href="#id12">Blacklist</a><a class="headerlink" href="#blacklist" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference internal" href="SanitizerSpecialCaseList.html"><span class="doc">Sanitizer special case list</span></a> can be used to relax CFI checks for certain
 source files, functions and types using the <code class="docutils literal"><span class="pre">src</span></code>, <code class="docutils literal"><span class="pre">fun</span></code> and <code class="docutils literal"><span class="pre">type</span></code>
-entity types.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Suppress checking for code in a file.</span>
+entity types. Specific CFI modes can be be specified using <code class="docutils literal"><span class="pre">[section]</span></code>
+headers.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Suppress all CFI checking for code in a file.</span>
 src:bad_file.cpp
 src:bad_header.h
 <span class="c1"># Ignore all functions with names containing MyFooBar.</span>
 fun:*MyFooBar*
 <span class="c1"># Ignore all types in the standard library.</span>
 type:std::*
+<span class="c1"># Disable only unrelated cast checks for this function</span>
+<span class="o">[</span>cfi-unrelated-cast<span class="o">]</span>
+fun:*UnrelatedCast*
+<span class="c1"># Disable CFI call checks for this function without affecting cast checks</span>
+<span class="o">[</span>cfi-vcall<span class="p">|</span>cfi-nvcall<span class="p">|</span>cfi-icall<span class="o">]</span>
+fun:*BadCall*
 </pre></div>
 </div>
 </div>
 <div class="section" id="shared-library-support">
-<span id="cfi-cross-dso"></span><h2><a class="toc-backref" href="#id12">Shared library support</a><a class="headerlink" href="#shared-library-support" title="Permalink to this headline">¶</a></h2>
+<span id="cfi-cross-dso"></span><h2><a class="toc-backref" href="#id13">Shared library support</a><a class="headerlink" href="#shared-library-support" title="Permalink to this headline">¶</a></h2>
 <p>Use <strong>-f[no-]sanitize-cfi-cross-dso</strong> to enable the cross-DSO control
 flow integrity mode, which allows all CFI schemes listed above to
 apply across DSO boundaries. As in the regular CFI, each DSO must be
@@ -286,11 +307,11 @@ checks for all classes, except for those which appear in the CFI blacklist
 or which use a <code class="docutils literal"><span class="pre">no_sanitize</span></code> attribute.</p>
 </div>
 <div class="section" id="design">
-<h2><a class="toc-backref" href="#id13">Design</a><a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14">Design</a><a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h2>
 <p>Please refer to the <a class="reference internal" href="ControlFlowIntegrityDesign.html"><span class="doc">design document</span></a>.</p>
 </div>
 <div class="section" id="publications">
-<h2><a class="toc-backref" href="#id14">Publications</a><a class="headerlink" href="#publications" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id15">Publications</a><a class="headerlink" href="#publications" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="http://research.microsoft.com/pubs/64250/ccs05.pdf">Control-Flow Integrity: Principles, Implementations, and Applications</a>.
 Martin Abadi, Mihai Budiu, Úlfar Erlingsson, Jay Ligatti.</p>
 <p><a class="reference external" href="http://www.pcc.me.uk/~peter/acad/usenix14.pdf">Enforcing Forward-Edge Control-Flow Integrity in GCC &amp; LLVM</a>.
@@ -314,7 +335,7 @@ Caroline Tice, Tom Roeder, Peter Collingbourne, Stephen Checkoway,
       </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007-2017, The Clang Team.
+        &#169; Copyright 2007-2018, The Clang Team.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>

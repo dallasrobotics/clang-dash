@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Clang 5.0.0 Release Notes &#8212; Clang 5 documentation</title>
+    <title>Clang 6.0.0 Release Notes &#8212; Clang 6 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '5',
+        VERSION:     '6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -29,8 +29,8 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 5 documentation</span></a></h1>
-        <h2 class="heading"><span>Clang 5.0.0 Release Notes</span></h2>
+          <span>Clang 6 documentation</span></a></h1>
+        <h2 class="heading"><span>Clang 6.0.0 Release Notes</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
@@ -46,36 +46,34 @@
       <div class="content">
         
         
-  <div class="section" id="clang-5-0-0-release-notes">
-<h1>Clang 5.0.0 Release Notes<a class="headerlink" href="#clang-5-0-0-release-notes" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="clang-6-0-0-release-notes">
+<h1>Clang 6.0.0 Release Notes<a class="headerlink" href="#clang-6-0-0-release-notes" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#introduction" id="id3">Introduction</a></li>
-<li><a class="reference internal" href="#what-s-new-in-clang-5-0-0" id="id4">What’s New in Clang 5.0.0?</a><ul>
-<li><a class="reference internal" href="#major-new-features" id="id5">Major New Features</a></li>
+<li><a class="reference internal" href="#introduction" id="id2">Introduction</a></li>
+<li><a class="reference internal" href="#what-s-new-in-clang-6-0-0" id="id3">What’s New in Clang 6.0.0?</a><ul>
+<li><a class="reference internal" href="#non-comprehensive-list-of-changes-in-this-release" id="id4">Non-comprehensive list of changes in this release</a></li>
+<li><a class="reference internal" href="#improvements-to-clang-s-diagnostics" id="id5">Improvements to Clang’s diagnostics</a></li>
 <li><a class="reference internal" href="#new-compiler-flags" id="id6">New Compiler Flags</a></li>
-<li><a class="reference internal" href="#deprecated-compiler-flags" id="id7">Deprecated Compiler Flags</a></li>
-<li><a class="reference internal" href="#new-pragmas-in-clang" id="id8">New Pragmas in Clang</a></li>
-<li><a class="reference internal" href="#attribute-changes-in-clang" id="id9">Attribute Changes in Clang</a></li>
-<li><a class="reference internal" href="#c-language-changes-in-clang" id="id10">C Language Changes in Clang</a></li>
-<li><a class="reference internal" href="#id1" id="id11">C++ Language Changes in Clang</a></li>
-<li><a class="reference internal" href="#objective-c-language-changes-in-clang" id="id12">Objective-C Language Changes in Clang</a></li>
-<li><a class="reference internal" href="#opencl-c-language-changes-in-clang" id="id13">OpenCL C Language Changes in Clang</a></li>
-<li><a class="reference internal" href="#clang-format" id="id14">clang-format</a></li>
-<li><a class="reference internal" href="#libclang" id="id15">libclang</a></li>
-<li><a class="reference internal" href="#static-analyzer" id="id16">Static Analyzer</a></li>
-<li><a class="reference internal" href="#undefined-behavior-sanitizer-ubsan" id="id17">Undefined Behavior Sanitizer (UBSan)</a></li>
-<li><a class="reference internal" href="#python-binding-changes" id="id18">Python Binding Changes</a></li>
+<li><a class="reference internal" href="#attribute-changes-in-clang" id="id7">Attribute Changes in Clang</a></li>
+<li><a class="reference internal" href="#windows-support" id="id8">Windows Support</a></li>
+<li><a class="reference internal" href="#c-language-changes-in-clang" id="id9">C++ Language Changes in Clang</a></li>
+<li><a class="reference internal" href="#opencl-c-language-changes-in-clang" id="id10">OpenCL C Language Changes in Clang</a></li>
+<li><a class="reference internal" href="#openmp-support-in-clang" id="id11">OpenMP Support in Clang</a></li>
+<li><a class="reference internal" href="#ast-matchers" id="id12">AST Matchers</a></li>
+<li><a class="reference internal" href="#clang-format" id="id13">clang-format</a></li>
+<li><a class="reference internal" href="#static-analyzer" id="id14">Static Analyzer</a></li>
+<li><a class="reference internal" href="#undefined-behavior-sanitizer-ubsan" id="id15">Undefined Behavior Sanitizer (UBSan)</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#additional-information" id="id19">Additional Information</a></li>
+<li><a class="reference internal" href="#additional-information" id="id16">Additional Information</a></li>
 </ul>
 </div>
 <p>Written by the <a class="reference external" href="http://llvm.org/">LLVM Team</a></p>
 <div class="section" id="introduction">
-<h2><a class="toc-backref" href="#id3">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This document contains the release notes for the Clang C/C++/Objective-C
-frontend, part of the LLVM Compiler Infrastructure, release 5.0.0. Here we
+frontend, part of the LLVM Compiler Infrastructure, release 6.0.0. Here we
 describe the status of Clang in some detail, including major
 improvements from the previous release and new feature work. For the
 general LLVM release notes, see <a class="reference external" href="http://llvm.org/docs/ReleaseNotes.html">the LLVM
@@ -86,245 +84,263 @@ site</a>.</p>
 latest release, please see the <a class="reference external" href="http://clang.llvm.org">Clang Web Site</a> or the
 <a class="reference external" href="http://llvm.org">LLVM Web Site</a>.</p>
 </div>
-<div class="section" id="what-s-new-in-clang-5-0-0">
-<h2><a class="toc-backref" href="#id4">What’s New in Clang 5.0.0?</a><a class="headerlink" href="#what-s-new-in-clang-5-0-0" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="what-s-new-in-clang-6-0-0">
+<h2><a class="toc-backref" href="#id3">What’s New in Clang 6.0.0?</a><a class="headerlink" href="#what-s-new-in-clang-6-0-0" title="Permalink to this headline">¶</a></h2>
 <p>Some of the major new features and improvements to Clang are listed
 here. Generic improvements to Clang as a whole or to its underlying
 infrastructure are described first, followed by language-specific
 sections with improvements to Clang’s support for those languages.</p>
-<div class="section" id="major-new-features">
-<h3><a class="toc-backref" href="#id5">Major New Features</a><a class="headerlink" href="#major-new-features" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="c-coroutines">
-<h4>C++ coroutines<a class="headerlink" href="#c-coroutines" title="Permalink to this headline">¶</a></h4>
-<p><a class="reference external" href="http://open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4680.pdf">C++ coroutines TS</a>
-implementation has landed. Use <code class="docutils literal"><span class="pre">-fcoroutines-ts</span> <span class="pre">-stdlib=libc++</span></code> to enable
-coroutine support. Here is <a class="reference external" href="https://wandbox.org/permlink/Dth1IO5q8Oe31ew2">an example</a> to get you started.</p>
-</div>
-<div class="section" id="improvements-to-clang-s-diagnostics">
-<h4>Improvements to Clang’s diagnostics<a class="headerlink" href="#improvements-to-clang-s-diagnostics" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="non-comprehensive-list-of-changes-in-this-release">
+<h3><a class="toc-backref" href="#id4">Non-comprehensive list of changes in this release</a><a class="headerlink" href="#non-comprehensive-list-of-changes-in-this-release" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">-Wcast-qual</span></code> was implemented for C++. C-style casts are now properly
-diagnosed.</li>
-<li><code class="docutils literal"><span class="pre">-Wunused-lambda-capture</span></code> warns when a variable explicitly captured
-by a lambda is not used in the body of the lambda.</li>
-<li><code class="docutils literal"><span class="pre">-Wstrict-prototypes</span></code> is a new warning that warns about non-prototype
-function and block declarations and types in C and Objective-C.</li>
-<li><code class="docutils literal"><span class="pre">-Wunguarded-availability</span></code> is a new warning that warns about uses of new
-APIs that were introduced in a system whose version is newer than the
-deployment target version. A new Objective-C expression <code class="docutils literal"><span class="pre">&#64;available</span></code> has
-been introduced to perform system version checking at runtime. This warning
-is off by default to prevent unexpected warnings in existing projects.
-However, its less strict sibling <code class="docutils literal"><span class="pre">-Wunguarded-availability-new</span></code> is on by
-default. It warns about unguarded uses of APIs only when they were introduced
-in or after macOS 10.13, iOS 11, tvOS 11 or watchOS 4.</li>
-<li>The <code class="docutils literal"><span class="pre">-Wdocumentation</span></code> warning now allows the use of <code class="docutils literal"><span class="pre">\param</span></code> and
-<code class="docutils literal"><span class="pre">\returns</span></code> documentation directives in the documentation comments for
-declarations with a function or a block pointer type.</li>
-<li>The compiler no longer warns about unreachable <code class="docutils literal"><span class="pre">__builtin_unreachable</span></code>
-statements.</li>
+<li>Support for <a class="reference external" href="https://support.google.com/faqs/answer/7625886">retpolines</a>
+was added to help mitigate “branch target injection” (variant #2) of the
+“Spectre” speculative side channels described by <a class="reference external" href="https://googleprojectzero.blogspot.com/2018/01/reading-privileged-memory-with-side.html">Project Zero</a>
+and the <a class="reference external" href="https://spectreattack.com/spectre.pdf">Spectre paper</a>.</li>
+<li>Bitrig OS was merged back into OpenBSD, so Bitrig support has been
+removed from Clang/LLVM.</li>
+<li>The default value of <code class="docutils literal"><span class="pre">_MSC_VER</span></code> was raised from 1800 to 1911, making it
+compatible with the Visual Studio 2015 and 2017 C++ standard library headers.
+Users should generally expect this to be regularly raised to match the most
+recently released version of the Visual C++ compiler.</li>
+<li>clang now defaults to <code class="docutils literal"><span class="pre">.init_array</span></code> if no gcc installation can be found.
+If a gcc installation is found, it still prefers <code class="docutils literal"><span class="pre">.ctors</span></code> if the found
+gcc is older than 4.7.0.</li>
+<li>The new builtin preprocessor macros <code class="docutils literal"><span class="pre">__is_target_arch</span></code>,
+<code class="docutils literal"><span class="pre">__is_target_vendor</span></code>, <code class="docutils literal"><span class="pre">__is_target_os</span></code>, and <code class="docutils literal"><span class="pre">__is_target_environment</span></code>
+can be used to to examine the individual components of the target triple.</li>
 </ul>
 </div>
+<div class="section" id="improvements-to-clang-s-diagnostics">
+<h3><a class="toc-backref" href="#id5">Improvements to Clang’s diagnostics</a><a class="headerlink" href="#improvements-to-clang-s-diagnostics" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">-Wpragma-pack</span></code> is a new warning that warns in the following cases:<ul>
+<li>When a translation unit is missing terminating <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">pack</span> <span class="pre">(pop)</span></code>
+directives.</li>
+<li>When leaving an included file that changes the current alignment value,
+i.e. when the alignment before <code class="docutils literal"><span class="pre">#include</span></code> is different to the alignment
+after <code class="docutils literal"><span class="pre">#include</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-Wpragma-pack-suspicious-include</span></code> (disabled by default) warns on an
+<code class="docutils literal"><span class="pre">#include</span></code> when the included file contains structures or unions affected by
+a non-default alignment that has been specified using a <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">pack</span></code>
+directive prior to the <code class="docutils literal"><span class="pre">#include</span></code>.</li>
+</ul>
+</li>
+<li><code class="docutils literal"><span class="pre">-Wobjc-messaging-id</span></code> is a new, non-default warning that warns about
+message sends to unqualified <code class="docutils literal"><span class="pre">id</span></code> in Objective-C. This warning is useful
+for projects that would like to avoid any potential future compiler
+errors/warnings, as the system frameworks might add a method with the same
+selector which could make the message send to <code class="docutils literal"><span class="pre">id</span></code> ambiguous.</li>
+<li><code class="docutils literal"><span class="pre">-Wtautological-compare</span></code> now warns when comparing an unsigned integer and 0
+regardless of whether the constant is signed or unsigned.</li>
+<li><code class="docutils literal"><span class="pre">-Wtautological-compare</span></code> now warns about comparing a signed integer and 0
+when the signed integer is coerced to an unsigned type for the comparison.
+<code class="docutils literal"><span class="pre">-Wsign-compare</span></code> was adjusted not to warn in this case.</li>
+<li><code class="docutils literal"><span class="pre">-Wtautological-constant-compare</span></code> is a new warning that warns on
+tautological comparisons between integer variable of the type <code class="docutils literal"><span class="pre">T</span></code> and the
+largest/smallest possible integer constant of that same type.</li>
+<li>For C code, <code class="docutils literal"><span class="pre">-Wsign-compare</span></code>, <code class="docutils literal"><span class="pre">-Wsign-conversion</span></code>,
+<code class="docutils literal"><span class="pre">-Wtautological-constant-compare</span></code> and
+<code class="docutils literal"><span class="pre">-Wtautological-constant-out-of-range-compare</span></code> were adjusted to use the
+underlying datatype of <code class="docutils literal"><span class="pre">enum</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">-Wnull-pointer-arithmetic</span></code> now warns about performing pointer arithmetic
+on a null pointer. Such pointer arithmetic has an undefined behavior if the
+offset is nonzero. It also now warns about arithmetic on a null pointer
+treated as a cast from integer to pointer (GNU extension).</li>
+<li><code class="docutils literal"><span class="pre">-Wzero-as-null-pointer-constant</span></code> was adjusted not to warn on null pointer
+constants that originate from system macros, except <code class="docutils literal"><span class="pre">NULL</span></code> macro.</li>
+<li><code class="docutils literal"><span class="pre">-Wdelete-non-virtual-dtor</span></code> can now fire in system headers, so that
+<code class="docutils literal"><span class="pre">std::unique_ptr&lt;&gt;</span></code> deleting through a non-virtual dtor is now diagnosed.</li>
+<li><code class="docutils literal"><span class="pre">-Wunreachable-code</span></code> can now reason about <code class="docutils literal"><span class="pre">__try</span></code>, <code class="docutils literal"><span class="pre">__except</span></code> and
+<code class="docutils literal"><span class="pre">__leave</span></code>.</li>
+</ul>
 </div>
 <div class="section" id="new-compiler-flags">
 <h3><a class="toc-backref" href="#id6">New Compiler Flags</a><a class="headerlink" href="#new-compiler-flags" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">--autocomplete</span></code> was implemented to obtain a list of flags and its arguments.
-This is used for shell autocompletion.</li>
-</ul>
-</div>
-<div class="section" id="deprecated-compiler-flags">
-<h3><a class="toc-backref" href="#id7">Deprecated Compiler Flags</a><a class="headerlink" href="#deprecated-compiler-flags" title="Permalink to this headline">¶</a></h3>
-<p>The following options are deprecated and ignored. They will be removed in
-future versions of Clang.</p>
-<ul class="simple">
-<li><code class="docutils literal"><span class="pre">-fslp-vectorize-aggressive</span></code> used to enable the BB vectorizing pass. They have been superseeded
-by the normal SLP vectorizer.</li>
-<li><code class="docutils literal"><span class="pre">-fno-slp-vectorize-aggressive</span></code> used to be the default behavior of clang.</li>
-</ul>
-</div>
-<div class="section" id="new-pragmas-in-clang">
-<h3><a class="toc-backref" href="#id8">New Pragmas in Clang</a><a class="headerlink" href="#new-pragmas-in-clang" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Clang now supports the <code class="docutils literal"><span class="pre">clang</span> <span class="pre">attribute</span></code> pragma that allows users to apply
-an attribute to multiple declarations.</li>
-<li><code class="docutils literal"><span class="pre">pragma</span> <span class="pre">pack</span></code> directives that are included in a precompiled header are now
-applied correctly to the declarations in the compilation unit that includes
-that precompiled header.</li>
+<li>Clang supports the <code class="docutils literal"><span class="pre">-mretpoline</span></code> flag to enable <a class="reference external" href="https://support.google.com/faqs/answer/7625886">retpolines</a>. Code compiled with this
+flag will be hardened against variant #2 of the Spectre attack. Indirect
+branches from switches or gotos removed from the code, and indirect calls
+will be made through a “retpoline” thunk. The necessary thunks will
+automatically be inserted into the generated code. Clang also supports
+<code class="docutils literal"><span class="pre">-mretpoline-external-thunk</span></code> which works like <code class="docutils literal"><span class="pre">-mretpoline</span></code> but requires
+the user to provide their own thunk definitions. The external thunk names
+start with <code class="docutils literal"><span class="pre">__x86_indirect_thunk_</span></code> and end in a register name. For 64-bit
+platforms, only an <code class="docutils literal"><span class="pre">r11</span></code> thunk is used, but for 32-bit platforms <code class="docutils literal"><span class="pre">eax</span></code>,
+<code class="docutils literal"><span class="pre">ecx</span></code>, <code class="docutils literal"><span class="pre">edx</span></code>, and <code class="docutils literal"><span class="pre">edi</span></code> thunks are used.</li>
+<li>Clang now supports configuration files. These are collections of driver
+options, which can be applied by specifying the configuration file, either
+using command line option <code class="docutils literal"><span class="pre">--config</span> <span class="pre">foo.cfg</span></code> or encoding it into executable
+name <code class="docutils literal"><span class="pre">foo-clang</span></code>. Clang behaves as if the options from this file were inserted
+before the options specified in command line. This feature is primary intended
+to facilitate cross compilation. Details can be found in
+<a class="reference external" href="UsersManual.html#configuration-files">Clang Compiler User’s Manual</a>.</li>
+<li>The <code class="docutils literal"><span class="pre">-fdouble-square-bracket-attributes</span></code> and corresponding
+<code class="docutils literal"><span class="pre">-fno-double-square-bracket-attributes</span></code> flags were added to enable or
+disable <code class="docutils literal"><span class="pre">[[]]</span></code> attributes in any language mode. Currently, only a limited
+number of attributes are supported outside of C++ mode. See the Clang
+<a class="reference external" href="AttributeReference.html">attribute documentation</a> for more information
+about which attributes are supported for each syntax.</li>
+<li>Added the <code class="docutils literal"><span class="pre">-std=c17</span></code>, <code class="docutils literal"><span class="pre">-std=gnu17</span></code>, and <code class="docutils literal"><span class="pre">-std=iso9899:2017</span></code> language
+mode flags for compatibility with GCC. This enables support for the next
+version of the C standard, expected to be published by ISO in 2018. The only
+difference between the <code class="docutils literal"><span class="pre">-std=c17</span></code> and <code class="docutils literal"><span class="pre">-std=c11</span></code> language modes is the
+value of the <code class="docutils literal"><span class="pre">__STDC_VERSION__</span></code> macro, as C17 is a bug fix release.</li>
+<li>Added the <code class="docutils literal"><span class="pre">-fexperimental-isel</span></code> and <code class="docutils literal"><span class="pre">-fno-experimental-isel</span></code> flags to
+enable/disable the new GlobalISel instruction selection framework. This
+feature is enabled by default for AArch64 at the <code class="docutils literal"><span class="pre">-O0</span></code> optimization level.
+Support for other targets or optimization levels is currently incomplete.</li>
+<li>New <code class="docutils literal"><span class="pre">-nostdlib++</span></code> flag to disable linking the C++ standard library. Similar
+to using <code class="docutils literal"><span class="pre">clang</span></code> instead of <code class="docutils literal"><span class="pre">clang++</span></code> but doesn’t disable <code class="docutils literal"><span class="pre">-lm</span></code>.</li>
 </ul>
 </div>
 <div class="section" id="attribute-changes-in-clang">
-<h3><a class="toc-backref" href="#id9">Attribute Changes in Clang</a><a class="headerlink" href="#attribute-changes-in-clang" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Attribute Changes in Clang</a><a class="headerlink" href="#attribute-changes-in-clang" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The <code class="docutils literal"><span class="pre">overloadable</span></code> attribute now allows at most one function with a given
-name to lack the <code class="docutils literal"><span class="pre">overloadable</span></code> attribute. This unmarked function will not
-have its name mangled.</li>
-<li>The <code class="docutils literal"><span class="pre">ms_abi</span></code> attribute and the <code class="docutils literal"><span class="pre">__builtin_ms_va_list</span></code> types and builtins
-are now supported on AArch64.</li>
+<li>Clang now supports the majority of its attributes under both the GNU-style
+spelling (<code class="docutils literal"><span class="pre">__attribute((name))</span></code>) and the double square-bracket spelling
+in the <code class="docutils literal"><span class="pre">clang</span></code> vendor namespace (<code class="docutils literal"><span class="pre">[[clang::name]]</span></code>). Attributes whose
+syntax is specified by some other standard (such as CUDA and OpenCL
+attributes) continue to follow their respective specification.</li>
+<li>Added the <code class="docutils literal"><span class="pre">__has_c_attribute()</span></code> builtin preprocessor macro which allows
+users to dynamically detect whether a double square-bracket attribute is
+supported in C mode. This attribute syntax can be enabled with the
+<code class="docutils literal"><span class="pre">-fdouble-square-bracket-attributes</span></code> flag.</li>
+<li>The presence of <code class="docutils literal"><span class="pre">__attribute__((availability(...)))</span></code> on a declaration no
+longer implies default visibility for that declaration on macOS.</li>
+</ul>
+</div>
+<div class="section" id="windows-support">
+<h3><a class="toc-backref" href="#id8">Windows Support</a><a class="headerlink" href="#windows-support" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Clang now has initial, preliminary support for targeting Windows on
+ARM64.</li>
+<li>clang-cl now exposes the <code class="docutils literal"><span class="pre">--version</span></code> flag.</li>
 </ul>
 </div>
 <div class="section" id="c-language-changes-in-clang">
-<h3><a class="toc-backref" href="#id10">C Language Changes in Clang</a><a class="headerlink" href="#c-language-changes-in-clang" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id9">C++ Language Changes in Clang</a><a class="headerlink" href="#c-language-changes-in-clang" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Clang’s default C++ dialect is now <code class="docutils literal"><span class="pre">gnu++14</span></code> instead of <code class="docutils literal"><span class="pre">gnu++98</span></code>. This
+means Clang will by default accept code using features from C++14 and
+conforming GNU extensions. Projects incompatible with C++14 can add
+<code class="docutils literal"><span class="pre">-std=gnu++98</span></code> to their build settings to restore the previous behaviour.</p>
+</li>
+<li><p class="first">Added support for some features from the C++ standard after C++17
+(provisionally known as C++2a but expected to be C++20). This support can be
+enabled with the <code class="docutils literal"><span class="pre">-std=c++2a</span></code> flag. This enables:</p>
 <ul class="simple">
-<li>Added near complete support for implicit scalar to vector conversion, a GNU
-C/C++ language extension. With this extension, the following code is
-considered valid:</li>
+<li>Support for <code class="docutils literal"><span class="pre">__VA_OPT__</span></code>, to allow variadic macros to easily provide
+different expansions when they are invoked without variadic arguments.</li>
+<li>Recognition of the <code class="docutils literal"><span class="pre">&lt;=&gt;</span></code> token (the C++2a three-way comparison operator).</li>
+<li>Support for default member initializers for bit-fields.</li>
+<li>Lambda capture of <code class="docutils literal"><span class="pre">*this</span></code>.</li>
+<li>Pointer-to-member calls using <code class="docutils literal"><span class="pre">const</span> <span class="pre">&amp;</span></code>-qualified pointers on temporary objects.</li>
 </ul>
-<div class="highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="kt">unsigned</span> <span class="n">v4i32</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">vector_size</span><span class="p">(</span><span class="mi">16</span><span class="p">)));</span>
-
-<span class="n">v4i32</span> <span class="nf">foo</span><span class="p">(</span><span class="n">v4i32</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
-  <span class="c1">// Here 5 is implicitly casted to an unsigned value and replicated into a</span>
-  <span class="c1">// vector with as many elements as &#39;a&#39;.</span>
-  <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">5</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>The implicit conversion of a scalar value to a vector value–in the context of
-a vector expression–occurs when:</p>
-<ul class="simple">
-<li>The type of the vector is that of a <code class="docutils literal"><span class="pre">__attribute__((vector_size(size)))</span></code>
-vector, not an OpenCL <code class="docutils literal"><span class="pre">__attribute__((ext_vector_type(size)))</span></code> vector type.</li>
-<li>The scalar value can be casted to that of the vector element’s type without
-the loss of precision based on the type of the scalar and the type of the
-vector’s elements.</li>
-<li>For compile time constant values, the above rule is weakened to consider the
-value of the scalar constant rather than the constant’s type. However,
-for compatibility with GCC, floating point constants with precise integral
-representations are not implicitly converted to integer values.</li>
-</ul>
-<p>Currently the basic integer and floating point types with the following
-operators are supported: <code class="docutils literal"><span class="pre">+</span></code>, <code class="docutils literal"><span class="pre">/</span></code>, <code class="docutils literal"><span class="pre">-</span></code>, <code class="docutils literal"><span class="pre">*</span></code>, <code class="docutils literal"><span class="pre">%</span></code>, <code class="docutils literal"><span class="pre">&gt;</span></code>, <code class="docutils literal"><span class="pre">&lt;</span></code>,
-<code class="docutils literal"><span class="pre">&gt;=</span></code>, <code class="docutils literal"><span class="pre">&lt;=</span></code>, <code class="docutils literal"><span class="pre">==</span></code>, <code class="docutils literal"><span class="pre">!=</span></code>, <code class="docutils literal"><span class="pre">&amp;</span></code>, <code class="docutils literal"><span class="pre">|</span></code>, <code class="docutils literal"><span class="pre">^</span></code> and the corresponding
-assignment operators where applicable.</p>
-</div>
-<div class="section" id="id1">
-<h3><a class="toc-backref" href="#id11">C++ Language Changes in Clang</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>We expect this to be the last Clang release that defaults to <code class="docutils literal"><span class="pre">-std=gnu++98</span></code>
-when using the GCC-compatible <code class="docutils literal"><span class="pre">clang++</span></code> driver. From Clang 6 onwards we
-expect to use <code class="docutils literal"><span class="pre">-std=gnu++14</span></code> or a later standard by default, to match the
-behavior of recent GCC releases. Users are encouraged to change their build
-files to explicitly specify their desired C++ standard.</li>
-<li>Support for the C++17 standard has been completed. This mode can be enabled
-using <code class="docutils literal"><span class="pre">-std=c++17</span></code> (the old flag <code class="docutils literal"><span class="pre">-std=c++1z</span></code> is still supported for
-compatibility).</li>
-<li>When targeting a platform that uses the Itanium C++ ABI, Clang implements a
-<a class="reference external" href="https://github.com/itanium-cxx-abi/cxx-abi/commit/7099637aba11fed6bdad7ee65bf4fd3f97fbf076">recent change to the ABI</a> that passes objects of class type indirectly if they
-have a non-trivial move constructor. Previous versions of Clang only
-considered the copy constructor, resulting in an ABI change in rare cases,
-but GCC has already implemented this change for several releases.
-This affects all targets other than Windows and PS4. You can opt out of this
-ABI change with <code class="docutils literal"><span class="pre">-fclang-abi-compat=4.0</span></code>.</li>
-<li>As mentioned in <a class="reference internal" href="#c-language-changes-in-clang">C Language Changes in Clang</a>, Clang’s support for
-implicit scalar to vector conversions also applies to C++. Additionally
-the following operators are also supported: <code class="docutils literal"><span class="pre">&amp;&amp;</span></code> and <code class="docutils literal"><span class="pre">||</span></code>.</li>
-</ul>
-</div>
-<div class="section" id="objective-c-language-changes-in-clang">
-<h3><a class="toc-backref" href="#id12">Objective-C Language Changes in Clang</a><a class="headerlink" href="#objective-c-language-changes-in-clang" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>Clang now guarantees that a <code class="docutils literal"><span class="pre">readwrite</span></code> property is synthesized when an
-ambiguous property (i.e. a property that’s declared in multiple protocols)
-is synthesized. The <code class="docutils literal"><span class="pre">-Wprotocol-property-synthesis-ambiguity</span></code> warning that
-warns about incompatible property types is now promoted to an error when
-there’s an ambiguity between <code class="docutils literal"><span class="pre">readwrite</span></code> and <code class="docutils literal"><span class="pre">readonly</span></code> properties.</li>
-<li>Clang now prohibits synthesis of ambiguous properties with incompatible
-explicit property attributes. The following property attributes are
-checked for differences: <code class="docutils literal"><span class="pre">copy</span></code>, <code class="docutils literal"><span class="pre">retain</span></code>/<code class="docutils literal"><span class="pre">strong</span></code>, <code class="docutils literal"><span class="pre">atomic</span></code>,
-<code class="docutils literal"><span class="pre">getter</span></code> and <code class="docutils literal"><span class="pre">setter</span></code>.</li>
+<p>All of these features other than <code class="docutils literal"><span class="pre">__VA_OPT__</span></code> and <code class="docutils literal"><span class="pre">&lt;=&gt;</span></code> are made
+available with a warning in earlier C++ language modes.</p>
+</li>
+<li><p class="first">A warning has been added for a <code class="docutils literal"><span class="pre">&lt;=</span></code> token followed immediately by a <code class="docutils literal"><span class="pre">&gt;</span></code>
+character. Code containing such constructs will change meaning in C++2a due
+to the addition of the <code class="docutils literal"><span class="pre">&lt;=&gt;</span></code> operator.</p>
+</li>
+<li><p class="first">Clang implements the “destroying operator delete” feature described in C++
+committee paper <cite>P0722R1
+&lt;http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0722r1.html&gt;</cite>,
+which is targeting inclusion in C++2a but has not yet been voted into the C++
+working draft. Support for this feature is enabled by the presence of the
+standard library type <code class="docutils literal"><span class="pre">std::destroying_delete_t</span></code>.</p>
+</li>
 </ul>
 </div>
 <div class="section" id="opencl-c-language-changes-in-clang">
-<h3><a class="toc-backref" href="#id13">OpenCL C Language Changes in Clang</a><a class="headerlink" href="#opencl-c-language-changes-in-clang" title="Permalink to this headline">¶</a></h3>
-<p>Various bug fixes and improvements:</p>
+<h3><a class="toc-backref" href="#id10">OpenCL C Language Changes in Clang</a><a class="headerlink" href="#opencl-c-language-changes-in-clang" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Extended OpenCL-related Clang tests.</li>
-<li>Improved diagnostics across several areas: scoped address space
-qualified variables, function pointers, atomics, type rank for overloading,
-block captures, <code class="docutils literal"><span class="pre">reserve_id_t</span></code>.</li>
-<li>Several address space related fixes for constant address space function scope variables,
-IR generation, mangling of <code class="docutils literal"><span class="pre">generic</span></code> and alloca (post-fix from general Clang
-refactoring of address spaces).</li>
-<li>Several improvements in extensions: fixed OpenCL version for <code class="docutils literal"><span class="pre">cl_khr_mipmap_image</span></code>,
-added missing <code class="docutils literal"><span class="pre">cl_khr_3d_image_writes</span></code>.</li>
-<li>Improvements in <code class="docutils literal"><span class="pre">enqueue_kernel</span></code>, especially the implementation of <code class="docutils literal"><span class="pre">ndrange_t</span></code> and blocks.</li>
-<li>OpenCL type related fixes: global samplers, the <code class="docutils literal"><span class="pre">pipe_t</span></code> size, internal type redefinition,
-and type compatibility checking in ternary and other operations.</li>
-<li>The OpenCL header has been extended with missing extension guards, and direct mapping of <code class="docutils literal"><span class="pre">as_type</span></code>
-to <code class="docutils literal"><span class="pre">__builtin_astype</span></code>.</li>
-<li>Fixed <code class="docutils literal"><span class="pre">kernel_arg_type_qual</span></code> and OpenCL/SPIR version in metadata.</li>
-<li>Added proper use of the kernel calling convention to various targets.</li>
+<li>Added subgroup builtins to enqueue kernel support.</li>
+<li>Added CL2.0 atomics as Clang builtins that now accept
+an additional memory scope parameter propagated to atomic IR instructions
+(this is to align with the corresponding change in LLVM IR) (see <a class="reference external" href="https://www.khronos.org/registry/OpenCL/specs/opencl-2.0-openclc.pdf#107">spec s6.13.11.4</a>).</li>
+<li>Miscellaneous fixes in the CL header.</li>
+<li>Allow per target selection of address space during CodeGen of certain OpenCL types.
+Default target implementation is provided mimicking old behavior.</li>
+<li>Macro <code class="docutils literal"><span class="pre">__IMAGE_SUPPORT__</span></code> is now automatically added (as per <a class="reference external" href="https://www.khronos.org/registry/OpenCL/specs/opencl-2.0-openclc.pdf#55">spec s6.10</a>).</li>
+<li>Added <code class="docutils literal"><span class="pre">cl_intel_subgroups</span></code> and <code class="docutils literal"><span class="pre">cl_intel_subgroups_short</span></code> extensions.</li>
+<li>All function calls are marked by <a class="reference external" href="https://clang.llvm.org/docs/AttributeReference.html#convergent-clang-convergent">the convergent attribute</a>
+to prevent optimizations that break SPMD program semantics. This will be removed
+by LLVM passes if it can be proved that the function does not use convergent
+operations.</li>
+<li>Create a kernel wrapper for enqueued blocks, which simplifies enqueue support by
+providing common functionality.</li>
+<li>Added private address space explicitly in AST and refactored address space support
+with several simplifications and bug fixes (<a class="reference external" href="https://llvm.org/pr33419">PR33419</a>
+and <a class="reference external" href="https://llvm.org/pr33420">PR33420</a>).</li>
+<li>OpenCL now allows functions with empty parameters to be treated as if they had a
+void parameter list (inspired from C++ support). OpenCL C spec update to follow.</li>
+<li>General miscellaneous refactoring and cleanup of blocks support for OpenCL to
+remove unused parts inherited from Objective C implementation.</li>
+<li>Miscellaneous improvements in vector diagnostics.</li>
+<li>Added half float load and store builtins without enabling half as a legal type
+(<code class="docutils literal"><span class="pre">__builtin_store_half</span></code> for double, <code class="docutils literal"><span class="pre">__builtin_store_halff</span></code> for float,
+<code class="docutils literal"><span class="pre">__builtin_load_half</span></code> for double, <code class="docutils literal"><span class="pre">__builtin_load_halff</span></code> for float).</li>
 </ul>
-<p>The following new functionalities have been added:</p>
+</div>
+<div class="section" id="openmp-support-in-clang">
+<h3><a class="toc-backref" href="#id11">OpenMP Support in Clang</a><a class="headerlink" href="#openmp-support-in-clang" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Added documentation on OpenCL to Clang user manual.</li>
-<li>Extended Clang builtins with required <code class="docutils literal"><span class="pre">cl_khr_subgroups</span></code> support.</li>
-<li>Add <code class="docutils literal"><span class="pre">intel_reqd_sub_group_size</span></code> attribute support.</li>
-<li>Added OpenCL types to <code class="docutils literal"><span class="pre">CIndex</span></code>.</li>
+<li>Added options <code class="docutils literal"><span class="pre">-f[no]-openmp-simd</span></code> that support code emission only for OpenMP
+SIMD-based directives, like <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">omp</span> <span class="pre">simd</span></code>, <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">omp</span> <span class="pre">parallel</span> <span class="pre">for</span> <span class="pre">simd</span></code>
+etc. The code is emitted only for SIMD-based part of the combined directives
+and clauses.</li>
+<li>Added support for almost all target-based directives except for
+<code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">omp</span> <span class="pre">target</span> <span class="pre">teams</span> <span class="pre">distribute</span> <span class="pre">parallel</span> <span class="pre">for</span> <span class="pre">[simd]</span></code>. Although, please
+note that <code class="docutils literal"><span class="pre">depend</span></code> clauses on target-based directives are not supported yet.
+Clang supports offloading to X86_64, AArch64 and PPC64[LE] devices.</li>
+<li>Added support for <code class="docutils literal"><span class="pre">reduction</span></code>-based clauses on <code class="docutils literal"><span class="pre">task</span></code>-based directives from
+upcoming OpenMP 5.0.</li>
+<li>The LLVM OpenMP runtime <code class="docutils literal"><span class="pre">libomp</span></code> now supports the OpenMP Tools Interface (OMPT)
+on x86, x86_64, AArch64, and PPC64 on Linux, Windows, and macOS. If you observe
+a measurable performance impact on one of your applications without a tool
+attached, please rebuild the runtime library with <code class="docutils literal"><span class="pre">-DLIBOMP_OMPT_SUPPORT=OFF</span></code> and
+file a bug at <a class="reference external" href="https://bugs.llvm.org/">LLVM’s Bugzilla</a> or send a message to the
+<a class="reference external" href="http://lists.llvm.org/cgi-bin/mailman/listinfo/openmp-dev">OpenMP development list</a>.</li>
+</ul>
+</div>
+<div class="section" id="ast-matchers">
+<h3><a class="toc-backref" href="#id12">AST Matchers</a><a class="headerlink" href="#ast-matchers" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">hasDeclaration</span></code> matcher now works the same for <code class="docutils literal"><span class="pre">Type</span></code> and <code class="docutils literal"><span class="pre">QualType</span></code> and only
+ever looks through one level of sugaring in a limited number of cases.</p>
+<p>There are two main patterns affected by this:</p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">qualType(hasDeclaration(recordDecl(...)))</span></code>: previously, we would look through
+sugar like <code class="docutils literal"><span class="pre">TypedefType</span></code> to get at the underlying <code class="docutils literal"><span class="pre">recordDecl</span></code>; now, we need
+to explicitly remove the sugaring:
+<code class="docutils literal"><span class="pre">qualType(hasUnqualifiedDesugaredType(hasDeclaration(recordDecl(...))))</span></code></p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">hasType(recordDecl(...))</span></code>: <code class="docutils literal"><span class="pre">hasType</span></code> internally uses <code class="docutils literal"><span class="pre">hasDeclaration</span></code>; previously,
+this matcher used to match for example <code class="docutils literal"><span class="pre">TypedefTypes</span></code> of the <code class="docutils literal"><span class="pre">RecordType</span></code>, but
+after the change they don’t; to fix, use:</p>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">hasType</span><span class="p">(</span><span class="n">hasUnqualifiedDesugaredType</span><span class="p">(</span>
+    <span class="n">recordType</span><span class="p">(</span><span class="n">hasDeclaration</span><span class="p">(</span><span class="n">recordDecl</span><span class="p">(...)))))</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">templateSpecializationType(hasDeclaration(classTemplateDecl(...)))</span></code>:
+previously, we would directly match the underlying <code class="docutils literal"><span class="pre">ClassTemplateDecl</span></code>;
+now, we can explicitly match the <code class="docutils literal"><span class="pre">ClassTemplateSpecializationDecl</span></code>, but that
+requires to explicitly get the <code class="docutils literal"><span class="pre">ClassTemplateDecl</span></code>:</p>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">templateSpecializationType</span><span class="p">(</span><span class="n">hasDeclaration</span><span class="p">(</span>
+    <span class="n">classTemplateSpecializationDecl</span><span class="p">(</span>
+        <span class="n">hasSpecializedTemplate</span><span class="p">(</span><span class="n">classTemplateDecl</span><span class="p">(...)))))</span>
+</pre></div>
+</div>
+</li>
 </ul>
 </div>
 <div class="section" id="clang-format">
-<h3><a class="toc-backref" href="#id14">clang-format</a><a class="headerlink" href="#clang-format" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id13">clang-format</a><a class="headerlink" href="#clang-format" title="Permalink to this headline">¶</a></h3>
 <ul>
-<li><p class="first">Option <strong>BreakBeforeInheritanceComma</strong> added to break before <code class="docutils literal"><span class="pre">:</span></code> and <code class="docutils literal"><span class="pre">,</span></code>  in case of
-multiple inheritance in a class declaration. Enabled by default in the Mozilla coding style.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="34%" />
-<col width="66%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">true</th>
-<th class="head">false</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyClass</span>
-    <span class="o">:</span> <span class="k">public</span> <span class="n">X</span>
-    <span class="p">,</span> <span class="k">public</span> <span class="n">Y</span> <span class="p">{</span>
-<span class="p">};</span>
-</pre></div>
-</div>
-</td>
-<td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyClass</span> <span class="o">:</span> <span class="k">public</span> <span class="n">X</span><span class="p">,</span> <span class="k">public</span> <span class="n">Y</span> <span class="p">{</span>
-<span class="p">};</span>
-</pre></div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li><p class="first">Align block comment decorations.</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="51%" />
-<col width="49%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Before</th>
-<th class="head">After</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="cm">/* line 1</span>
-<span class="cm">  * line 2</span>
-<span class="cm"> */</span>
-</pre></div>
-</div>
-</td>
-<td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="cm">/* line 1</span>
-<span class="cm"> * line 2</span>
-<span class="cm"> */</span>
-</pre></div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li><p class="first">The <a class="reference internal" href="ClangFormatStyleOptions.html"><span class="doc">Clang-Format Style Options</span></a> documentation provides detailed examples for most options.</p>
-</li>
-<li><p class="first">Namespace end comments are now added or updated automatically.</p>
+<li><p class="first">Option <code class="docutils literal"><span class="pre">IndentPPDirectives</span></code> added to indent preprocessor directives on
+conditionals.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="50%" />
@@ -336,17 +352,19 @@ multiple inheritance in a class declaration. Enabled by default in the Mozilla c
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="n">A</span> <span class="p">{</span>
-<span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-<span class="kt">int</span> <span class="n">j</span><span class="p">;</span>
-<span class="p">}</span>
+<tr class="row-even"><td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#if FOO</span>
+<span class="cp">#if BAR</span>
+<span class="cp">#include</span> <span class="cpf">&lt;foo&gt;</span><span class="cp"></span>
+<span class="cp">#endif</span>
+<span class="cp">#endif</span>
 </pre></div>
 </div>
 </td>
-<td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="n">A</span> <span class="p">{</span>
-<span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-<span class="kt">int</span> <span class="n">j</span><span class="p">;</span>
-<span class="p">}</span> <span class="c1">// namespace A</span>
+<td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#if FOO</span>
+<span class="cp">#  if BAR</span>
+<span class="cp">#    include &lt;foo&gt;</span>
+<span class="cp">#  endif</span>
+<span class="cp">#endif</span>
 </pre></div>
 </div>
 </td>
@@ -354,91 +372,68 @@ multiple inheritance in a class declaration. Enabled by default in the Mozilla c
 </tbody>
 </table>
 </li>
-<li><p class="first">Comment reflow support added. Overly long comment lines will now be reflown with the rest of
-the paragraph instead of just broken. Option <strong>ReflowComments</strong> added and enabled by default.</p>
+<li><p class="first">Option <code class="docutils literal"><span class="pre">-verbose</span></code> added to the command line.
+Shows the list of processed files.</p>
 </li>
-</ul>
-</div>
-<div class="section" id="libclang">
-<h3><a class="toc-backref" href="#id15">libclang</a><a class="headerlink" href="#libclang" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p class="first">Libclang now provides code-completion results for more C++ constructs
-and keywords. The following keywords/identifiers are now included in the
-code-completion results: <code class="docutils literal"><span class="pre">static_assert</span></code>, <code class="docutils literal"><span class="pre">alignas</span></code>, <code class="docutils literal"><span class="pre">constexpr</span></code>,
-<code class="docutils literal"><span class="pre">final</span></code>, <code class="docutils literal"><span class="pre">noexcept</span></code>, <code class="docutils literal"><span class="pre">override</span></code> and <code class="docutils literal"><span class="pre">thread_local</span></code>.</p>
-</li>
-<li><p class="first">Libclang now provides code-completion results for members from dependent
-classes. For example:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
-<span class="kt">void</span> <span class="n">appendValue</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">dest</span><span class="p">,</span> <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">dest</span><span class="p">.</span> <span class="c1">// Relevant completion results are now shown after &#39;.&#39;</span>
-<span class="p">}</span>
+<li><p class="first">Option <code class="docutils literal"><span class="pre">IncludeBlocks</span></code> added to merge and regroup multiple <code class="docutils literal"><span class="pre">#include</span></code> blocks during sorting.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Before (Preserve)</th>
+<th class="head">Merge</th>
+<th class="head">Regroup</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;b.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;a.b&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;lib/main.h&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
-<p>Note that code-completion results are still not provided when the member
-expression includes a dependent base expression. For example:</p>
-<div class="highlight-c++"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
-<span class="kt">void</span> <span class="n">appendValue</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span><span class="n">dest</span><span class="p">,</span> <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">dest</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span> <span class="c1">// Libclang fails to provide completion results after &#39;.&#39;</span>
-<span class="p">}</span>
+</td>
+<td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;a.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;b.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;lib/main.h&gt;</span><span class="cp"></span>
 </pre></div>
 </div>
+</td>
+<td><div class="first last highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;a.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;b.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;lib/main.h&gt;</span><span class="cp"></span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 </li>
 </ul>
 </div>
 <div class="section" id="static-analyzer">
-<h3><a class="toc-backref" href="#id16">Static Analyzer</a><a class="headerlink" href="#static-analyzer" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id14">Static Analyzer</a><a class="headerlink" href="#static-analyzer" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>The static analyzer now supports using the
-<a class="reference external" href="https://github.com/z3prover/z3">z3 theorem prover</a> from Microsoft Research
-as an external constraint solver. This allows reasoning over more complex
-queries, but performance is ~15x slower than the default range-based
-constraint solver. To enable the z3 solver backend, clang must be built with
-the <code class="docutils literal"><span class="pre">CLANG_ANALYZER_BUILD_Z3=ON</span></code> option, and the
-<code class="docutils literal"><span class="pre">-Xanalyzer</span> <span class="pre">-analyzer-constraints=z3</span></code> arguments passed at runtime.</li>
+<li>The Static Analyzer can now properly detect and diagnose unary pre-/post-
+increment/decrement on an uninitialized value.</li>
 </ul>
 </div>
 <div class="section" id="undefined-behavior-sanitizer-ubsan">
-<h3><a class="toc-backref" href="#id17">Undefined Behavior Sanitizer (UBSan)</a><a class="headerlink" href="#undefined-behavior-sanitizer-ubsan" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p class="first">The Undefined Behavior Sanitizer has a new check for pointer overflow. This
-check is on by default. The flag to control this functionality is
-<code class="docutils literal"><span class="pre">-fsanitize=pointer-overflow</span></code>.</p>
-<p>Pointer overflow is an indicator of undefined behavior: when a pointer
-indexing expression wraps around the address space, or produces other
-unexpected results, its result may not point to a valid object.</p>
-</li>
-<li><p class="first">UBSan has several new checks which detect violations of nullability
-annotations. These checks are off by default. The flag to control this group
-of checks is <code class="docutils literal"><span class="pre">-fsanitize=nullability</span></code>. The checks can be individially enabled
-by <code class="docutils literal"><span class="pre">-fsanitize=nullability-arg</span></code> (which checks calls),
-<code class="docutils literal"><span class="pre">-fsanitize=nullability-assign</span></code> (which checks assignments), and
-<code class="docutils literal"><span class="pre">-fsanitize=nullability-return</span></code> (which checks return statements).</p>
-</li>
-<li><p class="first">UBSan can now detect invalid loads from bitfields and from ObjC BOOLs.</p>
-</li>
-<li><p class="first">UBSan can now avoid emitting unnecessary type checks in C++ class methods and
-in several other cases where the result is known at compile-time. UBSan can
-also avoid emitting unnecessary overflow checks in arithmetic expressions
-with promoted integer operands.</p>
-</li>
-</ul>
-</div>
-<div class="section" id="python-binding-changes">
-<h3><a class="toc-backref" href="#id18">Python Binding Changes</a><a class="headerlink" href="#python-binding-changes" title="Permalink to this headline">¶</a></h3>
-<p>Python bindings now support both Python 2 and Python 3.</p>
-<p>The following methods have been added:</p>
+<h3><a class="toc-backref" href="#id15">Undefined Behavior Sanitizer (UBSan)</a><a class="headerlink" href="#undefined-behavior-sanitizer-ubsan" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">is_scoped_enum</span></code> has been added to <code class="docutils literal"><span class="pre">Cursor</span></code>.</li>
-<li><code class="docutils literal"><span class="pre">exception_specification_kind</span></code> has been added to <code class="docutils literal"><span class="pre">Cursor</span></code>.</li>
-<li><code class="docutils literal"><span class="pre">get_address_space</span></code> has been added to <code class="docutils literal"><span class="pre">Type</span></code>.</li>
-<li><code class="docutils literal"><span class="pre">get_typedef_name</span></code> has been added to <code class="docutils literal"><span class="pre">Type</span></code>.</li>
-<li><code class="docutils literal"><span class="pre">get_exception_specification_kind</span></code> has been added to <code class="docutils literal"><span class="pre">Type</span></code>.</li>
+<li>A minimal runtime is now available. It is suitable for use in production
+environments, and has a small attack surface. It only provides very basic
+issue logging and deduplication, and does not support <code class="docutils literal"><span class="pre">-fsanitize=vptr</span></code>
+checking.</li>
 </ul>
 </div>
 </div>
 <div class="section" id="additional-information">
-<h2><a class="toc-backref" href="#id19">Additional Information</a><a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id16">Additional Information</a><a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h2>
 <p>A wide variety of additional information is available on the <a class="reference external" href="http://clang.llvm.org/">Clang web
 page</a>. The web page contains versions of the
 API documentation which are up-to-date with the Subversion version of
@@ -466,7 +461,7 @@ list</a>.</p>
       </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007-2017, The Clang Team.
+        &#169; Copyright 2007-2018, The Clang Team.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>

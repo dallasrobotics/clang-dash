@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Clang Language Extensions &#8212; Clang 5 documentation</title>
+    <title>Clang Language Extensions &#8212; Clang 6 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '5',
+        VERSION:     '6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -29,7 +29,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 5 documentation</span></a></h1>
+          <span>Clang 6 documentation</span></a></h1>
         <h2 class="heading"><span>Clang Language Extensions</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -55,24 +55,25 @@
 <li><a class="reference internal" href="#include-file-checking-macros" id="id3">Include File Checking Macros</a></li>
 <li><a class="reference internal" href="#builtin-macros" id="id4">Builtin Macros</a></li>
 <li><a class="reference internal" href="#vectors-and-extended-vectors" id="id5">Vectors and Extended Vectors</a></li>
-<li><a class="reference internal" href="#messages-on-deprecated-and-unavailable-attributes" id="id6">Messages on <code class="docutils literal"><span class="pre">deprecated</span></code> and <code class="docutils literal"><span class="pre">unavailable</span></code> Attributes</a></li>
-<li><a class="reference internal" href="#attributes-on-enumerators" id="id7">Attributes on Enumerators</a></li>
-<li><a class="reference internal" href="#user-specified-system-frameworks" id="id8">‘User-Specified’ System Frameworks</a></li>
-<li><a class="reference internal" href="#checks-for-standard-language-features" id="id9">Checks for Standard Language Features</a></li>
-<li><a class="reference internal" href="#checks-for-type-trait-primitives" id="id10">Checks for Type Trait Primitives</a></li>
-<li><a class="reference internal" href="#blocks" id="id11">Blocks</a></li>
-<li><a class="reference internal" href="#objective-c-features" id="id12">Objective-C Features</a></li>
-<li><a class="reference internal" href="#initializer-lists-for-complex-numbers-in-c" id="id13">Initializer lists for complex numbers in C</a></li>
-<li><a class="reference internal" href="#builtin-functions" id="id14">Builtin Functions</a></li>
-<li><a class="reference internal" href="#non-standard-c-11-attributes" id="id15">Non-standard C++11 Attributes</a></li>
-<li><a class="reference internal" href="#target-specific-extensions" id="id16">Target-Specific Extensions</a></li>
-<li><a class="reference internal" href="#extensions-for-static-analysis" id="id17">Extensions for Static Analysis</a></li>
-<li><a class="reference internal" href="#extensions-for-dynamic-analysis" id="id18">Extensions for Dynamic Analysis</a></li>
-<li><a class="reference internal" href="#extensions-for-selectively-disabling-optimization" id="id19">Extensions for selectively disabling optimization</a></li>
-<li><a class="reference internal" href="#extensions-for-loop-hint-optimizations" id="id20">Extensions for loop hint optimizations</a></li>
-<li><a class="reference internal" href="#extensions-to-specify-floating-point-flags" id="id21">Extensions to specify floating-point flags</a></li>
-<li><a class="reference internal" href="#specifying-an-attribute-for-multiple-declarations-pragma-clang-attribute" id="id22">Specifying an attribute for multiple declarations (#pragma clang attribute)</a></li>
-<li><a class="reference internal" href="#specifying-section-names-for-global-objects-pragma-clang-section" id="id23">Specifying section names for global objects (#pragma clang section)</a></li>
+<li><a class="reference internal" href="#half-precision-floating-point" id="id6">Half-Precision Floating Point</a></li>
+<li><a class="reference internal" href="#messages-on-deprecated-and-unavailable-attributes" id="id7">Messages on <code class="docutils literal"><span class="pre">deprecated</span></code> and <code class="docutils literal"><span class="pre">unavailable</span></code> Attributes</a></li>
+<li><a class="reference internal" href="#attributes-on-enumerators" id="id8">Attributes on Enumerators</a></li>
+<li><a class="reference internal" href="#user-specified-system-frameworks" id="id9">‘User-Specified’ System Frameworks</a></li>
+<li><a class="reference internal" href="#checks-for-standard-language-features" id="id10">Checks for Standard Language Features</a></li>
+<li><a class="reference internal" href="#checks-for-type-trait-primitives" id="id11">Checks for Type Trait Primitives</a></li>
+<li><a class="reference internal" href="#blocks" id="id12">Blocks</a></li>
+<li><a class="reference internal" href="#objective-c-features" id="id13">Objective-C Features</a></li>
+<li><a class="reference internal" href="#initializer-lists-for-complex-numbers-in-c" id="id14">Initializer lists for complex numbers in C</a></li>
+<li><a class="reference internal" href="#builtin-functions" id="id15">Builtin Functions</a></li>
+<li><a class="reference internal" href="#non-standard-c-11-attributes" id="id16">Non-standard C++11 Attributes</a></li>
+<li><a class="reference internal" href="#target-specific-extensions" id="id17">Target-Specific Extensions</a></li>
+<li><a class="reference internal" href="#extensions-for-static-analysis" id="id18">Extensions for Static Analysis</a></li>
+<li><a class="reference internal" href="#extensions-for-dynamic-analysis" id="id19">Extensions for Dynamic Analysis</a></li>
+<li><a class="reference internal" href="#extensions-for-selectively-disabling-optimization" id="id20">Extensions for selectively disabling optimization</a></li>
+<li><a class="reference internal" href="#extensions-for-loop-hint-optimizations" id="id21">Extensions for loop hint optimizations</a></li>
+<li><a class="reference internal" href="#extensions-to-specify-floating-point-flags" id="id22">Extensions to specify floating-point flags</a></li>
+<li><a class="reference internal" href="#specifying-an-attribute-for-multiple-declarations-pragma-clang-attribute" id="id23">Specifying an attribute for multiple declarations (#pragma clang attribute)</a></li>
+<li><a class="reference internal" href="#specifying-section-names-for-global-objects-pragma-clang-section" id="id24">Specifying section names for global objects (#pragma clang section)</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -170,6 +171,31 @@ target, this macro evaluates to 0.  It can be used like this:</p>
 <span class="cp">#define FALLTHROUGH [[clang::fallthrough]]</span>
 <span class="cp">#else</span>
 <span class="cp">#define FALLTHROUGH</span>
+<span class="cp">#endif</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>The attribute identifier (but not scope) can also be specified with a preceding
+and following <code class="docutils literal"><span class="pre">__</span></code> (double underscore) to avoid interference from a macro with
+the same name.  For instance, <code class="docutils literal"><span class="pre">gnu::__const__</span></code> can be used instead of
+<code class="docutils literal"><span class="pre">gnu::const</span></code>.</p>
+</div>
+<div class="section" id="has-c-attribute">
+<h3><code class="docutils literal"><span class="pre">__has_c_attribute</span></code><a class="headerlink" href="#has-c-attribute" title="Permalink to this headline">¶</a></h3>
+<p>This function-like macro takes a single argument that is the name of an
+attribute exposed with the double square-bracket syntax in C mode. The argument
+can either be a single identifier or a scoped identifier. If the attribute is
+supported, a nonzero value is returned. If the attribute is not supported by the
+current compilation target, this macro evaluates to 0. It can be used like this:</p>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="cp">#ifndef __has_c_attribute         </span><span class="c1">// Optional of course.</span>
+  <span class="cp">#define __has_c_attribute(x) 0  </span><span class="c1">// Compatibility with non-clang compilers.</span>
+<span class="cp">#endif</span>
+
+<span class="p">...</span>
+<span class="cp">#if __has_c_attribute(fallthrough)</span>
+  <span class="cp">#define FALLTHROUGH [[fallthrough]]</span>
+<span class="cp">#else</span>
+  <span class="cp">#define FALLTHROUGH</span>
 <span class="cp">#endif</span>
 <span class="p">...</span>
 </pre></div>
@@ -522,8 +548,44 @@ specification.</p>
 <p>See also <a class="reference internal" href="#langext-builtin-shufflevector"><span class="std std-ref">__builtin_shufflevector</span></a>, <a class="reference internal" href="#langext-builtin-convertvector"><span class="std std-ref">__builtin_convertvector</span></a>.</p>
 </div>
 </div>
+<div class="section" id="half-precision-floating-point">
+<h2><a class="toc-backref" href="#id6">Half-Precision Floating Point</a><a class="headerlink" href="#half-precision-floating-point" title="Permalink to this headline">¶</a></h2>
+<p>Clang supports two half-precision (16-bit) floating point types: <code class="docutils literal"><span class="pre">__fp16</span></code> and
+<code class="docutils literal"><span class="pre">_Float16</span></code>. <code class="docutils literal"><span class="pre">__fp16</span></code> is defined in the ARM C Language Extensions (<a class="reference external" href="http://infocenter.arm.com/help/topic/com.arm.doc.ihi0053d/IHI0053D_acle_2_1.pdf">ACLE</a>)
+and <code class="docutils literal"><span class="pre">_Float16</span></code> in ISO/IEC TS 18661-3:2015.</p>
+<p><code class="docutils literal"><span class="pre">__fp16</span></code> is a storage and interchange format only. This means that values of
+<code class="docutils literal"><span class="pre">__fp16</span></code> promote to (at least) float when used in arithmetic operations.
+There are two <code class="docutils literal"><span class="pre">__fp16</span></code> formats. Clang supports the IEEE 754-2008 format and
+not the ARM alternative format.</p>
+<p>ISO/IEC TS 18661-3:2015 defines C support for additional floating point types.
+<code class="docutils literal"><span class="pre">_FloatN</span></code> is defined as a binary floating type, where the N suffix denotes
+the number of bits and is 16, 32, 64, or greater and equal to 128 and a
+multiple of 32. Clang supports <code class="docutils literal"><span class="pre">_Float16</span></code>. The difference from <code class="docutils literal"><span class="pre">__fp16</span></code> is
+that arithmetic on <code class="docutils literal"><span class="pre">_Float16</span></code> is performed in half-precision, thus it is not
+a storage-only format. <code class="docutils literal"><span class="pre">_Float16</span></code> is available as a source language type in
+both C and C++ mode.</p>
+<p>It is recommended that portable code use the <code class="docutils literal"><span class="pre">_Float16</span></code> type because
+<code class="docutils literal"><span class="pre">__fp16</span></code> is an ARM C-Language Extension (ACLE), whereas <code class="docutils literal"><span class="pre">_Float16</span></code> is
+defined by the C standards committee, so using <code class="docutils literal"><span class="pre">_Float16</span></code> will not prevent
+code from being ported to architectures other than Arm.  Also, <code class="docutils literal"><span class="pre">_Float16</span></code>
+arithmetic and operations will directly map on half-precision instructions when
+they are available (e.g. Armv8.2-A), avoiding conversions to/from
+single-precision, and thus will result in more performant code. If
+half-precision instructions are unavailable, values will be promoted to
+single-precision, similar to the semantics of <code class="docutils literal"><span class="pre">__fp16</span></code> except that the
+results will be stored in single-precision.</p>
+<p>In an arithmetic operation where one operand is of <code class="docutils literal"><span class="pre">__fp16</span></code> type and the
+other is of <code class="docutils literal"><span class="pre">_Float16</span></code> type, the <code class="docutils literal"><span class="pre">_Float16</span></code> type is first converted to
+<code class="docutils literal"><span class="pre">__fp16</span></code> type and then the operation is completed as if both operands were of
+<code class="docutils literal"><span class="pre">__fp16</span></code> type.</p>
+<p>To define a <code class="docutils literal"><span class="pre">_Float16</span></code> literal, suffix <code class="docutils literal"><span class="pre">f16</span></code> can be appended to the compile-time
+constant declaration. There is no default argument promotion for <code class="docutils literal"><span class="pre">_Float16</span></code>; this
+applies to the standard floating types only. As a consequence, for example, an
+explicit cast is required for printing a <code class="docutils literal"><span class="pre">_Float16</span></code> value (there is no string
+format specifier for <code class="docutils literal"><span class="pre">_Float16</span></code>).</p>
+</div>
 <div class="section" id="messages-on-deprecated-and-unavailable-attributes">
-<h2><a class="toc-backref" href="#id6">Messages on <code class="docutils literal"><span class="pre">deprecated</span></code> and <code class="docutils literal"><span class="pre">unavailable</span></code> Attributes</a><a class="headerlink" href="#messages-on-deprecated-and-unavailable-attributes" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7">Messages on <code class="docutils literal"><span class="pre">deprecated</span></code> and <code class="docutils literal"><span class="pre">unavailable</span></code> Attributes</a><a class="headerlink" href="#messages-on-deprecated-and-unavailable-attributes" title="Permalink to this headline">¶</a></h2>
 <p>An optional string message can be added to the <code class="docutils literal"><span class="pre">deprecated</span></code> and
 <code class="docutils literal"><span class="pre">unavailable</span></code> attributes.  For example:</p>
 <div class="highlight-c++"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">explode</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">deprecated</span><span class="p">(</span><span class="s">&quot;extremely unsafe, use &#39;combust&#39; instead!!!&quot;</span><span class="p">)));</span>
@@ -542,7 +604,7 @@ incorporated into the appropriate diagnostic:</p>
 <code class="docutils literal"><span class="pre">__has_extension(attribute_unavailable_with_message)</span></code>.</p>
 </div>
 <div class="section" id="attributes-on-enumerators">
-<h2><a class="toc-backref" href="#id7">Attributes on Enumerators</a><a class="headerlink" href="#attributes-on-enumerators" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8">Attributes on Enumerators</a><a class="headerlink" href="#attributes-on-enumerators" title="Permalink to this headline">¶</a></h2>
 <p>Clang allows attributes to be written on individual enumerators.  This allows
 enumerators to be deprecated, made unavailable, etc.  The attribute must appear
 after the enumerator name and before any initializer, like so:</p>
@@ -558,7 +620,7 @@ after the enumerator name and before any initializer, like so:</p>
 <p>Query for this feature with <code class="docutils literal"><span class="pre">__has_extension(enumerator_attributes)</span></code>.</p>
 </div>
 <div class="section" id="user-specified-system-frameworks">
-<h2><a class="toc-backref" href="#id8">‘User-Specified’ System Frameworks</a><a class="headerlink" href="#user-specified-system-frameworks" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9">‘User-Specified’ System Frameworks</a><a class="headerlink" href="#user-specified-system-frameworks" title="Permalink to this headline">¶</a></h2>
 <p>Clang provides a mechanism by which frameworks can be built in such a way that
 they will always be treated as being “system frameworks”, even if they are not
 present in a system framework directory.  This can be useful to system
@@ -581,7 +643,7 @@ framework search path.  For consistency, we recommend that such files never be
 included in installed versions of the framework.</p>
 </div>
 <div class="section" id="checks-for-standard-language-features">
-<h2><a class="toc-backref" href="#id9">Checks for Standard Language Features</a><a class="headerlink" href="#checks-for-standard-language-features" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10">Checks for Standard Language Features</a><a class="headerlink" href="#checks-for-standard-language-features" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal"><span class="pre">__has_feature</span></code> macro can be used to query if certain standard language
 features are enabled.  The <code class="docutils literal"><span class="pre">__has_extension</span></code> macro can be used to query if
 language features are available as an extension when compiling for a standard
@@ -951,7 +1013,7 @@ For example, compiling code with <code class="docutils literal"><span class="pre
 </div>
 </div>
 <div class="section" id="checks-for-type-trait-primitives">
-<h2><a class="toc-backref" href="#id10">Checks for Type Trait Primitives</a><a class="headerlink" href="#checks-for-type-trait-primitives" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11">Checks for Type Trait Primitives</a><a class="headerlink" href="#checks-for-type-trait-primitives" title="Permalink to this headline">¶</a></h2>
 <p>Type trait primitives are special builtin constant expressions that can be used
 by the standard C++ library to facilitate or simplify the implementation of
 user-facing type traits in the &lt;type_traits&gt; header.</p>
@@ -1026,14 +1088,14 @@ library.</li>
 </ul>
 </div>
 <div class="section" id="blocks">
-<h2><a class="toc-backref" href="#id11">Blocks</a><a class="headerlink" href="#blocks" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id12">Blocks</a><a class="headerlink" href="#blocks" title="Permalink to this headline">¶</a></h2>
 <p>The syntax and high level language feature description is in
 <a class="reference internal" href="BlockLanguageSpec.html"><span class="doc">BlockLanguageSpec</span></a>. Implementation and ABI details for
 the clang implementation are in <a class="reference internal" href="Block-ABI-Apple.html"><span class="doc">Block-ABI-Apple</span></a>.</p>
 <p>Query for this feature with <code class="docutils literal"><span class="pre">__has_extension(blocks)</span></code>.</p>
 </div>
 <div class="section" id="objective-c-features">
-<h2><a class="toc-backref" href="#id12">Objective-C Features</a><a class="headerlink" href="#objective-c-features" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id13">Objective-C Features</a><a class="headerlink" href="#objective-c-features" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="related-result-types">
 <h3>Related result types<a class="headerlink" href="#related-result-types" title="Permalink to this headline">¶</a></h3>
 <p>According to Cocoa conventions, Objective-C methods with certain names
@@ -1304,7 +1366,7 @@ parameters of protocol-qualified type.</p>
 </div>
 </div>
 <div class="section" id="initializer-lists-for-complex-numbers-in-c">
-<h2><a class="toc-backref" href="#id13">Initializer lists for complex numbers in C</a><a class="headerlink" href="#initializer-lists-for-complex-numbers-in-c" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14">Initializer lists for complex numbers in C</a><a class="headerlink" href="#initializer-lists-for-complex-numbers-in-c" title="Permalink to this headline">¶</a></h2>
 <p>clang supports an extension which allows the following in C:</p>
 <div class="highlight-c++"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;complex.h&gt;</span><span class="cp"></span>
@@ -1327,7 +1389,7 @@ to the C++ <code class="docutils literal"><span class="pre">std::complex</span><
 syntax to be used with <code class="docutils literal"><span class="pre">std::complex</span></code> with the same meaning.)</p>
 </div>
 <div class="section" id="builtin-functions">
-<h2><a class="toc-backref" href="#id14">Builtin Functions</a><a class="headerlink" href="#builtin-functions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id15">Builtin Functions</a><a class="headerlink" href="#builtin-functions" title="Permalink to this headline">¶</a></h2>
 <p>Clang supports a number of builtin library functions with the same syntax as
 GCC, including things like <code class="docutils literal"><span class="pre">__builtin_nan</span></code>, <code class="docutils literal"><span class="pre">__builtin_constant_p</span></code>,
 <code class="docutils literal"><span class="pre">__builtin_choose_expr</span></code>, <code class="docutils literal"><span class="pre">__builtin_types_compatible_p</span></code>,
@@ -1756,7 +1818,13 @@ the corresponding C11 operations, are:</p>
 provided, with values corresponding to the enumerators of C11’s
 <code class="docutils literal"><span class="pre">memory_order</span></code> enumeration.</p>
 <p>(Note that Clang additionally provides GCC-compatible <code class="docutils literal"><span class="pre">__atomic_*</span></code>
-builtins)</p>
+builtins and OpenCL 2.0 <code class="docutils literal"><span class="pre">__opencl_atomic_*</span></code> builtins. The OpenCL 2.0
+atomic builtins are an explicit form of the corresponding OpenCL 2.0
+builtin function, and are named with a <code class="docutils literal"><span class="pre">__opencl_</span></code> prefix. The macros
+<code class="docutils literal"><span class="pre">__OPENCL_MEMORY_SCOPE_WORK_ITEM</span></code>, <code class="docutils literal"><span class="pre">__OPENCL_MEMORY_SCOPE_WORK_GROUP</span></code>,
+<code class="docutils literal"><span class="pre">__OPENCL_MEMORY_SCOPE_DEVICE</span></code>, <code class="docutils literal"><span class="pre">__OPENCL_MEMORY_SCOPE_ALL_SVM_DEVICES</span></code>,
+and <code class="docutils literal"><span class="pre">__OPENCL_MEMORY_SCOPE_SUB_GROUP</span></code> are provided, with values
+corresponding to the enumerators of OpenCL’s <code class="docutils literal"><span class="pre">memory_scope</span></code> enumeration.)</p>
 </div>
 <div class="section" id="low-level-arm-exclusive-memory-builtins">
 <h3>Low-level ARM exclusive memory builtins<a class="headerlink" href="#low-level-arm-exclusive-memory-builtins" title="Permalink to this headline">¶</a></h3>
@@ -1872,7 +1940,7 @@ as the first argument to the intrinsic.</p>
 </div>
 </div>
 <div class="section" id="non-standard-c-11-attributes">
-<h2><a class="toc-backref" href="#id15">Non-standard C++11 Attributes</a><a class="headerlink" href="#non-standard-c-11-attributes" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id16">Non-standard C++11 Attributes</a><a class="headerlink" href="#non-standard-c-11-attributes" title="Permalink to this headline">¶</a></h2>
 <p>Clang’s non-standard C++11 attributes live in the <code class="docutils literal"><span class="pre">clang</span></code> attribute
 namespace.</p>
 <p>Clang supports GCC’s <code class="docutils literal"><span class="pre">gnu</span></code> attribute namespace. All GCC attributes which
@@ -1891,7 +1959,7 @@ also applies the GNU <code class="docutils literal"><span class="pre">noreturn</
 </div>
 </div>
 <div class="section" id="target-specific-extensions">
-<h2><a class="toc-backref" href="#id16">Target-Specific Extensions</a><a class="headerlink" href="#target-specific-extensions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id17">Target-Specific Extensions</a><a class="headerlink" href="#target-specific-extensions" title="Permalink to this headline">¶</a></h2>
 <p>Clang supports some language features conditionally on some targets.</p>
 <div class="section" id="arm-aarch64-language-extensions">
 <h3>ARM/AArch64 Language Extensions<a class="headerlink" href="#arm-aarch64-language-extensions" title="Permalink to this headline">¶</a></h3>
@@ -1934,14 +2002,14 @@ an OS kernel).</p>
 </div>
 </div>
 <div class="section" id="extensions-for-static-analysis">
-<h2><a class="toc-backref" href="#id17">Extensions for Static Analysis</a><a class="headerlink" href="#extensions-for-static-analysis" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id18">Extensions for Static Analysis</a><a class="headerlink" href="#extensions-for-static-analysis" title="Permalink to this headline">¶</a></h2>
 <p>Clang supports additional attributes that are useful for documenting program
 invariants and rules for static analysis tools, such as the <a class="reference external" href="http://clang-analyzer.llvm.org/">Clang Static
 Analyzer</a>. These attributes are documented
 in the analyzer’s <a class="reference external" href="http://clang-analyzer.llvm.org/annotations.html">list of source-level annotations</a>.</p>
 </div>
 <div class="section" id="extensions-for-dynamic-analysis">
-<h2><a class="toc-backref" href="#id18">Extensions for Dynamic Analysis</a><a class="headerlink" href="#extensions-for-dynamic-analysis" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id19">Extensions for Dynamic Analysis</a><a class="headerlink" href="#extensions-for-dynamic-analysis" title="Permalink to this headline">¶</a></h2>
 <p>Use <code class="docutils literal"><span class="pre">__has_feature(address_sanitizer)</span></code> to check if the code is being built
 with <a class="reference internal" href="AddressSanitizer.html"><span class="doc">AddressSanitizer</span></a>.</p>
 <p>Use <code class="docutils literal"><span class="pre">__has_feature(thread_sanitizer)</span></code> to check if the code is being built
@@ -1952,7 +2020,7 @@ with <a class="reference internal" href="MemorySanitizer.html"><span class="doc"
 with <a class="reference internal" href="SafeStack.html"><span class="doc">SafeStack</span></a>.</p>
 </div>
 <div class="section" id="extensions-for-selectively-disabling-optimization">
-<h2><a class="toc-backref" href="#id19">Extensions for selectively disabling optimization</a><a class="headerlink" href="#extensions-for-selectively-disabling-optimization" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id20">Extensions for selectively disabling optimization</a><a class="headerlink" href="#extensions-for-selectively-disabling-optimization" title="Permalink to this headline">¶</a></h2>
 <p>Clang provides a mechanism for selectively disabling optimizations in functions
 and methods.</p>
 <p>To disable optimizations in a single function definition, the GNU-style or C++11
@@ -2019,7 +2087,7 @@ these two instantiations, <code class="docutils literal"><span class="pre">twice
 was outside the region) and <code class="docutils literal"><span class="pre">thrice</span></code> will not be optimized.</p>
 </div>
 <div class="section" id="extensions-for-loop-hint-optimizations">
-<h2><a class="toc-backref" href="#id20">Extensions for loop hint optimizations</a><a class="headerlink" href="#extensions-for-loop-hint-optimizations" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id21">Extensions for loop hint optimizations</a><a class="headerlink" href="#extensions-for-loop-hint-optimizations" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">clang</span> <span class="pre">loop</span></code> directive is used to specify hints for optimizing the
 subsequent for, while, do-while, or c++11 range-based for loop. The directive
 provides options for vectorization, interleaving, unrolling and
@@ -2146,7 +2214,7 @@ user guide for details.</p>
 </div>
 </div>
 <div class="section" id="extensions-to-specify-floating-point-flags">
-<h2><a class="toc-backref" href="#id21">Extensions to specify floating-point flags</a><a class="headerlink" href="#extensions-to-specify-floating-point-flags" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id22">Extensions to specify floating-point flags</a><a class="headerlink" href="#extensions-to-specify-floating-point-flags" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">clang</span> <span class="pre">fp</span></code> pragma allows floating-point options to be specified
 for a section of the source code. This pragma can only appear at file scope or
 at the start of a compound statement (excluding comments). When using within a
@@ -2173,7 +2241,7 @@ section of the code. This can be useful when fast contraction is otherwise
 enabled for the translation unit with the <code class="docutils literal"><span class="pre">-ffp-contract=fast</span></code> flag.</p>
 </div>
 <div class="section" id="specifying-an-attribute-for-multiple-declarations-pragma-clang-attribute">
-<h2><a class="toc-backref" href="#id22">Specifying an attribute for multiple declarations (#pragma clang attribute)</a><a class="headerlink" href="#specifying-an-attribute-for-multiple-declarations-pragma-clang-attribute" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id23">Specifying an attribute for multiple declarations (#pragma clang attribute)</a><a class="headerlink" href="#specifying-an-attribute-for-multiple-declarations-pragma-clang-attribute" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">clang</span> <span class="pre">attribute</span></code> directive can be used to apply an attribute to
 multiple declarations. The <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">clang</span> <span class="pre">attribute</span> <span class="pre">push</span></code> variation of the
 directive pushes a new attribute to the attribute stack. The declarations that
@@ -2313,7 +2381,7 @@ any declaration are not verified semantically.</p>
 </div>
 </div>
 <div class="section" id="specifying-section-names-for-global-objects-pragma-clang-section">
-<h2><a class="toc-backref" href="#id23">Specifying section names for global objects (#pragma clang section)</a><a class="headerlink" href="#specifying-section-names-for-global-objects-pragma-clang-section" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id24">Specifying section names for global objects (#pragma clang section)</a><a class="headerlink" href="#specifying-section-names-for-global-objects-pragma-clang-section" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal"><span class="pre">#pragma</span> <span class="pre">clang</span> <span class="pre">section</span></code> directive provides a means to assign section-names
 to global variables, functions and static variables.</p>
 <p>The section names can be specified as:</p>
@@ -2360,7 +2428,7 @@ Once the section-kind is known, appropriate section name, as specified by the us
       </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007-2017, The Clang Team.
+        &#169; Copyright 2007-2018, The Clang Team.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>

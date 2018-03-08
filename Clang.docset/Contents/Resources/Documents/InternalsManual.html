@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>“Clang” CFE Internals Manual &#8212; Clang 5 documentation</title>
+    <title>“Clang” CFE Internals Manual &#8212; Clang 6 documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '5',
+        VERSION:     '6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -29,7 +29,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>Clang 5 documentation</span></a></h1>
+          <span>Clang 6 documentation</span></a></h1>
         <h2 class="heading"><span>“Clang” CFE Internals Manual</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -165,7 +165,7 @@ when the code is incorrect or dubious.  In Clang, each diagnostic produced has
 (at the minimum) a unique ID, an English translation associated with it, a
 <a class="reference internal" href="#sourcelocation"><span class="std std-ref">SourceLocation</span></a> to “put the caret”, and a severity
 (e.g., <code class="docutils literal"><span class="pre">WARNING</span></code> or <code class="docutils literal"><span class="pre">ERROR</span></code>).  They can also optionally include a number of
-arguments to the dianostic (which fill in “%0“‘s in the string) as well as a
+arguments to the diagnostic (which fill in “%0“‘s in the string) as well as a
 number of source ranges that related to the diagnostic.</p>
 <p>In this section, we’ll be giving examples produced by the Clang command line
 driver, but diagnostics can be <a class="reference internal" href="#diagnosticclient"><span class="std std-ref">rendered in many different ways</span></a> depending on how the <code class="docutils literal"><span class="pre">DiagnosticClient</span></code> interface is
@@ -567,11 +567,11 @@ data.</li>
 </ol>
 <p>In practice, the <code class="docutils literal"><span class="pre">SourceLocation</span></code> works together with the <code class="docutils literal"><span class="pre">SourceManager</span></code>
 class to encode two pieces of information about a location: its spelling
-location and its instantiation location.  For most tokens, these will be the
+location and its expansion location.  For most tokens, these will be the
 same.  However, for a macro expansion (or tokens that came from a <code class="docutils literal"><span class="pre">_Pragma</span></code>
 directive) these will describe the location of the characters corresponding to
 the token and the location where the token was used (i.e., the macro
-instantiation point or the location of the <code class="docutils literal"><span class="pre">_Pragma</span></code> itself).</p>
+expansion point or the location of the <code class="docutils literal"><span class="pre">_Pragma</span></code> itself).</p>
 <p>The Clang front-end inherently depends on the location of a token being tracked
 correctly.  If it is ever incorrect, the front-end may get confused and die.
 The reason for this is that the notion of the “spelling” of a <code class="docutils literal"><span class="pre">Token</span></code> in
@@ -832,7 +832,7 @@ preprocessor and notifies a client of the parsing progress.</p>
 <p>Historically, the parser used to talk to an abstract <code class="docutils literal"><span class="pre">Action</span></code> interface that
 had virtual methods for parse events, for example <code class="docutils literal"><span class="pre">ActOnBinOp()</span></code>.  When Clang
 grew C++ support, the parser stopped supporting general <code class="docutils literal"><span class="pre">Action</span></code> clients –
-it now always talks to the <a class="reference internal" href="#sema"><span class="std std-ref">Sema libray</span></a>.  However, the Parser
+it now always talks to the <a class="reference internal" href="#sema"><span class="std std-ref">Sema library</span></a>.  However, the Parser
 still accesses AST objects only through opaque types like <code class="docutils literal"><span class="pre">ExprResult</span></code> and
 <code class="docutils literal"><span class="pre">StmtResult</span></code>.  Only <a class="reference internal" href="#sema"><span class="std std-ref">Sema</span></a> looks at the AST node contents of these
 wrappers.</p>
@@ -1280,9 +1280,9 @@ range of iterators over declarations of “<code class="docutils literal"><span 
 function <code class="docutils literal"><span class="pre">DeclContext::getPrimaryContext</span></code> retrieves the “primary” context for
 a given <code class="docutils literal"><span class="pre">DeclContext</span></code> instance, which is the <code class="docutils literal"><span class="pre">DeclContext</span></code> responsible for
 maintaining the lookup table used for the semantics-centric view.  Given a
-DeclContext, one can obtain the set of declaration contexts that are semanticaly
-connected to this declaration context, in source order, including this context
-(which will be the only result, for non-namespace contexts) via
+DeclContext, one can obtain the set of declaration contexts that are
+semantically connected to this declaration context, in source order, including
+this context (which will be the only result, for non-namespace contexts) via
 <code class="docutils literal"><span class="pre">DeclContext::collectAllContexts</span></code>. Note that these functions are used
 internally within the lookup and insertion methods of the <code class="docutils literal"><span class="pre">DeclContext</span></code>, so
 the vast majority of clients can ignore them.</p>
@@ -1439,7 +1439,7 @@ use an i-c-e where one is required, but accepting the code unless running with
 <p>Things get a little bit more tricky when it comes to compatibility with
 real-world source code.  Specifically, GCC has historically accepted a huge
 superset of expressions as i-c-e’s, and a lot of real world code depends on
-this unfortuate accident of history (including, e.g., the glibc system
+this unfortunate accident of history (including, e.g., the glibc system
 headers).  GCC accepts anything its “fold” optimizer is capable of reducing to
 an integer constant, which means that the definition of what it accepts changes
 as its optimizer does.  One example is that GCC accepts things like “<code class="docutils literal"><span class="pre">case</span>
@@ -1461,7 +1461,7 @@ expression with <code class="docutils literal"><span class="pre">true</span></co
 <p>After trying several different approaches, we’ve finally converged on a design
 (Note, at the time of this writing, not all of this has been implemented,
 consider this a design goal!).  Our basic approach is to define a single
-recursive method evaluation method (<code class="docutils literal"><span class="pre">Expr::Evaluate</span></code>), which is implemented
+recursive evaluation method (<code class="docutils literal"><span class="pre">Expr::Evaluate</span></code>), which is implemented
 in <code class="docutils literal"><span class="pre">AST/ExprConstant.cpp</span></code>.  Given an expression with “scalar” type (integer,
 fp, complex, or pointer) this method returns the following information:</p>
 <ul class="simple">
@@ -1933,7 +1933,7 @@ avoid duplication.</li>
 <li><code class="docutils literal"><span class="pre">CodeGenFunction</span></code> contains functions <code class="docutils literal"><span class="pre">ConvertType</span></code> and
 <code class="docutils literal"><span class="pre">ConvertTypeForMem</span></code> that convert Clang’s types (<code class="docutils literal"><span class="pre">clang::Type*</span></code> or
 <code class="docutils literal"><span class="pre">clang::QualType</span></code>) to LLVM types.  Use the former for values, and the
-later for memory locations: test with the C++ “<code class="docutils literal"><span class="pre">bool</span></code>” type to check
+latter for memory locations: test with the C++ “<code class="docutils literal"><span class="pre">bool</span></code>” type to check
 this.  If you find that you are having to use LLVM bitcasts to make the
 subexpressions of your expression have the type that your expression
 expects, STOP!  Go fix semantic analysis and the AST so that you don’t
@@ -2010,7 +2010,7 @@ as syntax highlighting, cross-referencing, and so on.  The
       </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007-2017, The Clang Team.
+        &#169; Copyright 2007-2018, The Clang Team.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
